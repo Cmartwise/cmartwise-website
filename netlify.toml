@@ -1,0 +1,17 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/pt"
+  to = "/index_pt.html"
+  status = 200
+
+[[redirects]]
+  from = "/fr"
+  to = "/index_fr.html"
+  status = 200
+
+[[redirects]]
+  from = "/es"
+  to = "/index_es.html"
+  status = 200
