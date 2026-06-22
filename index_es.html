@@ -184,13 +184,23 @@ footer a:hover{color:var(--terra-light)}
 .lang-switch-btn{padding:4px 10px;font-size:11px;border:1px solid #D5C9B8;background:transparent;color:#7A6E64;border-radius:4px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:.2s;letter-spacing:.04em;text-decoration:none;display:inline-block}
 .lang-switch-btn:hover{background:#C4683A;border-color:#C4683A;color:#fff}
 .lang-switch-btn.active{background:#1A3A4A;border-color:#1A3A4A;color:#fff}
+
+/* DROPDOWN NAV */
+.nav-menu{display:flex;align-items:center;gap:1.5rem}
+.nav-dropdown{position:relative}
+.nav-drop-trigger{font-size:.83rem;color:var(--muted);font-weight:400;cursor:pointer;display:flex;align-items:center;gap:4px;user-select:none;background:none;border:none;font-family:inherit;padding:0;letter-spacing:0}
+.nav-drop-panel{display:none;position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#fff;border-radius:8px;box-shadow:0 8px 32px rgba(26,58,74,0.14);border:1px solid rgba(26,58,74,0.08);padding:.4rem;min-width:230px;z-index:200}
+.nav-dropdown:hover .nav-drop-panel,.nav-dropdown:focus-within .nav-drop-panel{display:block}
+.nav-drop-item{display:block;padding:.65rem 1rem;font-size:.84rem;color:var(--muted);text-decoration:none;border-radius:5px;transition:.15s;white-space:nowrap}
+.nav-drop-item:hover{background:var(--sand);color:var(--ocean)}
+.nav-drop-item.active{color:var(--ocean);font-weight:500}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo-wrap">
+  <a href="/" class="logo-wrap" style="text-decoration:none">
     <svg width="36" height="36" viewBox="0 0 38 38" fill="none">
       <rect x="1" y="1" width="36" height="10" rx="2" fill="#1A3A4A"/>
       <g fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="0.55">
@@ -225,13 +235,25 @@ footer a:hover{color:var(--terra-light)}
       <line x1="29" y1="25" x2="39" y2="25" stroke="#CF142B" stroke-width="1.5" clip-path="url(#nuk)"/>
       <rect x="9" y="34" width="20" height="2" rx="1" fill="#C4683A" opacity="0.5"/>
     </svg>
-    <div><div class="logo-name">Cmart<span>Wise</span></div><div class="logo-sub">Coaching de Idiomas · Algarve</div></div>
-  </a> <a href="/ciple.html" style="font-size:.83rem;color:var(--muted);text-decoration:none;font-weight:400;margin-right:1rem">Preparación de Exámenes</a>
-  <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="nav-cta">Reserva una llamada gratuita</a>
-  <div class="lang-switcher-nav"><a href="index.html" class="lang-switch-btn">EN</a>
-<a href="index_pt.html" class="lang-switch-btn">PT</a>
-<a href="index_es.html" class="lang-switch-btn  active">ES</a>
-<a href="index_fr.html" class="lang-switch-btn">FR</a>
+    <div>
+      <div class="logo-name">Cmart<span>Wise</span></div>
+      <div class="logo-sub">Language Coaching · Algarve</div>
+    </div>
+  </a>
+  <div class="nav-menu">
+    <div class="nav-dropdown">
+      <button class="nav-drop-trigger">Programmes <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+      <div class="nav-drop-panel">
+        <a href="/coaching.html" class="nav-drop-item active">Full Fluency Programme</a>
+        <a href="/ciple.html" class="nav-drop-item">Exam Prep (CIPLE / DIPLE)</a>
+      </div>
+    </div>
+  </div>
+  <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="nav-cta">Book a free call</a>
+  <div class="lang-switcher-nav"><a href="coaching.html" class="lang-switch-btn">EN</a>
+<a href="coaching_pt.html" class="lang-switch-btn">PT</a>
+<a href="coaching_es.html" class="lang-switch-btn  active">ES</a>
+<a href="coaching_fr.html" class="lang-switch-btn">FR</a>
 </div>
 </nav>
 

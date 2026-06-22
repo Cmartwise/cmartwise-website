@@ -15,3 +15,18 @@
   from = "/es"
   to = "/index_es.html"
   status = 200
+
+[[redirects]]
+  from = "/coaching_pt.html"
+  to = "/index_pt.html"
+  status = 200
+
+[[redirects]]
+  from = "/coaching_fr.html"
+  to = "/index_fr.html"
+  status = 200
+
+[[redirects]]
+  from = "/coaching_es.html"
+  to = "/index_es.html"
+  status = 200
