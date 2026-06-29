@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resources — CmartWise Portal</title>
+<style>
+:root{
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
+  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
+  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border)}
+.logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-style:italic;font-size:.95rem;font-weight:700}
+.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
+.logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;padding:.15rem .45rem;margin-left:.25rem}
+.nav-spacer{flex:1}
+.nav-back{font-size:.82rem;color:var(--muted);text-decoration:none}
+.nav-back:hover{color:var(--ocean)}
+.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
+
+.container{max-width:1000px;margin:0 auto;padding:2.5rem 1.5rem}
+
+.page-header{margin-bottom:2rem}
+.page-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace;margin-bottom:.4rem}
+.page-title{font-size:1.8rem;color:var(--ocean);margin-bottom:.35rem}
+.page-sub{font-size:.9rem;color:var(--muted);line-height:1.5}
+
+/* TABS */
+.tabs{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--cream)}
+.tab{padding:.65rem 1.25rem;font-size:.9rem;cursor:pointer;color:var(--muted);
+  border:none;border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:.15s;background:none;font-family:Georgia,serif}
+.tab.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
+
+/* RESOURCE GRID */
+.resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.resource-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;box-shadow:var(--shadow);transition:.2s}
+.resource-card:hover{border-color:var(--ocean);transform:translateY(-2px)}
+.resource-icon{font-size:1.5rem;margin-bottom:.6rem}
+.resource-type{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--muted);font-family:monospace;margin-bottom:.3rem}
+.resource-title{font-size:.95rem;color:var(--ocean);font-weight:600;margin-bottom:.35rem}
+.resource-desc{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:.85rem}
+.resource-link{display:inline-block;font-size:.82rem;color:var(--ocean);text-decoration:none;
+  border:1px solid var(--border);border-radius:6px;padding:.3rem .75rem;transition:.15s}
+.resource-link:hover{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;
+  background:var(--ivory);border-radius:var(--radius);border:1px dashed var(--border)}
+
+/* TRANSLATOR EMBED */
+#translator-tab{display:none}
+.translator-wrap{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  overflow:hidden;box-shadow:var(--shadow)}
+
+/* Mini translator UI */
+.tr-header{background:#1c3d28;padding:1rem 1.5rem;display:flex;align-items:center;gap:.75rem}
+.tr-title{color:#e8a820;font-style:italic;font-size:1.1rem}
+.tr-sub{color:rgba(232,240,226,.4);font-family:monospace;font-size:.75rem}
+.tr-body{padding:1.5rem}
+
+.tr-lang-row{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
+.lang-pair{display:flex;align-items:center;gap:.5rem;flex:1}
+.lang-sel{flex:1;padding:.5rem .75rem;border-radius:8px;border:1.5px solid var(--border);
+  font-family:Georgia,serif;font-size:.9rem;color:var(--ocean);background:var(--sand)}
+.tr-arrow{color:var(--muted);font-size:1.1rem;flex-shrink:0}
+.swap-btn{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border);
+  background:none;cursor:pointer;font-size:.9rem;transition:.15s;color:var(--muted)}
+.swap-btn:hover{border-color:var(--ocean);color:var(--ocean)}
+
+.tr-input-wrap{display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1rem}
+.tr-textarea{flex:1;min-height:80px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--sand);color:var(--ocean);font-family:Georgia,serif;font-size:.95rem;
+  padding:.75rem 1rem;resize:vertical;outline:none;transition:.15s}
+.tr-textarea:focus{border-color:var(--leaf)}
+.tr-btn{height:44px;padding:0 1.25rem;border-radius:8px;border:none;background:#1c3d28;
+  color:#e8f0e2;font-family:Georgia,serif;font-size:.9rem;cursor:pointer;
+  transition:.2s;white-space:nowrap;flex-shrink:0}
+.tr-btn:hover{background:#2e6644}
+.tr-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.tr-result{display:none;background:#1c3d28;border-radius:10px;padding:1.25rem;color:#e8f0e2;margin-top:1rem}
+.tr-result-label{font-size:.7rem;letter-spacing:2px;opacity:.4;font-family:monospace;margin-bottom:.3rem}
+.tr-result-main{font-size:1.4rem;font-style:italic;line-height:1.4;margin-bottom:.4rem}
+.tr-phonetic{font-size:.85rem;font-family:monospace;color:#e8a820;margin-bottom:.5rem}
+.tr-original{font-size:.8rem;opacity:.45;font-style:italic}
+.tr-colloquial-note{margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.1);font-size:.82rem;opacity:.55;line-height:1.5}
+
+.tr-words{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1.25rem}
+.tr-word{background:#fff;border-radius:8px;padding:.85rem 1rem;border-left:3px solid #4db86a}
+.tr-word.verb{border-left-color:#e8a820}
+.tr-word.adjective{border-left-color:#3a7abf}
+.tr-word-main{font-size:.95rem;color:#1A3A4A;margin-bottom:.2rem}
+.tr-word-en{font-size:.78rem;color:var(--muted)}
+.tr-word-ph{font-size:.72rem;font-family:monospace;color:#7a5ca0;margin-top:.2rem}
+.tr-word-note{font-size:.72rem;color:var(--muted);margin-top:.3rem;font-style:italic}
+
+.tr-error{color:var(--terra);font-size:.85rem;margin-top:.75rem;display:none}
+.tr-loading{color:var(--muted);font-size:.85rem;margin-top:.75rem;display:none}
+
+/* Admin add resource */
+.add-resource-btn{padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:8px;
+  background:none;color:var(--muted);font-family:Georgia,serif;font-size:.85rem;
+  cursor:pointer;transition:.15s;margin-bottom:1.5rem}
+.add-resource-btn:hover{border-color:var(--ocean);color:var(--ocean)}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo-wrap">
+    <div class="logo-mark">C</div>
+    <span class="logo-text">CmartWise</span>
+  </a>
+  <span class="logo-badge">Student Portal</span>
+  <div class="nav-spacer"></div>
+  <a href="/portal-dashboard.html" class="nav-back">← Dashboard</a>
+  <button class="nav-logout" onclick="logout()">Sign out</button>
+</nav>
+
+<div id="loading" style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--muted)">Loading resources…</div>
+
+<div class="container" id="main-content" style="display:none">
+  <div class="page-header">
+    <p class="page-label">Student Resources</p>
+    <h1 class="page-title">Your study toolkit</h1>
+    <p class="page-sub">Guides, exercises, vocabulary lists — and the PT Translator for when you need it.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('resources')">📚 Documents &amp; Links</button>
+    <button class="tab" onclick="showTab('translator')">🌿 PT Translator</button>
+  </div>
+
+  <!-- RESOURCES TAB -->
+  <div id="resources-tab">
+    <button class="add-resource-btn" id="add-resource-btn" style="display:none" onclick="openAddResource()">+ Add resource (admin)</button>
+    <div class="resource-grid" id="resource-grid">
+      <div class="empty" style="grid-column:1/-1">Loading resources…</div>
+    </div>
+  </div>
+
+  <!-- TRANSLATOR TAB -->
+  <div id="translator-tab" style="display:none">
+    <div class="translator-wrap">
+      <div class="tr-header">
+        <div>
+          <div class="tr-title">PT — Portuguese Translator</div>
+          <div class="tr-sub">Colloquial · Phonetic · Word-by-word</div>
+        </div>
+      </div>
+      <div class="tr-body">
+        <div class="tr-lang-row">
+          <div class="lang-pair">
+            <select class="lang-sel" id="from-lang">
+              <option value="en">🇬🇧 English</option>
+              <option value="pt">🇵🇹 Portuguese</option>
+              <option value="fr">🇫🇷 French</option>
+              <option value="es">🇪🇸 Spanish</option>
+            </select>
+            <span class="tr-arrow">→</span>
+            <select class="lang-sel" id="to-lang">
+              <option value="pt" selected>🇵🇹 Portuguese</option>
+              <option value="en">🇬🇧 English</option>
+              <option value="fr">🇫🇷 French</option>
+              <option value="es">🇪🇸 Spanish</option>
+            </select>
+          </div>
+          <button class="swap-btn" onclick="swapLangs()" title="Swap languages">⇄</button>
+        </div>
+        <div class="tr-input-wrap">
+          <textarea class="tr-textarea" id="tr-input" placeholder="Type something to translate…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))translate()"></textarea>
+          <button class="tr-btn" id="tr-btn" onclick="translate()">Translate</button>
+        </div>
+        <div class="tr-error" id="tr-error"></div>
+        <div class="tr-loading" id="tr-loading">Translating…</div>
+        <div class="tr-result" id="tr-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADD RESOURCE MODAL -->
+<div id="resource-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:480px">
+    <h2 style="color:var(--ocean);margin-bottom:1.25rem">Add resource</h2>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Type</label>
+      <select id="res-type" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif">
+        <option value="document">📄 Document</option>
+        <option value="link">🔗 Link</option>
+        <option value="video">🎬 Video</option>
+        <option value="exercise">✏️ Exercise</option>
+      </select>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Title</label>
+      <input type="text" id="res-title" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif" placeholder="e.g. Pronunciation Guide — Algarvian Portuguese">
+    </div>
+    <div style="margin-bottom:1rem">
+      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Description</label>
+      <input type="text" id="res-desc" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif" placeholder="Short description for students">
+    </div>
+    <div style="margin-bottom:1rem" id="res-url-wrap">
+      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">URL (for links/videos)</label>
+      <input type="url" id="res-url" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif" placeholder="https://…">
+    </div>
+    <div style="margin-bottom:1.25rem">
+      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Content (markdown, for documents)</label>
+      <textarea id="res-content" rows="6" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:monospace;font-size:.82rem;resize:vertical" placeholder="## Title&#10;Content here…"></textarea>
+    </div>
+    <div style="display:flex;gap:.75rem">
+      <button onclick="saveResource()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:8px;font-family:Georgia,serif;cursor:pointer">Save</button>
+      <button onclick="closeResModal()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:8px;font-family:Georgia,serif;cursor:pointer;color:var(--muted)">Cancel</button>
+    </div>
+    <div id="res-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--terra);display:none"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL'
+const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY'
+const TRANSLATE_FN  = 'YOUR_SUPABASE_URL/functions/v1/translate'  // Same project, translate edge function
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+let isAdmin = false, sbSession = null
+
+async function logout() { await sb.auth.signOut(); window.location.href = '/portal.html' }
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/portal.html'; return }
+  sbSession = session
+
+  const { data: profile } = await sb.from('profiles').select('role').eq('id', session.user.id).single()
+  isAdmin = profile?.role === 'admin'
+  if (isAdmin) document.getElementById('add-resource-btn').style.display = 'inline-block'
+
+  await loadResources()
+  document.getElementById('loading').style.display = 'none'
+  document.getElementById('main-content').style.display = 'block'
+}
+
+async function loadResources() {
+  const { data: resources } = await sb.from('resources').select('*').order('pinned', {ascending:false}).order('created_at', {ascending:false})
+  const grid = document.getElementById('resource-grid')
+
+  if (!resources?.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">No resources yet — Cédric will add guides and exercises here.</div>`
+    return
+  }
+
+  const icons = { document:'📄', link:'🔗', video:'🎬', exercise:'✏️' }
+  grid.innerHTML = resources.map(r => `
+    <div class="resource-card">
+      <div class="resource-icon">${icons[r.type] || '📄'}</div>
+      <div class="resource-type">${r.type}</div>
+      <div class="resource-title">${esc(r.title)}</div>
+      <div class="resource-desc">${esc(r.description || '')}</div>
+      ${r.url
+        ? `<a href="${esc(r.url)}" target="_blank" class="resource-link">Open ↗</a>`
+        : r.content
+          ? `<button class="resource-link" style="cursor:pointer" onclick="viewResource('${r.id}')">Read →</button>`
+          : ''}
+      ${isAdmin ? `<button onclick="deleteResource('${r.id}')" style="margin-left:.5rem;font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer">✕</button>` : ''}
+    </div>
+  `).join('')
+}
+
+let allResources = []
+function viewResource(id) { /* Inline expand — simple for now */ }
+
+function showTab(tab) {
+  document.getElementById('resources-tab').style.display = tab === 'resources' ? 'block' : 'none'
+  document.getElementById('translator-tab').style.display = tab === 'translator' ? 'block' : 'none'
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='resources'&&i===0)||(tab==='translator'&&i===1)))
+}
+
+// ── TRANSLATOR ────────────────────────────────────────────────
+function swapLangs() {
+  const f = document.getElementById('from-lang'), t = document.getElementById('to-lang')
+  const tmp = f.value; f.value = t.value; t.value = tmp
+}
+
+async function translate() {
+  const text = document.getElementById('tr-input').value.trim()
+  if (!text) return
+  const fromLang = document.getElementById('from-lang').value
+  const toLang   = document.getElementById('to-lang').value
+  if (fromLang === toLang) { showError('Select different languages.'); return }
+
+  const btn = document.getElementById('tr-btn')
+  btn.disabled = true; btn.textContent = '…'
+  document.getElementById('tr-error').style.display = 'none'
+  document.getElementById('tr-result').style.display = 'none'
+  document.getElementById('tr-loading').style.display = 'block'
+
+  try {
+    const res = await fetch(TRANSLATE_FN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sbSession?.access_token
+      },
+      body: JSON.stringify({ text, fromLang, toLang })
+    })
+    if (!res.ok) throw new Error('Translation service unavailable')
+    const d = await res.json()
+    if (d.error) throw new Error(d.error)
+    renderTranslation(d)
+  } catch(e) {
+    showError(e.message || 'Translation failed. Try again.')
+  } finally {
+    btn.disabled = false; btn.textContent = 'Translate'
+    document.getElementById('tr-loading').style.display = 'none'
+  }
+}
+
+function renderTranslation(d) {
+  const r = document.getElementById('tr-result')
+  r.style.display = 'block'
+  r.innerHTML = `
+    <div class="tr-result-label">TRANSLATION</div>
+    <div class="tr-result-main">${esc(d.colloquial || d.translation)}</div>
+    ${d.full_phonetic ? `<div class="tr-phonetic">[${esc(d.full_phonetic)}]</div>` : ''}
+    <div class="tr-original">"${esc(d.original)}"</div>
+    ${d.colloquial !== d.translation ? `<div class="tr-colloquial-note">Formal: ${esc(d.translation)}</div>` : ''}
+    ${d.cultural_note ? `<div class="tr-colloquial-note">💡 ${esc(d.cultural_note)}</div>` : ''}
+    ${d.words?.length ? `
+      <div class="tr-words">
+        ${d.words.map(w => `
+          <div class="tr-word ${esc(w.type||'')}">
+            <div class="tr-word-main"><strong>${esc(w.pt)}</strong> <span style="font-size:.7rem;opacity:.5">${esc(w.type||'')}</span></div>
+            <div class="tr-word-en">${esc(w.en)}</div>
+            ${w.phonetic ? `<div class="tr-word-ph">[${esc(w.phonetic)}]</div>` : ''}
+            ${w.note ? `<div class="tr-word-note">${esc(w.note)}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+  `
+}
+
+function showError(msg) {
+  const e = document.getElementById('tr-error')
+  e.textContent = msg; e.style.display = 'block'
+}
+
+// ── ADMIN RESOURCE MANAGEMENT ────────────────────────────────
+function openAddResource() { document.getElementById('resource-modal').style.display = 'flex' }
+function closeResModal() { document.getElementById('resource-modal').style.display = 'none' }
+
+async function saveResource() {
+  const msg = document.getElementById('res-msg')
+  const payload = {
+    type:        document.getElementById('res-type').value,
+    title:       document.getElementById('res-title').value.trim(),
+    description: document.getElementById('res-desc').value.trim(),
+    url:         document.getElementById('res-url').value.trim() || null,
+    content:     document.getElementById('res-content').value.trim() || null,
+  }
+  if (!payload.title) { msg.textContent = 'Title required'; msg.style.display = 'block'; return }
+
+  const { error } = await sb.from('resources').insert(payload)
+  if (error) { msg.textContent = error.message; msg.style.display = 'block'; return }
+  closeResModal(); loadResources()
+}
+
+async function deleteResource(id) {
+  if (!confirm('Remove this resource?')) return
+  await sb.from('resources').delete().eq('id', id)
+  loadResources()
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+init()
+</script>
+</body>
+</html>

@@ -1,6 +1,33 @@
 [build]
   publish = "."
 
+# Portal auth redirect — unauthenticated users hitting dashboard pages get sent to login
+# (actual auth is handled client-side via Supabase; these are just clean URLs)
+[[redirects]]
+  from = "/portal"
+  to = "/portal.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/dashboard"
+  to = "/portal-dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/notes"
+  to = "/portal-notes.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/resources"
+  to = "/portal-resources.html"
+  status = 200
+
+[[redirects]]
+  from = "/portal/tests"
+  to = "/portal-tests.html"
+  status = 200
+
 [[redirects]]
   from = "/pt"
   to = "/index_pt.html"

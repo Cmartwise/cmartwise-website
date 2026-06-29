@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student Portal — CmartWise</title>
+<style>
+:root{
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ivory:#F5F0E8;--cream:#EDE8DF;--border:rgba(26,58,74,.12);
+  --shadow:0 4px 24px rgba(26,58,74,.10);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1rem}
+
+.logo-link{display:flex;align-items:center;gap:.6rem;text-decoration:none;margin-bottom:2.5rem}
+.logo-mark{width:36px;height:36px;background:var(--ocean);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-style:italic;
+  font-size:1.1rem;font-family:Georgia,serif;font-weight:700}
+.logo-text{font-size:1.1rem;color:var(--ocean);font-weight:600;letter-spacing:-.02em}
+
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  border:1px solid var(--border);padding:2.5rem 2rem;width:100%;max-width:420px}
+
+.card-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);font-family:monospace;margin-bottom:.5rem}
+.card-title{font-size:1.5rem;color:var(--ocean);margin-bottom:.4rem}
+.card-sub{font-size:.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.5}
+
+.tabs{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--cream)}
+.tab{flex:1;padding:.65rem 0;text-align:center;font-size:.88rem;cursor:pointer;
+  color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:.15s;background:none;border-top:none;border-left:none;border-right:none;
+  font-family:Georgia,serif}
+.tab.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
+
+.form-group{margin-bottom:1.25rem}
+label{display:block;font-size:.8rem;color:var(--ocean);margin-bottom:.4rem;
+  letter-spacing:.02em}
+input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);
+  border-radius:8px;font-size:.95rem;font-family:Georgia,serif;
+  background:var(--sand);color:var(--ocean);outline:none;transition:.15s}
+input:focus{border-color:var(--ocean);background:#fff}
+input::placeholder{color:var(--muted);opacity:.6}
+
+.btn{width:100%;padding:.85rem;border:none;border-radius:8px;font-size:.95rem;
+  font-family:Georgia,serif;cursor:pointer;transition:.2s;margin-top:.5rem}
+.btn-primary{background:var(--ocean);color:#fff}
+.btn-primary:hover{background:#152d3c}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+
+.msg{margin-top:1rem;padding:.75rem 1rem;border-radius:8px;font-size:.85rem;
+  display:none;line-height:1.5}
+.msg.error{background:#fdf0ee;color:#b03020;border:1px solid #f0c0b8}
+.msg.success{background:#f0f8f0;color:#2a6a2a;border:1px solid #a8d8a8}
+.msg.show{display:block}
+
+.divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0;color:var(--muted);
+  font-size:.8rem}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--cream)}
+
+.forgot{text-align:center;margin-top:1rem;font-size:.82rem;color:var(--muted)}
+.forgot a{color:var(--ocean);text-decoration:none}
+.forgot a:hover{text-decoration:underline}
+
+.loading{display:none;text-align:center;padding:1rem;color:var(--muted);font-size:.9rem}
+.loading.show{display:block}
+
+footer{margin-top:2rem;font-size:.78rem;color:var(--muted);text-align:center}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--ocean)}
+</style>
+</head>
+<body>
+
+<a href="/" class="logo-link">
+  <div class="logo-mark">C</div>
+  <span class="logo-text">CmartWise</span>
+</a>
+
+<div class="card">
+  <p class="card-label">Student Portal</p>
+  <h1 class="card-title">Welcome back</h1>
+  <p class="card-sub">Sign in to access your coaching notes, resources, and practice tests.</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('login')">Sign in</button>
+    <button class="tab" onclick="showTab('signup')">Create account</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <form id="login-form" onsubmit="handleLogin(event)">
+    <div class="form-group">
+      <label for="login-email">Email</label>
+      <input type="email" id="login-email" placeholder="your@email.com" required autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="login-password">Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+    </div>
+    <button type="submit" class="btn btn-primary" id="login-btn">Sign in</button>
+    <div id="login-msg" class="msg"></div>
+    <p class="forgot"><a href="#" onclick="handleForgot(event)">Forgot your password?</a></p>
+  </form>
+
+  <!-- SIGNUP FORM -->
+  <form id="signup-form" onsubmit="handleSignup(event)" style="display:none">
+    <div class="form-group">
+      <label for="signup-name">Your name</label>
+      <input type="text" id="signup-name" placeholder="First and last name" required autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label for="signup-email">Email</label>
+      <input type="email" id="signup-email" placeholder="your@email.com" required autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label for="signup-password">Password (min. 8 characters)</label>
+      <input type="password" id="signup-password" placeholder="••••••••" required minlength="8" autocomplete="new-password">
+    </div>
+    <button type="submit" class="btn btn-primary" id="signup-btn">Create account</button>
+    <div id="signup-msg" class="msg"></div>
+    <p class="forgot" style="margin-top:1rem;font-size:.8rem;color:var(--muted)">
+      Your account needs to be approved by Cédric before you can access the portal.
+    </p>
+  </form>
+</div>
+
+<footer>
+  <a href="/">← Back to cmartwise-coaching.eu</a>
+</footer>
+
+<!-- Supabase JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── CONFIG — replace these two values after creating your Supabase project ──
+const SUPABASE_URL  = 'YOUR_SUPABASE_URL'
+const SUPABASE_ANON = 'YOUR_SUPABASE_ANON_KEY'
+// ────────────────────────────────────────────────────────────────────────────
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+// Redirect if already logged in
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = '/portal-dashboard.html'
+})
+
+function showTab(tab) {
+  document.getElementById('login-form').style.display  = tab === 'login'  ? '' : 'none'
+  document.getElementById('signup-form').style.display = tab === 'signup' ? '' : 'none'
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'signup' && i === 1))
+  })
+}
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id)
+  el.textContent = text
+  el.className = `msg ${type} show`
+}
+
+async function handleLogin(e) {
+  e.preventDefault()
+  const btn = document.getElementById('login-btn')
+  btn.disabled = true; btn.textContent = 'Signing in...'
+  const email    = document.getElementById('login-email').value.trim()
+  const password = document.getElementById('login-password').value
+  const { error } = await sb.auth.signInWithPassword({ email, password })
+  if (error) {
+    showMsg('login-msg', error.message === 'Invalid login credentials'
+      ? 'Email or password not recognised. Try again or reset your password.'
+      : error.message, 'error')
+    btn.disabled = false; btn.textContent = 'Sign in'
+  } else {
+    window.location.href = '/portal-dashboard.html'
+  }
+}
+
+async function handleSignup(e) {
+  e.preventDefault()
+  const btn = document.getElementById('signup-btn')
+  btn.disabled = true; btn.textContent = 'Creating account...'
+  const name     = document.getElementById('signup-name').value.trim()
+  const email    = document.getElementById('signup-email').value.trim()
+  const password = document.getElementById('signup-password').value
+  const { error } = await sb.auth.signUp({
+    email, password,
+    options: { data: { full_name: name } }
+  })
+  if (error) {
+    showMsg('signup-msg', error.message, 'error')
+    btn.disabled = false; btn.textContent = 'Create account'
+  } else {
+    showMsg('signup-msg', 'Account created! Check your email to confirm, then Cédric will give you access.', 'success')
+    btn.disabled = true
+  }
+}
+
+async function handleForgot(e) {
+  e.preventDefault()
+  const email = document.getElementById('login-email').value.trim()
+  if (!email) { showMsg('login-msg', 'Enter your email address first, then click "Forgot your password?"', 'error'); return }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + '/portal-reset.html'
+  })
+  if (error) showMsg('login-msg', error.message, 'error')
+  else showMsg('login-msg', 'Password reset link sent — check your email.', 'success')
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Practice Tests — CmartWise Portal</title>
+<style>
+:root{
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;--gold:#C8881A;
+  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
+  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border)}
+.logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-style:italic;font-size:.95rem;font-weight:700}
+.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
+.logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;padding:.15rem .45rem;margin-left:.25rem}
+.nav-spacer{flex:1}
+.nav-back{font-size:.82rem;color:var(--muted);text-decoration:none}
+.nav-back:hover{color:var(--ocean)}
+.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
+
+.container{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem}
+
+/* SCREEN STATES */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ── SETUP SCREEN ── */
+.setup-header{margin-bottom:2rem}
+.setup-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace;margin-bottom:.4rem}
+.setup-title{font-size:1.8rem;color:var(--ocean);margin-bottom:.35rem}
+.setup-sub{font-size:.9rem;color:var(--muted);line-height:1.5}
+
+.config-section{margin-bottom:2rem}
+.config-label{font-size:.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  font-family:monospace;margin-bottom:.75rem;display:block}
+
+.option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.75rem}
+.option-card{background:#fff;border-radius:10px;border:2px solid var(--border);
+  padding:1rem;text-align:center;cursor:pointer;transition:.2s;user-select:none}
+.option-card:hover{border-color:var(--ocean)}
+.option-card.selected{border-color:var(--ocean);background:var(--ivory)}
+.option-icon{font-size:1.6rem;margin-bottom:.4rem}
+.option-name{font-size:.9rem;color:var(--ocean);font-weight:600}
+.option-desc{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+.section-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
+@media(max-width:500px){.section-grid{grid-template-columns:1fr}}
+.section-card{background:#fff;border-radius:10px;border:2px solid var(--border);
+  padding:1rem;cursor:pointer;transition:.2s;user-select:none;display:flex;align-items:center;gap:.75rem}
+.section-card:hover{border-color:var(--ocean)}
+.section-card.selected{border-color:var(--ocean);background:var(--ivory)}
+.section-icon{font-size:1.4rem;flex-shrink:0}
+.section-info-name{font-size:.9rem;color:var(--ocean);font-weight:600}
+.section-info-desc{font-size:.75rem;color:var(--muted)}
+
+.start-btn{width:100%;padding:1rem;background:var(--ocean);color:#fff;border:none;
+  border-radius:10px;font-family:Georgia,serif;font-size:1rem;cursor:pointer;transition:.2s;margin-top:.5rem}
+.start-btn:hover{background:#152d3c}
+.start-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── LOADING SCREEN ── */
+.loading-screen{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
+.loader{width:40px;height:40px;border:3px solid var(--cream);border-top-color:var(--ocean);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:var(--muted);font-size:.95rem}
+
+/* ── TEST SCREEN ── */
+.test-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;
+  padding:1rem 1.25rem;background:#fff;border-radius:var(--radius);border:1px solid var(--border)}
+.test-meta{font-size:.78rem;color:var(--muted);font-family:monospace}
+.test-meta strong{color:var(--ocean)}
+.timer{font-size:1.3rem;font-family:monospace;color:var(--ocean);font-weight:700}
+.timer.warning{color:var(--terra)}
+
+.progress-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+.progress-bar-wrap{flex:1;background:var(--cream);border-radius:20px;height:6px}
+.progress-bar{background:var(--ocean);border-radius:20px;height:100%;transition:width .3s}
+.progress-text{font-size:.78rem;color:var(--muted);font-family:monospace;white-space:nowrap}
+
+/* Questions */
+.question-block{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.q-num{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);
+  font-family:monospace;margin-bottom:.5rem}
+.q-text{font-size:1rem;color:var(--ocean);line-height:1.6;margin-bottom:1rem}
+.q-passage{background:var(--ivory);border-radius:8px;padding:1rem 1.25rem;
+  font-size:.9rem;line-height:1.7;color:#2a3a3a;margin-bottom:1.25rem;
+  border-left:3px solid var(--ocean)}
+
+.options{display:flex;flex-direction:column;gap:.6rem}
+.option{display:flex;align-items:flex-start;gap:.75rem;padding:.75rem 1rem;
+  border-radius:8px;border:1.5px solid var(--border);cursor:pointer;transition:.15s;
+  background:var(--sand)}
+.option:hover{border-color:var(--ocean);background:var(--ivory)}
+.option.selected{border-color:var(--ocean);background:var(--ivory)}
+.option.correct{border-color:var(--leaf);background:#f0faf0}
+.option.wrong{border-color:var(--terra);background:#fdf0ee}
+.option-letter{width:24px;height:24px;border-radius:50%;background:var(--cream);
+  display:flex;align-items:center;justify-content:center;font-size:.78rem;
+  color:var(--muted);flex-shrink:0;font-family:monospace;margin-top:.1rem}
+.option.selected .option-letter,.option.correct .option-letter{background:var(--ocean);color:#fff}
+.option.wrong .option-letter{background:var(--terra);color:#fff}
+.option-text{font-size:.9rem;color:var(--ocean);line-height:1.4}
+
+.tf-options{display:flex;gap:.75rem}
+.tf-btn{flex:1;padding:.75rem;border-radius:8px;border:1.5px solid var(--border);
+  cursor:pointer;font-family:Georgia,serif;font-size:.9rem;background:var(--sand);
+  color:var(--ocean);transition:.15s;text-align:center}
+.tf-btn:hover,.tf-btn.selected{border-color:var(--ocean);background:var(--ivory)}
+.tf-btn.correct{border-color:var(--leaf);background:#f0faf0}
+.tf-btn.wrong{border-color:var(--terra);background:#fdf0ee}
+
+.short-input{width:100%;padding:.75rem 1rem;border-radius:8px;border:1.5px solid var(--border);
+  font-family:Georgia,serif;font-size:.9rem;background:var(--sand);color:var(--ocean);
+  outline:none;transition:.15s;resize:vertical;min-height:80px}
+.short-input:focus{border-color:var(--ocean);background:#fff}
+
+.explanation{margin-top:.75rem;padding:.65rem .9rem;background:var(--ivory);
+  border-radius:6px;font-size:.82rem;color:var(--muted);display:none;line-height:1.5;
+  border-left:3px solid var(--ocean)}
+.explanation.show{display:block}
+
+/* PASSAGE (reading) */
+.passage-block{background:var(--ivory);border-radius:var(--radius);padding:1.5rem;
+  margin-bottom:1.5rem;border:1px solid var(--border);line-height:1.8;font-size:.95rem;color:#2a3a3a}
+
+/* LISTENING */
+.audio-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;margin-bottom:1.5rem;box-shadow:var(--shadow)}
+.audio-title{font-size:.95rem;color:var(--ocean);margin-bottom:.25rem;font-weight:600}
+.audio-context{font-size:.8rem;color:var(--muted);margin-bottom:1rem;font-style:italic}
+.play-btn{display:flex;align-items:center;gap:.6rem;padding:.65rem 1.25rem;
+  border-radius:8px;border:1.5px solid var(--ocean);background:none;
+  color:var(--ocean);font-family:Georgia,serif;font-size:.9rem;cursor:pointer;transition:.2s}
+.play-btn:hover{background:var(--ocean);color:#fff}
+.play-btn.playing{background:var(--ocean);color:#fff}
+.plays-remaining{font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic}
+
+/* SPEAKING */
+.speaking-task{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.prep-phase{background:var(--ivory);border-radius:8px;padding:1rem;margin-bottom:1rem}
+.prep-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace;margin-bottom:.4rem}
+.prep-countdown{font-size:2rem;font-family:monospace;color:var(--ocean);text-align:center;padding:.5rem 0}
+.record-btn{width:100%;padding:.9rem;border:none;border-radius:10px;font-family:Georgia,serif;
+  font-size:.95rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.6rem}
+.record-btn.idle{background:var(--ocean);color:#fff}
+.record-btn.recording{background:#c03020;color:#fff;animation:pulse 1.5s infinite}
+.record-btn.done{background:var(--leaf);color:#fff}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.75}}
+.transcript-box{background:var(--ivory);border-radius:8px;padding:1rem;margin-top:.75rem;
+  font-size:.88rem;color:#2a3a3a;line-height:1.6;min-height:60px;
+  border:1px solid var(--border);display:none}
+.transcript-box.show{display:block}
+
+/* WRITING */
+.writing-task{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.writing-prompt{background:var(--ivory);border-radius:8px;padding:1rem;margin-bottom:1rem;
+  font-size:.95rem;line-height:1.6;color:var(--ocean);border-left:3px solid var(--ocean)}
+.writing-prompt-en{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:.35rem}
+.writing-area{width:100%;border:1.5px solid var(--border);border-radius:8px;
+  padding:.85rem 1rem;font-family:Georgia,serif;font-size:.95rem;background:var(--sand);
+  color:var(--ocean);outline:none;resize:vertical;min-height:140px;line-height:1.7;transition:.15s}
+.writing-area:focus{border-color:var(--ocean);background:#fff}
+.word-count{font-size:.75rem;color:var(--muted);font-family:monospace;margin-top:.4rem;text-align:right}
+.word-count.ok{color:var(--leaf)}
+.word-count.low{color:var(--terra)}
+
+/* NAVIGATION */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;gap:1rem}
+.prev-btn,.next-btn,.submit-btn{padding:.75rem 1.5rem;border-radius:8px;font-family:Georgia,serif;
+  font-size:.9rem;cursor:pointer;transition:.2s;border:1.5px solid var(--border)}
+.prev-btn{background:none;color:var(--muted)}
+.prev-btn:hover{border-color:var(--ocean);color:var(--ocean)}
+.next-btn,.submit-btn{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.next-btn:hover,.submit-btn:hover{background:#152d3c}
+.next-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── RESULTS SCREEN ── */
+.results-header{text-align:center;padding:2rem 0 1.5rem;border-bottom:1px solid var(--cream);margin-bottom:2rem}
+.score-circle{width:120px;height:120px;border-radius:50%;border:4px solid var(--ocean);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 1rem}
+.score-num{font-size:2.2rem;color:var(--ocean);font-weight:700;line-height:1}
+.score-label{font-size:.7rem;color:var(--muted);font-family:monospace;letter-spacing:1px}
+.score-band{display:inline-block;background:var(--ocean);color:#fff;border-radius:20px;
+  padding:.3rem 1rem;font-size:.85rem;margin-bottom:.5rem}
+.results-title{font-size:1.3rem;color:var(--ocean);margin-bottom:.3rem}
+
+.results-breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin-bottom:2rem}
+.breakdown-item{background:#fff;border-radius:10px;border:1px solid var(--border);padding:1rem;text-align:center}
+.breakdown-score{font-size:1.4rem;color:var(--ocean);font-weight:700}
+.breakdown-label{font-size:.75rem;color:var(--muted);margin-top:.2rem}
+
+.feedback-section{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;margin-bottom:1rem;box-shadow:var(--shadow)}
+.feedback-title{font-size:.85rem;color:var(--ocean);font-weight:600;margin-bottom:.75rem}
+.feedback-list{list-style:none;display:flex;flex-direction:column;gap:.5rem}
+.feedback-list li{font-size:.88rem;color:#2a3a3a;line-height:1.5;padding-left:1.2rem;position:relative}
+.feedback-list li::before{content:'•';position:absolute;left:0;color:var(--ocean)}
+.coach-note{background:var(--ivory);border-radius:8px;padding:1rem 1.25rem;
+  font-style:italic;color:var(--muted);font-size:.9rem;line-height:1.6;
+  border-left:3px solid var(--terra);margin-top:1rem}
+
+.restart-btn{width:100%;padding:1rem;background:var(--ocean);color:#fff;border:none;
+  border-radius:10px;font-family:Georgia,serif;font-size:.95rem;cursor:pointer;
+  margin-top:1.5rem;transition:.2s}
+.restart-btn:hover{background:#152d3c}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo-wrap">
+    <div class="logo-mark">C</div>
+    <span class="logo-text">CmartWise</span>
+  </a>
+  <span class="logo-badge">Student Portal</span>
+  <div class="nav-spacer"></div>
+  <a href="/portal-dashboard.html" class="nav-back">← Dashboard</a>
+  <button class="nav-logout" onclick="logout()">Sign out</button>
+</nav>
+
+<div class="container">
+
+  <!-- ── SETUP SCREEN ── -->
+  <div class="screen active" id="screen-setup">
+    <div class="setup-header">
+      <p class="setup-label">Practice Tests</p>
+      <h1 class="setup-title">Choose your test</h1>
+      <p class="setup-sub">AI-generated practice tests with real timing, oral comprehension, speaking tasks, and personalised feedback.</p>
+    </div>
+
+    <div class="config-section">
+      <span class="config-label">Exam type</span>
+      <div class="option-grid">
+        <div class="option-card selected" data-type="test" data-value="CIPLE" onclick="select(this,'test')">
+          <div class="option-icon">🇵🇹</div>
+          <div class="option-name">CIPLE</div>
+          <div class="option-desc">Portuguese A2</div>
+        </div>
+        <div class="option-card" data-type="test" data-value="DIPLE" onclick="select(this,'test')">
+          <div class="option-icon">🇵🇹</div>
+          <div class="option-name">DIPLE</div>
+          <div class="option-desc">Portuguese B1–B2</div>
+        </div>
+        <div class="option-card" data-type="test" data-value="IELTS" onclick="select(this,'test')">
+          <div class="option-icon">🇬🇧</div>
+          <div class="option-name">IELTS</div>
+          <div class="option-desc">English B1–C1</div>
+        </div>
+        <div class="option-card" data-type="test" data-value="GRE" onclick="select(this,'test')">
+          <div class="option-icon">🎓</div>
+          <div class="option-name">GRE</div>
+          <div class="option-desc">Academic English C1+</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="config-section">
+      <span class="config-label">Section</span>
+      <div class="section-grid">
+        <div class="section-card selected" data-type="section" data-value="reading" onclick="select(this,'section')">
+          <div class="section-icon">📖</div>
+          <div>
+            <div class="section-info-name">Reading</div>
+            <div class="section-info-desc">Comprehension + multiple choice</div>
+          </div>
+        </div>
+        <div class="section-card" data-type="section" data-value="writing" onclick="select(this,'section')">
+          <div class="section-icon">✍️</div>
+          <div>
+            <div class="section-info-name">Writing</div>
+            <div class="section-info-desc">Short + longer written tasks</div>
+          </div>
+        </div>
+        <div class="section-card" data-type="section" data-value="listening" onclick="select(this,'section')">
+          <div class="section-icon">🎧</div>
+          <div>
+            <div class="section-info-name">Listening</div>
+            <div class="section-info-desc">Audio plays, answer questions</div>
+          </div>
+        </div>
+        <div class="section-card" data-type="section" data-value="speaking" onclick="select(this,'section')">
+          <div class="section-icon">🎙️</div>
+          <div>
+            <div class="section-info-name">Speaking</div>
+            <div class="section-info-desc">Record + AI evaluates</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="start-btn" onclick="startTest()">Generate test →</button>
+  </div>
+
+  <!-- ── LOADING ── -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-screen">
+      <div class="loader"></div>
+      <div class="loading-text" id="loading-text">Generating your test…</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:.25rem">This takes about 15–20 seconds</div>
+    </div>
+  </div>
+
+  <!-- ── TEST ── -->
+  <div class="screen" id="screen-test">
+    <div class="test-header">
+      <div>
+        <div class="test-meta"><strong id="test-type-label">CIPLE</strong> — <span id="test-section-label">Reading</span></div>
+        <div class="test-meta" id="test-question-label" style="margin-top:.2rem"></div>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+      <div class="progress-text" id="progress-text">0 / 0</div>
+    </div>
+    <div id="test-content"></div>
+    <div class="nav-row">
+      <button class="prev-btn" id="prev-btn" onclick="prevQ()" style="visibility:hidden">← Back</button>
+      <button class="next-btn" id="next-btn" onclick="nextQ()">Next →</button>
+      <button class="submit-btn" id="submit-btn" onclick="submitTest()" style="display:none">Submit test →</button>
+    </div>
+  </div>
+
+  <!-- ── RESULTS ── -->
+  <div class="screen" id="screen-results">
+    <div class="results-header">
+      <div class="score-circle">
+        <div class="score-num" id="result-score">—</div>
+        <div class="score-label">/ 100</div>
+      </div>
+      <div class="score-band" id="result-band">B1</div>
+      <div class="results-title" id="result-title">Test Complete</div>
+    </div>
+    <div class="results-breakdown" id="results-breakdown"></div>
+    <div id="results-feedback"></div>
+    <button class="restart-btn" onclick="showScreen('setup')">Take another test →</button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL       = 'YOUR_SUPABASE_URL'
+const SUPABASE_ANON      = 'YOUR_SUPABASE_ANON_KEY'
+const GENERATE_TEST_FN   = 'YOUR_SUPABASE_URL/functions/v1/generate-test'
+const EVALUATE_SPEAKING_FN = 'YOUR_SUPABASE_URL/functions/v1/evaluate-speaking'
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+let currentUser = null, sbSession = null
+let selectedTest = 'CIPLE', selectedSection = 'reading'
+let testData = null, answers = {}, currentQ = 0, timerInterval = null
+let timeLeft = 0, totalTime = 0
+let speechRecognition = null, transcripts = {}
+
+async function logout() { await sb.auth.signOut(); window.location.href = '/portal.html' }
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/portal.html'; return }
+  currentUser = session.user
+  sbSession = session
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'))
+  document.getElementById('screen-' + id).classList.add('active')
+}
+
+function select(el, type) {
+  document.querySelectorAll(`[data-type="${type}"]`).forEach(c => c.classList.remove('selected'))
+  el.classList.add('selected')
+  if (type === 'test') selectedTest = el.dataset.value
+  if (type === 'section') selectedSection = el.dataset.value
+}
+
+async function startTest() {
+  showScreen('loading')
+  document.getElementById('loading-text').textContent = `Generating your ${selectedTest} ${selectedSection} test…`
+
+  try {
+    const res = await fetch(GENERATE_TEST_FN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + sbSession?.access_token
+      },
+      body: JSON.stringify({ testType: selectedTest, section: selectedSection })
+    })
+    if (!res.ok) throw new Error('Could not generate test. Check your connection and try again.')
+    testData = await res.json()
+    if (testData.error) throw new Error(testData.error)
+    setupTest()
+  } catch(e) {
+    alert(e.message)
+    showScreen('setup')
+  }
+}
+
+function setupTest() {
+  answers = {}; currentQ = 0; transcripts = {}
+  document.getElementById('test-type-label').textContent = selectedTest
+  document.getElementById('test-section-label').textContent = selectedSection.charAt(0).toUpperCase() + selectedSection.slice(1)
+
+  // Set timer
+  const mins = testData.duration_minutes || 20
+  totalTime = mins * 60
+  timeLeft = totalTime
+  startTimer()
+
+  showScreen('test')
+  renderQuestion()
+}
+
+function startTimer() {
+  clearInterval(timerInterval)
+  timerInterval = setInterval(() => {
+    timeLeft--
+    const t = document.getElementById('timer')
+    const m = Math.floor(timeLeft / 60).toString().padStart(2,'0')
+    const s = (timeLeft % 60).toString().padStart(2,'0')
+    t.textContent = `${m}:${s}`
+    t.classList.toggle('warning', timeLeft < 120)
+    if (timeLeft <= 0) { clearInterval(timerInterval); submitTest() }
+  }, 1000)
+}
+
+function getQuestions() {
+  if (selectedSection === 'reading') return testData.questions || []
+  if (selectedSection === 'listening') {
+    return (testData.tracks || []).flatMap(t => (t.questions || []).map(q => ({...q, _track: t})))
+  }
+  if (selectedSection === 'writing') return testData.tasks || []
+  if (selectedSection === 'speaking') return testData.parts || []
+  return []
+}
+
+function renderQuestion() {
+  const questions = getQuestions()
+  const total = questions.length
+  if (!total) { submitTest(); return }
+
+  const q = questions[currentQ]
+  const pct = ((currentQ) / total) * 100
+  document.getElementById('progress-bar').style.width = pct + '%'
+  document.getElementById('progress-text').textContent = `${currentQ + 1} / ${total}`
+  document.getElementById('test-question-label').textContent = `Question ${currentQ + 1} of ${total}`
+
+  document.getElementById('prev-btn').style.visibility = currentQ > 0 ? 'visible' : 'hidden'
+  const isLast = currentQ === total - 1
+  document.getElementById('next-btn').style.display = isLast ? 'none' : 'inline-block'
+  document.getElementById('submit-btn').style.display = isLast ? 'inline-block' : 'none'
+
+  const content = document.getElementById('test-content')
+
+  if (selectedSection === 'reading') renderReadingQ(q, content)
+  else if (selectedSection === 'listening') renderListeningQ(q, content, questions)
+  else if (selectedSection === 'writing') renderWritingQ(q, content)
+  else if (selectedSection === 'speaking') renderSpeakingQ(q, content)
+}
+
+// ── READING ──────────────────────────────────────────────────
+function renderReadingQ(q, container) {
+  const showPassage = currentQ === 0 && testData.passage
+  container.innerHTML = `
+    ${showPassage ? `<div class="passage-block">${esc(testData.passage)}</div>` : ''}
+    ${!showPassage && testData.passage ? `<details style="margin-bottom:1rem"><summary style="font-size:.82rem;color:var(--muted);cursor:pointer">Show passage again ↓</summary><div class="passage-block" style="margin-top:.75rem">${esc(testData.passage)}</div></details>` : ''}
+    <div class="question-block">
+      <div class="q-num">Question ${currentQ + 1}</div>
+      <div class="q-text">${esc(q.question)}</div>
+      ${renderOptions(q)}
+    </div>
+  `
+}
+
+function renderOptions(q) {
+  if (q.type === 'multiple_choice') {
+    return `<div class="options">
+      ${(q.options || []).map((opt, i) => {
+        const letter = String.fromCharCode(65 + i)
+        const saved = answers[currentQ]
+        const isSelected = saved === letter
+        return `<div class="option${isSelected ? ' selected' : ''}" onclick="selectAnswer('${letter}', this)">
+          <div class="option-letter">${letter}</div>
+          <div class="option-text">${esc(opt)}</div>
+        </div>`
+      }).join('')}
+    </div>`
+  }
+  if (q.type === 'true_false') {
+    const saved = answers[currentQ]
+    return `<div class="tf-options">
+      <div class="tf-btn${saved===true?' selected':''}" onclick="selectAnswer(true, this)">✓ True</div>
+      <div class="tf-btn${saved===false?' selected':''}" onclick="selectAnswer(false, this)">✗ False</div>
+    </div>`
+  }
+  return `<textarea class="short-input" id="short-ans-${currentQ}" placeholder="Write your answer here…" oninput="answers[${currentQ}]=this.value">${answers[currentQ]||''}</textarea>`
+}
+
+function selectAnswer(val, el) {
+  answers[currentQ] = val
+  // Visual update
+  el.closest('.options, .tf-options')?.querySelectorAll('.option, .tf-btn').forEach(o => o.classList.remove('selected'))
+  el.classList.add('selected')
+}
+
+// ── LISTENING ───────────────────────────────────────────────
+let playsLeft = {}
+function renderListeningQ(q, container, allQs) {
+  const track = q._track
+  const trackId = track.id
+  if (playsLeft[trackId] === undefined) playsLeft[trackId] = 2
+
+  // Find if first question of this track
+  const isFirstOfTrack = allQs.findIndex(x => x._track?.id === trackId) === currentQ
+
+  container.innerHTML = `
+    ${isFirstOfTrack ? `
+      <div class="audio-card">
+        <div class="audio-title">${esc(track.title)}</div>
+        <div class="audio-context">${esc(track.context || '')}</div>
+        <button class="play-btn" id="play-btn-${trackId}" onclick="playAudio('${trackId}')">
+          ▶ Play audio
+        </button>
+        <div class="plays-remaining" id="plays-${trackId}">You can play this ${playsLeft[trackId]} more time(s)</div>
+      </div>
+    ` : `
+      <div style="background:var(--ivory);border-radius:8px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.82rem;color:var(--muted)">
+        🎧 Track: <strong>${esc(track.title)}</strong> —
+        <span style="cursor:pointer;color:var(--ocean);text-decoration:underline" onclick="playAudio('${trackId}')">replay (${playsLeft[trackId]} left)</span>
+      </div>
+    `}
+    <div class="question-block">
+      <div class="q-num">Question ${currentQ + 1}</div>
+      <div class="q-text">${esc(q.question)}</div>
+      ${renderOptions(q)}
+    </div>
+  `
+  // Store track scripts for TTS
+  if (!window._trackScripts) window._trackScripts = {}
+  window._trackScripts[trackId] = track.script
+}
+
+function playAudio(trackId) {
+  if (playsLeft[trackId] <= 0) return
+  const script = window._trackScripts?.[trackId]
+  if (!script) return
+
+  window.speechSynthesis.cancel()
+  const utt = new SpeechSynthesisUtterance(script)
+  utt.lang = selectedSection === 'speaking' || ['IELTS','GRE'].includes(selectedTest) ? 'en-GB' : 'pt-PT'
+  utt.rate = 0.9
+
+  // Try to pick a native voice
+  const voices = window.speechSynthesis.getVoices()
+  const lang = utt.lang.split('-')[0]
+  const match = voices.find(v => v.lang.startsWith(lang) && !v.name.includes('Google'))
+              || voices.find(v => v.lang.startsWith(lang))
+  if (match) utt.voice = match
+
+  const btn = document.getElementById('play-btn-' + trackId)
+  if (btn) { btn.textContent = '⏸ Playing…'; btn.classList.add('playing') }
+  utt.onend = () => {
+    playsLeft[trackId]--
+    const p = document.getElementById('plays-' + trackId)
+    if (p) p.textContent = playsLeft[trackId] > 0 ? `You can play this ${playsLeft[trackId]} more time(s)` : 'No more plays'
+    if (btn) { btn.textContent = playsLeft[trackId] > 0 ? '▶ Play again' : '(no more plays)'; btn.classList.remove('playing') }
+  }
+  window.speechSynthesis.speak(utt)
+}
+
+// ── WRITING ─────────────────────────────────────────────────
+function renderWritingQ(q, container) {
+  container.innerHTML = `
+    <div class="writing-task">
+      <div class="q-num">Task ${currentQ + 1}</div>
+      <div class="writing-prompt">
+        ${esc(q.prompt)}
+        ${q.prompt_en ? `<div class="writing-prompt-en">→ ${esc(q.prompt_en)}</div>` : ''}
+      </div>
+      <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;font-family:monospace">
+        Word count: ${q.word_count_min}–${q.word_count_max} words
+      </div>
+      <textarea class="writing-area" id="writing-${currentQ}"
+        placeholder="Write your answer here in ${selectedTest === 'IELTS' || selectedTest === 'GRE' ? 'English' : 'Portuguese'}…"
+        oninput="saveWriting(${currentQ}, this)"
+      >${answers[currentQ] || ''}</textarea>
+      <div class="word-count" id="wc-${currentQ}">0 words</div>
+    </div>
+  `
+  updateWordCount(currentQ)
+}
+
+function saveWriting(idx, el) {
+  answers[idx] = el.value
+  updateWordCount(idx)
+}
+function updateWordCount(idx) {
+  const el = document.getElementById('writing-' + idx)
+  const wc = document.getElementById('wc-' + idx)
+  if (!el || !wc) return
+  const count = el.value.trim().split(/\s+/).filter(Boolean).length
+  const task = getQuestions()[idx]
+  wc.textContent = count + ' words'
+  wc.className = 'word-count ' + (count >= (task?.word_count_min || 60) ? 'ok' : 'low')
+}
+
+// ── SPEAKING ────────────────────────────────────────────────
+let activeRecording = null, mediaRecorder = null
+
+function renderSpeakingQ(q, container) {
+  const isInteraction = q.type === 'interaction'
+  if (isInteraction) {
+    const prompts = q.prompts || []
+    container.innerHTML = `
+      <div class="speaking-task">
+        <div class="q-num">Part ${currentQ + 1} — Conversation</div>
+        <div class="q-text">${esc(q.instruction)}</div>
+        ${prompts.map((p, i) => `
+          <div style="margin-bottom:1.25rem">
+            <div style="font-size:.9rem;color:var(--ocean);margin-bottom:.5rem;font-style:italic">"${esc(p.question)}"</div>
+            <button class="record-btn idle" id="rec-btn-${i}" onclick="toggleRecording(${i}, ${q.speak_time_seconds_per_prompt || 30})">
+              🎙️ Record response
+            </button>
+            <div class="transcript-box" id="transcript-${i}"></div>
+          </div>
+        `).join('')}
+      </div>
+    `
+  } else {
+    const prepTime = q.prep_time_seconds || 30
+    const speakTime = q.speak_time_seconds || 45
+    container.innerHTML = `
+      <div class="speaking-task">
+        <div class="q-num">Part ${currentQ + 1} — ${q.type === 'opinion' ? 'Opinion' : q.type === 'describe_image' ? 'Description' : 'Speaking'}</div>
+        <div class="q-text">${esc(q.instruction)}</div>
+        <div class="prep-phase">
+          <div class="prep-label">Preparation time: ${prepTime}s — read the topic, think, then record</div>
+          <div style="font-size:1rem;color:var(--ocean);line-height:1.6;margin:.5rem 0">${esc(q.topic || q.scene_description || '')}</div>
+          ${q.topic_en ? `<div style="font-size:.8rem;color:var(--muted);font-style:italic">${esc(q.topic_en)}</div>` : ''}
+        </div>
+        <button class="record-btn idle" id="rec-btn-0" onclick="toggleRecording(0, ${speakTime})">
+          🎙️ Start recording (${speakTime}s)
+        </button>
+        <div class="transcript-box" id="transcript-0"></div>
+      </div>
+    `
+  }
+}
+
+function toggleRecording(idx, maxSeconds) {
+  const btn = document.getElementById('rec-btn-' + idx)
+  const box = document.getElementById('transcript-' + idx)
+
+  if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    btn.textContent = '⚠ Speech recognition not supported in this browser. Use Chrome.'; return
+  }
+
+  if (activeRecording === idx) {
+    // Stop
+    speechRecognition?.stop()
+    activeRecording = null
+    btn.className = 'record-btn done'; btn.textContent = '✓ Recorded'
+    const t = answers[`speak_${currentQ}_${idx}`] || ''
+    if (t) { box.textContent = t; box.classList.add('show') }
+    return
+  }
+
+  activeRecording = idx
+  btn.className = 'record-btn recording'; btn.textContent = `⏺ Recording… (${maxSeconds}s max)`
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+  speechRecognition = new SR()
+  speechRecognition.continuous = true
+  speechRecognition.interimResults = true
+  speechRecognition.lang = ['IELTS','GRE'].includes(selectedTest) ? 'en-GB' : 'pt-PT'
+
+  let finalTranscript = ''
+  speechRecognition.onresult = (e) => {
+    let interim = ''
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript + ' '
+      else interim += e.results[i][0].transcript
+    }
+    box.textContent = finalTranscript + interim
+    box.classList.add('show')
+  }
+  speechRecognition.onend = () => {
+    if (activeRecording === idx) {
+      activeRecording = null
+      btn.className = 'record-btn done'; btn.textContent = '✓ Recorded'
+    }
+    answers[`speak_${currentQ}_${idx}`] = finalTranscript.trim()
+    transcripts[`${currentQ}_${idx}`] = finalTranscript.trim()
+  }
+  speechRecognition.start()
+
+  // Auto-stop after maxSeconds
+  setTimeout(() => {
+    if (activeRecording === idx) {
+      speechRecognition?.stop()
+    }
+  }, maxSeconds * 1000)
+}
+
+function prevQ() { if (currentQ > 0) { currentQ--; renderQuestion() } }
+function nextQ() {
+  const questions = getQuestions()
+  if (currentQ < questions.length - 1) { currentQ++; renderQuestion() }
+}
+
+async function submitTest() {
+  clearInterval(timerInterval)
+  showScreen('loading')
+  document.getElementById('loading-text').textContent = 'Evaluating your answers…'
+
+  const timeTaken = totalTime - timeLeft
+  let score = 0, feedback = null, breakdown = {}
+
+  try {
+    if (selectedSection === 'reading' || selectedSection === 'listening') {
+      score = scoreObjective()
+      breakdown = { 'Correct answers': Math.round(score) + '/100' }
+    } else if (selectedSection === 'writing') {
+      score = await scoreWriting()
+      breakdown = { Completion: '—', Vocabulary: '—', Grammar: '—' }
+    } else if (selectedSection === 'speaking') {
+      const result = await scoreSpeaking()
+      score = result.overall_score || 0
+      breakdown = result.scores || {}
+      feedback = result
+    }
+
+    // Save to Supabase
+    await sb.from('test_sessions').insert({
+      student_id: currentUser.id,
+      test_type: selectedTest,
+      section: selectedSection,
+      score,
+      feedback: feedback?.coach_note || null,
+      duration_sec: timeTaken
+    })
+
+    showResults(score, breakdown, feedback)
+  } catch(e) {
+    alert('Could not evaluate: ' + e.message)
+    showScreen('setup')
+  }
+}
+
+function scoreObjective() {
+  const questions = getQuestions()
+  if (!questions.length) return 0
+  let correct = 0
+  questions.forEach((q, i) => {
+    const ans = answers[i]
+    if (q.type === 'short' || !q.correct) return // skip
+    if (String(ans).toLowerCase() === String(q.correct).toLowerCase()) correct++
+  })
+  const gradable = questions.filter(q => q.type !== 'short' && q.correct).length
+  return gradable ? Math.round((correct / gradable) * 100) : 0
+}
+
+async function scoreWriting() {
+  // Simple heuristic — word count completion
+  const tasks = getQuestions()
+  let total = 0
+  tasks.forEach((t, i) => {
+    const text = answers[i] || ''
+    const wc = text.trim().split(/\s+/).filter(Boolean).length
+    const min = t.word_count_min || 60
+    const max = t.word_count_max || 150
+    const pct = Math.min(1, wc / min)
+    total += pct
+  })
+  return Math.round((total / Math.max(tasks.length, 1)) * 100)
+}
+
+async function scoreSpeaking() {
+  const parts = getQuestions()
+  const allTranscripts = Object.entries(transcripts).map(([k, t]) => t).join(' ')
+
+  if (!allTranscripts.trim()) return { overall_score: 0, coach_note: 'No speech was recorded.' }
+
+  const part = parts[0]
+  const res = await fetch(EVALUATE_SPEAKING_FN, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sbSession?.access_token
+    },
+    body: JSON.stringify({
+      transcript: allTranscripts,
+      prompt: part?.topic || part?.instruction || '',
+      language: ['IELTS','GRE'].includes(selectedTest) ? 'English' : 'Portuguese',
+      level: selectedTest,
+      rubric: testData.evaluation_rubric || {}
+    })
+  })
+  if (!res.ok) throw new Error('Evaluation failed')
+  return await res.json()
+}
+
+function showResults(score, breakdown, feedback) {
+  document.getElementById('result-score').textContent = Math.round(score)
+
+  const band = score >= 85 ? 'C1+' : score >= 70 ? 'B2' : score >= 55 ? 'B1' : score >= 40 ? 'A2' : 'A1'
+  document.getElementById('result-band').textContent = band
+  document.getElementById('result-title').textContent =
+    score >= 80 ? 'Excellent result!' : score >= 60 ? 'Good work!' : score >= 40 ? 'Keep practising' : 'Room to grow'
+
+  // Breakdown
+  const breakdownEl = document.getElementById('results-breakdown')
+  breakdownEl.innerHTML = Object.entries(breakdown).map(([k, v]) => `
+    <div class="breakdown-item">
+      <div class="breakdown-score">${typeof v === 'number' ? Math.round(v) : v}</div>
+      <div class="breakdown-label">${esc(k)}</div>
+    </div>
+  `).join('')
+
+  // Feedback
+  const feedbackEl = document.getElementById('results-feedback')
+  if (feedback) {
+    feedbackEl.innerHTML = `
+      ${feedback.strengths?.length ? `
+        <div class="feedback-section">
+          <div class="feedback-title">✓ What went well</div>
+          <ul class="feedback-list">${feedback.strengths.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+        </div>
+      ` : ''}
+      ${feedback.improvements?.length ? `
+        <div class="feedback-section">
+          <div class="feedback-title">→ What to work on</div>
+          <ul class="feedback-list">${feedback.improvements.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
+        </div>
+      ` : ''}
+      ${feedback.corrected_excerpt ? `
+        <div class="feedback-section">
+          <div class="feedback-title">Corrected example</div>
+          <div style="font-size:.88rem;color:#2a3a3a;line-height:1.6">${esc(feedback.corrected_excerpt)}</div>
+        </div>
+      ` : ''}
+      ${feedback.coach_note ? `<div class="coach-note">"${esc(feedback.coach_note)}"<br><br>— Cédric</div>` : ''}
+    `
+  } else {
+    feedbackEl.innerHTML = `
+      <div class="feedback-section">
+        <div class="feedback-title">Result</div>
+        <p style="font-size:.9rem;color:var(--muted)">Score: ${Math.round(score)}/100. Check your coaching notes and resources to work on areas that felt difficult.</p>
+      </div>
+    `
+  }
+
+  showScreen('results')
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Load voices early (Chrome requires this)
+window.speechSynthesis?.getVoices()
+window.speechSynthesis?.addEventListener?.('voiceschanged', () => window.speechSynthesis.getVoices())
+
+init()
+</script>
+</body>
+</html>
