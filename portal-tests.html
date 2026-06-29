@@ -353,10 +353,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const SUPABASE_URL       = 'YOUR_SUPABASE_URL'
-const SUPABASE_ANON      = 'YOUR_SUPABASE_ANON_KEY'
-const GENERATE_TEST_FN   = 'YOUR_SUPABASE_URL/functions/v1/generate-test'
-const EVALUATE_SPEAKING_FN = 'YOUR_SUPABASE_URL/functions/v1/evaluate-speaking'
+const SUPABASE_URL       = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co'
+const SUPABASE_ANON      = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZ25nZ3R3Znh5cXp2cm5sYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTYzMzIsImV4cCI6MjA5NjY3MjMzMn0.7iclLaCjyejXHmCcWAJvRJTICrCGt7ks5LieRY0Z9aM'
+const GENERATE_TEST_FN   = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co/functions/v1/generate-test'
+const EVALUATE_SPEAKING_FN = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co/functions/v1/evaluate-speaking'
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
 let currentUser = null, sbSession = null

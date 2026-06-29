@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Set Password — CmartWise Portal</title>
+<style>
+:root{
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ivory:#F5F0E8;--cream:#EDE8DF;--border:rgba(26,58,74,.12);
+  --shadow:0 4px 24px rgba(26,58,74,.10);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem 1rem}
+
+.logo-link{display:flex;align-items:center;gap:.6rem;text-decoration:none;margin-bottom:2.5rem}
+.logo-mark{width:36px;height:36px;background:var(--ocean);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-style:italic;
+  font-size:1.1rem;font-family:Georgia,serif;font-weight:700}
+.logo-text{font-size:1.1rem;color:var(--ocean);font-weight:600;letter-spacing:-.02em}
+
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
+  border:1px solid var(--border);padding:2.5rem 2rem;width:100%;max-width:420px}
+
+.card-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);font-family:monospace;margin-bottom:.5rem}
+.card-title{font-size:1.5rem;color:var(--ocean);margin-bottom:.4rem}
+.card-sub{font-size:.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.5}
+
+.form-group{margin-bottom:1.25rem}
+label{display:block;font-size:.8rem;color:var(--ocean);margin-bottom:.4rem;letter-spacing:.02em}
+input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);
+  border-radius:8px;font-size:.95rem;font-family:Georgia,serif;
+  background:var(--sand);color:var(--ocean);outline:none;transition:.15s}
+input:focus{border-color:var(--ocean);background:#fff}
+input::placeholder{color:var(--muted);opacity:.6}
+
+.btn{width:100%;padding:.85rem;border:none;border-radius:8px;font-size:.95rem;
+  font-family:Georgia,serif;cursor:pointer;transition:.2s;margin-top:.5rem}
+.btn-primary{background:var(--ocean);color:#fff}
+.btn-primary:hover{background:#152d3c}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+
+.msg{margin-top:1rem;padding:.75rem 1rem;border-radius:8px;font-size:.85rem;
+  display:none;line-height:1.5}
+.msg.error{background:#fdf0ee;color:#b03020;border:1px solid #f0c0b8}
+.msg.success{background:#f0f8f0;color:#2a6a2a;border:1px solid #a8d8a8}
+.msg.show{display:block}
+
+.strength-bar{height:4px;border-radius:2px;background:var(--cream);margin-top:.4rem;overflow:hidden}
+.strength-fill{height:100%;border-radius:2px;transition:width .3s,background .3s;width:0}
+
+footer{margin-top:2rem;font-size:.78rem;color:var(--muted);text-align:center}
+footer a{color:var(--muted);text-decoration:none}
+footer a:hover{color:var(--ocean)}
+</style>
+</head>
+<body>
+
+<a href="/" class="logo-link">
+  <div class="logo-mark">C</div>
+  <span class="logo-text">CmartWise</span>
+</a>
+
+<div class="card" id="card-set">
+  <p class="card-label">Student Portal</p>
+  <h1 class="card-title" id="card-title">Set your password</h1>
+  <p class="card-sub" id="card-sub">Choose a password to secure your account.</p>
+
+  <form id="reset-form" onsubmit="handleReset(event)">
+    <div class="form-group">
+      <label for="password">New password (min. 8 characters)</label>
+      <input type="password" id="password" placeholder="••••••••" required minlength="8"
+             autocomplete="new-password" oninput="checkStrength(this.value)">
+      <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+    </div>
+    <div class="form-group">
+      <label for="password-confirm">Confirm password</label>
+      <input type="password" id="password-confirm" placeholder="••••••••" required
+             autocomplete="new-password">
+    </div>
+    <button type="submit" class="btn btn-primary" id="reset-btn">Set password & enter portal</button>
+    <div id="reset-msg" class="msg"></div>
+  </form>
+</div>
+
+<!-- Invalid / expired link state -->
+<div class="card" id="card-error" style="display:none;text-align:center">
+  <p class="card-label">Student Portal</p>
+  <h1 class="card-title" style="margin-bottom:1rem">Link expired</h1>
+  <p style="font-size:.9rem;color:var(--muted);line-height:1.6;margin-bottom:1.5rem">
+    This link has expired or already been used. Ask Cédric to send a new invite, or reset your password from the sign-in page.
+  </p>
+  <a href="/portal.html" class="btn btn-primary" style="display:block;text-decoration:none;text-align:center;padding:.85rem">
+    Back to sign in
+  </a>
+</div>
+
+<footer>
+  <a href="/">← Back to cmartwise-coaching.eu</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL  = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co'
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZ25nZ3R3Znh5cXp2cm5sYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTYzMzIsImV4cCI6MjA5NjY3MjMzMn0.7iclLaCjyejXHmCcWAJvRJTICrCGt7ks5LieRY0Z9aM'
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+// Parse token from URL hash (Supabase puts it there for invite + recovery)
+const hash   = window.location.hash.substring(1)
+const params = Object.fromEntries(new URLSearchParams(hash))
+const type   = params.type  // 'invite' or 'recovery'
+const token  = params.access_token
+
+if (!token) {
+  // No token — show error card
+  document.getElementById('card-set').style.display   = 'none'
+  document.getElementById('card-error').style.display = 'block'
+} else {
+  // Set session from the token so Supabase knows who we are
+  sb.auth.setSession({ access_token: token, refresh_token: params.refresh_token || '' })
+
+  if (type === 'invite') {
+    document.getElementById('card-title').textContent = 'Welcome to the portal!'
+    document.getElementById('card-sub').textContent   = 'Choose a password to activate your account.'
+    document.getElementById('reset-btn').textContent  = 'Activate account & enter portal'
+  }
+}
+
+function checkStrength(val) {
+  const fill = document.getElementById('strength-fill')
+  let score = 0
+  if (val.length >= 8)  score++
+  if (val.length >= 12) score++
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++
+  if (/[^A-Za-z0-9]/.test(val)) score++
+  const pct   = ['0%','30%','55%','80%','100%'][score]
+  const color = ['#ccc','#e07a3a','#e8c43a','#4db86a','#2a8a4a'][score]
+  fill.style.width = pct; fill.style.background = color
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('reset-msg')
+  el.textContent = text
+  el.className = `msg ${type} show`
+}
+
+async function handleReset(e) {
+  e.preventDefault()
+  const pw  = document.getElementById('password').value
+  const pw2 = document.getElementById('password-confirm').value
+  if (pw !== pw2) { showMsg('Passwords don\'t match — please try again.', 'error'); return }
+
+  const btn = document.getElementById('reset-btn')
+  btn.disabled = true; btn.textContent = 'Saving...'
+
+  const { error } = await sb.auth.updateUser({ password: pw })
+  if (error) {
+    showMsg(error.message, 'error')
+    btn.disabled = false
+    btn.textContent = type === 'invite' ? 'Activate account & enter portal' : 'Set password & enter portal'
+  } else {
+    showMsg('Password set! Taking you to your portal…', 'success')
+    setTimeout(() => { window.location.href = '/portal-dashboard.html' }, 1500)
+  }
+}
+</script>
+</body>
+</html>
