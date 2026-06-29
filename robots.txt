@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /portal
+Disallow: /portal-dashboard.html
+Disallow: /portal-notes.html
+Disallow: /portal-resources.html
+Disallow: /portal-tests.html
+Disallow: /portal-reset.html
+
+Sitemap: https://cmartwise-coaching.eu/sitemap.xml
