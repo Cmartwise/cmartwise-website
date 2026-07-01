@@ -1,83 +1,69 @@
-// Supabase Edge Function: evaluate-speaking
-// Evaluates a student's spoken response transcript using Claude
-// Deploy alongside generate-test
+import Anthropic from 'npm:@anthropic-ai/sdk@0.27.3'
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS })
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const apiKey = Deno.env.get("ANTHROPIC_API_KEY")
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY secret not set")
-
     const { transcript, prompt, language, level, rubric } = await req.json()
-    if (!transcript) throw new Error("transcript required")
 
-    const systemPrompt = `You are an expert ${language || "Portuguese"} language examiner evaluating a student's spoken response for a ${level || "B1"} level exam.
-
-Evaluate the following transcript of what the student said in response to the given prompt.
-
-Return ONLY valid JSON:
-{
-  "overall_score": 72,
-  "band": "B1",
-  "scores": {
-    "fluency": 75,
-    "vocabulary": 70,
-    "grammar": 68,
-    "pronunciation": 80,
-    "task_completion": 65
-  },
-  "strengths": ["What the student did well (2-3 specific points)"],
-  "improvements": ["What to work on (2-3 specific, actionable suggestions)"],
-  "corrected_excerpt": "If the student made notable errors, show a corrected version of their key sentences",
-  "coach_note": "A short, encouraging note a good language coach would give (warm, honest, specific)"
-}`
-
-    const userMessage = `PROMPT given to student: "${prompt || "Speak freely on the topic"}"
-
-STUDENT'S TRANSCRIPT: "${transcript}"
-
-RUBRIC: ${JSON.stringify(rubric || {})}`
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5",
-        max_tokens: 1200,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userMessage }],
-      }),
-    })
-
-    if (!response.ok) throw new Error(`Anthropic error ${response.status}`)
-
-    const data = await response.json()
-    const raw = data.content?.[0]?.text || ""
-
-    let parsed
-    try { parsed = JSON.parse(raw) }
-    catch {
-      const match = raw.match(/\{[\s\S]*\}/)
-      if (match) parsed = JSON.parse(match[0])
-      else throw new Error("Could not parse response")
+    if (!transcript?.trim()) {
+      return new Response(JSON.stringify({
+        overall_score: 0,
+        scores: {},
+        strengths: [],
+        improvements: ['No speech was recorded.'],
+        coach_note: 'Try again — make sure your microphone is allowed in the browser.'
+      }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
-    return new Response(JSON.stringify(parsed), {
-      headers: { ...CORS, "Content-Type": "application/json" },
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set in Supabase secrets')
+
+    const rubricText = rubric ? Object.entries(rubric).map(([k,v]) => `- ${k}: ${v}`).join('\n') : ''
+    const isPortuguese = language === 'Portuguese'
+    const levelLabel = { CIPLE: 'A2', DIPLE: 'B1-B2', IELTS: 'B1-C1', GRE: 'C1+' }[level] || level
+
+    const evaluationPrompt = `You are an experienced ${isPortuguese ? 'European Portuguese' : 'English'} language examiner evaluating a ${level} (${levelLabel}) speaking test.
+
+Prompt given to student: "${prompt}"
+
+Student's spoken response (transcribed):
+"${transcript}"
+
+${rubricText ? `Evaluation rubric:\n${rubricText}\n` : ''}
+
+Evaluate this response and return ONLY valid JSON, no markdown fences:
+{
+  "overall_score": <0-100 integer>,
+  "scores": {${Object.keys(rubric || {fluency:'',vocabulary:'',grammar:''}).map(k => `"${k}": <0-100>`).join(', ')}},
+  "strengths": ["<2-3 specific things done well>"],
+  "improvements": ["<2-3 specific, actionable things to work on>"],
+  "corrected_excerpt": "<if there are grammatical errors, show 1-2 corrected sentences from the transcript>",
+  "coach_note": "<1-2 sentence personal note from the coach, warm and encouraging tone, signed as Cédric>"
+}`
+
+    const client = new Anthropic({ apiKey })
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: evaluationPrompt }]
     })
-  } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500, headers: { ...CORS, "Content-Type": "application/json" },
+
+    const raw = (message.content[0] as { text: string }).text.trim()
+    const clean = raw.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim()
+    const result = JSON.parse(clean)
+
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  } catch(e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 })

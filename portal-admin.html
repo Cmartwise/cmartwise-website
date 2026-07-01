@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin — CmartWise Portal</title>
+<style>
+:root{
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
+  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
+  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border)}
+.logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-style:italic;font-size:.95rem;font-family:Georgia,serif;font-weight:700}
+.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
+.logo-badge{font-size:.7rem;background:var(--terra);color:#fff;border-radius:4px;
+  padding:.15rem .45rem;margin-left:.25rem;letter-spacing:.05em}
+.nav-spacer{flex:1}
+.nav-back{font-size:.82rem;color:var(--muted);text-decoration:none;margin-right:.5rem}
+.nav-back:hover{color:var(--ocean)}
+.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
+
+#auth-check{display:flex;align-items:center;justify-content:center;min-height:60vh;
+  color:var(--muted);font-size:.95rem}
+
+.container{max-width:1040px;margin:0 auto;padding:2.5rem 1.5rem;display:none}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:2px solid var(--cream);padding-bottom:0}
+.tab-btn{padding:.6rem 1.25rem;border:none;background:none;font-family:Georgia,serif;
+  font-size:.9rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
+  margin-bottom:-2px;transition:.15s}
+.tab-btn.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* HEADER */
+.page-title{font-size:1.7rem;color:var(--ocean);margin-bottom:.3rem}
+.page-sub{font-size:.9rem;color:var(--muted);margin-bottom:2rem}
+
+/* STATS ROW */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.25rem 1.5rem;box-shadow:var(--shadow)}
+.stat-num{font-size:2rem;color:var(--ocean);font-weight:700;line-height:1}
+.stat-lbl{font-size:.78rem;color:var(--muted);margin-top:.3rem}
+
+/* STUDENT LIST */
+.student-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.25rem 1.5rem;margin-bottom:.75rem;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:1.25rem;cursor:pointer;transition:.15s}
+.student-card:hover{border-color:var(--ocean)}
+.student-avatar{width:44px;height:44px;border-radius:50%;background:var(--ocean);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+  font-size:1.1rem;font-weight:600;flex-shrink:0}
+.student-info{flex:1}
+.student-name{font-size:1rem;color:var(--ocean);font-weight:600;margin-bottom:.2rem}
+.student-email{font-size:.8rem;color:var(--muted)}
+.student-meta{font-size:.75rem;color:var(--muted);margin-top:.25rem;font-family:monospace}
+.student-actions{display:flex;gap:.5rem}
+.btn-sm{padding:.35rem .85rem;border-radius:6px;font-family:Georgia,serif;font-size:.8rem;
+  cursor:pointer;border:1.5px solid var(--border);background:none;color:var(--ocean);transition:.15s}
+.btn-sm:hover{border-color:var(--ocean)}
+.btn-sm.primary{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.btn-sm.primary:hover{background:#152d3c}
+.btn-sm.danger{border-color:rgba(180,40,40,.3);color:#b02020}
+.btn-sm.danger:hover{background:#fdf0ee;border-color:#b02020}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
+  display:flex;align-items:center;justify-content:center;padding:1rem;display:none}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);padding:2rem;width:100%;max-width:560px;
+  max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.2)}
+.modal-title{font-size:1.25rem;color:var(--ocean);margin-bottom:1.5rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:.8rem;color:var(--ocean);margin-bottom:.35rem;letter-spacing:.02em}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:8px;
+  font-size:.9rem;font-family:Georgia,serif;background:var(--sand);color:var(--ocean);
+  outline:none;transition:.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+  border-color:var(--ocean);background:#fff}
+.form-group textarea{resize:vertical;min-height:100px;line-height:1.6}
+.modal-actions{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem}
+.btn{padding:.75rem 1.5rem;border-radius:8px;font-family:Georgia,serif;font-size:.9rem;
+  cursor:pointer;border:1.5px solid var(--border);transition:.2s}
+.btn.primary{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.btn.primary:hover{background:#152d3c}
+.btn.secondary{background:none;color:var(--muted)}
+.btn.secondary:hover{border-color:var(--ocean);color:var(--ocean)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* NOTES LIST */
+.note-item{background:#fff;border-radius:8px;border:1px solid var(--border);
+  padding:1rem 1.25rem;margin-bottom:.6rem;box-shadow:var(--shadow)}
+.note-meta{font-size:.72rem;color:var(--muted);font-family:monospace;margin-bottom:.3rem;
+  display:flex;justify-content:space-between}
+.note-title{font-size:.95rem;color:var(--ocean);font-weight:600;margin-bottom:.3rem}
+.note-body{font-size:.85rem;color:#444;line-height:1.6;white-space:pre-wrap}
+.note-tags{display:flex;gap:.35rem;margin-top:.5rem;flex-wrap:wrap}
+.tag{font-size:.7rem;background:var(--ivory);color:var(--muted);border-radius:20px;padding:.15rem .55rem}
+
+/* RESOURCES */
+.resource-item{background:#fff;border-radius:8px;border:1px solid var(--border);
+  padding:1rem 1.25rem;margin-bottom:.6rem;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:1rem}
+.resource-icon{font-size:1.5rem;flex-shrink:0}
+.resource-info{flex:1}
+.resource-title{font-size:.95rem;color:var(--ocean);font-weight:600}
+.resource-desc{font-size:.82rem;color:var(--muted);margin-top:.2rem}
+.resource-meta{font-size:.72rem;color:var(--muted);font-family:monospace;margin-top:.2rem}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:2.5rem;color:var(--muted);font-size:.9rem;
+  background:var(--ivory);border-radius:var(--radius);border:1px dashed var(--border)}
+
+/* ADD BUTTON */
+.add-btn{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.25rem;
+  background:var(--ocean);color:#fff;border:none;border-radius:8px;
+  font-family:Georgia,serif;font-size:.9rem;cursor:pointer;transition:.2s;margin-bottom:1.25rem}
+.add-btn:hover{background:#152d3c}
+
+/* MSG */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ocean);color:#fff;
+  padding:.75rem 1.25rem;border-radius:8px;font-size:.88rem;z-index:300;
+  transform:translateY(10px);opacity:0;transition:.3s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:#b03020}
+
+/* STUDENT FILTER */
+.student-filter{display:flex;align-items:center;gap:.5rem;background:#fff;
+  border:1.5px solid var(--border);border-radius:8px;padding:.6rem 1rem;
+  margin-bottom:1rem;max-width:300px}
+.student-filter input{border:none;outline:none;font-size:.9rem;color:var(--ocean);
+  background:transparent;flex:1}
+.student-filter input::placeholder{color:var(--muted)}
+
+/* TEST SESSIONS */
+.test-row{background:#fff;border-radius:8px;border:1px solid var(--border);
+  padding:.85rem 1.25rem;margin-bottom:.5rem;display:grid;
+  grid-template-columns:1fr auto auto auto;gap:1rem;align-items:center}
+.test-type{font-size:.9rem;color:var(--ocean);font-weight:600}
+.test-score{font-size:1.1rem;color:var(--ocean);font-weight:700;text-align:center}
+.test-date{font-size:.78rem;color:var(--muted);font-family:monospace;text-align:right}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo-wrap">
+    <div class="logo-mark">C</div>
+    <span class="logo-text">CmartWise</span>
+  </a>
+  <span class="logo-badge">Admin</span>
+  <div class="nav-spacer"></div>
+  <a href="/portal-dashboard.html" class="nav-back">← Portal</a>
+  <button class="nav-logout" onclick="logout()">Sign out</button>
+</nav>
+
+<div id="auth-check">Checking access…</div>
+
+<div class="container" id="main">
+
+  <div class="page-title">Admin Panel</div>
+  <p class="page-sub" id="admin-sub">Manage students, notes, and resources.</p>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="stat-students">—</div><div class="stat-lbl">Students</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-notes">—</div><div class="stat-lbl">Coaching notes</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-tests">—</div><div class="stat-lbl">Tests taken</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-resources">—</div><div class="stat-lbl">Resources</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('students')">Students</button>
+    <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
+    <button class="tab-btn" onclick="switchTab('resources')">Resources</button>
+    <button class="tab-btn" onclick="switchTab('tests')">Test Results</button>
+  </div>
+
+  <!-- ── STUDENTS ── -->
+  <div class="tab-panel active" id="tab-students">
+    <div class="student-filter">
+      <span style="color:var(--muted);font-size:.9rem">🔍</span>
+      <input type="text" id="student-search" placeholder="Search students…" oninput="filterStudents()">
+    </div>
+    <div id="students-list"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- ── NOTES ── -->
+  <div class="tab-panel" id="tab-notes">
+    <button class="add-btn" onclick="openNoteModal(null)">+ Add coaching note</button>
+    <div id="student-select-note" style="margin-bottom:1rem;display:none">
+      <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:.35rem">Filter by student</label>
+      <select id="note-student-filter" onchange="loadNotes()" style="padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-family:Georgia,serif;font-size:.88rem;background:var(--sand);color:var(--ocean);outline:none">
+        <option value="">All students</option>
+      </select>
+    </div>
+    <div id="notes-list"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- ── RESOURCES ── -->
+  <div class="tab-panel" id="tab-resources">
+    <button class="add-btn" onclick="openResourceModal(null)">+ Add resource</button>
+    <div id="resources-list"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- ── TESTS ── -->
+  <div class="tab-panel" id="tab-tests">
+    <div id="student-select-test" style="margin-bottom:1rem">
+      <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:.35rem">Filter by student</label>
+      <select id="test-student-filter" onchange="loadTests()" style="padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-family:Georgia,serif;font-size:.88rem;background:var(--sand);color:var(--ocean);outline:none">
+        <option value="">All students</option>
+      </select>
+    </div>
+    <div id="tests-list"><div class="empty">Loading…</div></div>
+  </div>
+
+</div>
+
+<!-- ── NOTE MODAL ── -->
+<div class="modal-overlay" id="note-modal">
+  <div class="modal">
+    <div class="modal-title" id="note-modal-title">Add coaching note</div>
+    <div class="form-group">
+      <label>Student</label>
+      <select id="note-student-id"></select>
+    </div>
+    <div class="form-group">
+      <label>Session date</label>
+      <input type="date" id="note-date">
+    </div>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="note-title" placeholder="e.g. Session 12 — Past Tense + Travel Vocab">
+    </div>
+    <div class="form-group">
+      <label>Notes (markdown supported)</label>
+      <textarea id="note-content" placeholder="What was covered, observations, next steps…" style="min-height:140px"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Tags (comma-separated)</label>
+      <input type="text" id="note-tags" placeholder="grammar, past tense, vocabulary">
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('note-modal')">Cancel</button>
+      <button class="btn primary" id="note-save-btn" onclick="saveNote()">Save note</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESOURCE MODAL ── -->
+<div class="modal-overlay" id="resource-modal">
+  <div class="modal">
+    <div class="modal-title">Add resource</div>
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" id="res-title" placeholder="e.g. Portuguese Pronunciation Guide">
+    </div>
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="res-desc" placeholder="Brief description of what this resource contains…" style="min-height:80px"></textarea>
+    </div>
+    <div class="form-group">
+      <label>URL (optional)</label>
+      <input type="url" id="res-url" placeholder="https://…">
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="res-type">
+        <option value="guide">Guide / Reference</option>
+        <option value="video">Video</option>
+        <option value="audio">Audio</option>
+        <option value="tool">Tool</option>
+        <option value="document">Document</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Visibility</label>
+      <select id="res-visibility">
+        <option value="all">All students</option>
+        <option value="admin">Admin only</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('resource-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveResource()">Save resource</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+const SUPABASE_URL  = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co'
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZ25nZ3R3Znh5cXp2cm5sYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTYzMzIsImV4cCI6MjA5NjY3MjMzMn0.7iclLaCjyejXHmCcWAJvRJTICrCGt7ks5LieRY0Z9aM'
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+
+let allStudents = [], currentNoteId = null
+
+async function logout() { await sb.auth.signOut(); window.location.href = '/portal.html' }
+
+async function init() {
+  const { data: { session } } = await sb.auth.getSession()
+  if (!session) { window.location.href = '/portal.html'; return }
+
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single()
+  if (profile?.role !== 'admin') {
+    document.getElementById('auth-check').innerHTML = '⛔ Access denied. Admin only.'
+    return
+  }
+
+  document.getElementById('auth-check').style.display = 'none'
+  document.getElementById('main').style.display = 'block'
+  document.getElementById('admin-sub').textContent = `Signed in as ${profile.full_name || session.user.email}`
+
+  await loadStudents()
+  await loadStats()
+  await loadNotes()
+  await loadResources()
+  await loadTests()
+}
+
+// ── STATS ──────────────────────────────────────────────────────
+async function loadStats() {
+  const [{ count: ns }, { count: nn }, { count: nt }, { count: nr }] = await Promise.all([
+    sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
+    sb.from('coaching_notes').select('*', { count: 'exact', head: true }),
+    sb.from('test_sessions').select('*', { count: 'exact', head: true }),
+    sb.from('resources').select('*', { count: 'exact', head: true })
+  ])
+  document.getElementById('stat-students').textContent = ns || 0
+  document.getElementById('stat-notes').textContent = nn || 0
+  document.getElementById('stat-tests').textContent = nt || 0
+  document.getElementById('stat-resources').textContent = nr || 0
+}
+
+// ── STUDENTS ───────────────────────────────────────────────────
+async function loadStudents() {
+  const { data } = await sb.from('profiles').select('*').order('full_name')
+  allStudents = data || []
+  renderStudents(allStudents)
+  populateStudentSelects()
+}
+
+function renderStudents(list) {
+  const el = document.getElementById('students-list')
+  if (!list.length) { el.innerHTML = '<div class="empty">No students yet.</div>'; return }
+  el.innerHTML = list.map(s => `
+    <div class="student-card">
+      <div class="student-avatar">${(s.full_name || s.email || '?')[0].toUpperCase()}</div>
+      <div class="student-info">
+        <div class="student-name">${esc(s.full_name || '(no name)')}</div>
+        <div class="student-email">${esc(s.email || '')}</div>
+        <div class="student-meta">Role: ${s.role || 'student'} · ID: ${s.id.substring(0,8)}…</div>
+      </div>
+      <div class="student-actions">
+        <button class="btn-sm primary" onclick="openNoteModalForStudent('${s.id}', '${esc(s.full_name || s.email)}')">+ Note</button>
+        <button class="btn-sm" onclick="filterNotesByStudent('${s.id}')">View notes</button>
+      </div>
+    </div>
+  `).join('')
+}
+
+function filterStudents() {
+  const q = document.getElementById('student-search').value.toLowerCase()
+  renderStudents(allStudents.filter(s =>
+    (s.full_name || '').toLowerCase().includes(q) ||
+    (s.email || '').toLowerCase().includes(q)
+  ))
+}
+
+function populateStudentSelects() {
+  const opts = allStudents.map(s =>
+    `<option value="${s.id}">${esc(s.full_name || s.email)}</option>`
+  ).join('')
+  document.getElementById('note-student-id').innerHTML = opts
+  const filterOpts = '<option value="">All students</option>' + opts
+  document.getElementById('note-student-filter').innerHTML = filterOpts
+  document.getElementById('test-student-filter').innerHTML = filterOpts
+  document.getElementById('student-select-note').style.display = 'block'
+}
+
+// ── NOTES ──────────────────────────────────────────────────────
+async function loadNotes() {
+  const studentId = document.getElementById('note-student-filter')?.value || ''
+  let q = sb.from('coaching_notes').select('*, profiles(full_name, email)').order('session_date', { ascending: false })
+  if (studentId) q = q.eq('student_id', studentId)
+  const { data } = await q
+  const el = document.getElementById('notes-list')
+  if (!data?.length) { el.innerHTML = '<div class="empty">No notes yet.</div>'; return }
+  el.innerHTML = data.map(n => `
+    <div class="note-item">
+      <div class="note-meta">
+        <span>${n.profiles?.full_name || n.profiles?.email || 'Unknown student'} · ${formatDate(n.session_date)}</span>
+        <span style="display:flex;gap:.5rem">
+          <span style="cursor:pointer;color:var(--terra)" onclick="deleteNote('${n.id}')">Delete</span>
+        </span>
+      </div>
+      <div class="note-title">${esc(n.title || 'Untitled')}</div>
+      <div class="note-body">${esc(n.content || '')}</div>
+      ${n.tags?.length ? `<div class="note-tags">${n.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+    </div>
+  `).join('')
+}
+
+function openNoteModal(studentId) {
+  currentNoteId = null
+  document.getElementById('note-modal-title').textContent = 'Add coaching note'
+  document.getElementById('note-date').value = new Date().toISOString().split('T')[0]
+  document.getElementById('note-title').value = ''
+  document.getElementById('note-content').value = ''
+  document.getElementById('note-tags').value = ''
+  if (studentId) document.getElementById('note-student-id').value = studentId
+  document.getElementById('note-modal').classList.add('open')
+}
+
+function openNoteModalForStudent(studentId, name) {
+  openNoteModal(studentId)
+}
+
+function filterNotesByStudent(studentId) {
+  switchTab('notes')
+  document.getElementById('note-student-filter').value = studentId
+  loadNotes()
+}
+
+async function saveNote() {
+  const btn = document.getElementById('note-save-btn')
+  btn.disabled = true; btn.textContent = 'Saving…'
+
+  const tags = document.getElementById('note-tags').value
+    .split(',').map(t => t.trim()).filter(Boolean)
+
+  const payload = {
+    student_id: document.getElementById('note-student-id').value,
+    session_date: document.getElementById('note-date').value,
+    title: document.getElementById('note-title').value.trim(),
+    content: document.getElementById('note-content').value.trim(),
+    tags
+  }
+
+  const { error } = await sb.from('coaching_notes').insert(payload)
+  btn.disabled = false; btn.textContent = 'Save note'
+
+  if (error) { showToast('Error: ' + error.message, true); return }
+  closeModal('note-modal')
+  showToast('Note saved')
+  loadNotes()
+  loadStats()
+}
+
+async function deleteNote(id) {
+  if (!confirm('Delete this note?')) return
+  await sb.from('coaching_notes').delete().eq('id', id)
+  showToast('Note deleted')
+  loadNotes()
+  loadStats()
+}
+
+// ── RESOURCES ──────────────────────────────────────────────────
+async function loadResources() {
+  const { data } = await sb.from('resources').select('*').order('created_at', { ascending: false })
+  const el = document.getElementById('resources-list')
+  if (!data?.length) { el.innerHTML = '<div class="empty">No resources yet.</div>'; return }
+  const icons = { guide: '📋', video: '🎬', audio: '🎧', tool: '🔧', document: '📄' }
+  el.innerHTML = data.map(r => `
+    <div class="resource-item">
+      <div class="resource-icon">${icons[r.type] || '📎'}</div>
+      <div class="resource-info">
+        <div class="resource-title">${esc(r.title)}</div>
+        <div class="resource-desc">${esc(r.description || '')}</div>
+        <div class="resource-meta">${r.type} · ${r.visibility || 'all'} · ${formatDate(r.created_at)}</div>
+      </div>
+      ${r.url ? `<a href="${esc(r.url)}" target="_blank" class="btn-sm">Open →</a>` : ''}
+      <button class="btn-sm danger" onclick="deleteResource('${r.id}')">Delete</button>
+    </div>
+  `).join('')
+}
+
+function openResourceModal() {
+  document.getElementById('res-title').value = ''
+  document.getElementById('res-desc').value = ''
+  document.getElementById('res-url').value = ''
+  document.getElementById('resource-modal').classList.add('open')
+}
+
+async function saveResource() {
+  const { error } = await sb.from('resources').insert({
+    title: document.getElementById('res-title').value.trim(),
+    description: document.getElementById('res-desc').value.trim(),
+    url: document.getElementById('res-url').value.trim() || null,
+    type: document.getElementById('res-type').value,
+    visibility: document.getElementById('res-visibility').value
+  })
+  if (error) { showToast('Error: ' + error.message, true); return }
+  closeModal('resource-modal')
+  showToast('Resource saved')
+  loadResources()
+  loadStats()
+}
+
+async function deleteResource(id) {
+  if (!confirm('Delete this resource?')) return
+  await sb.from('resources').delete().eq('id', id)
+  showToast('Deleted')
+  loadResources()
+  loadStats()
+}
+
+// ── TESTS ──────────────────────────────────────────────────────
+async function loadTests() {
+  const studentId = document.getElementById('test-student-filter')?.value || ''
+  let q = sb.from('test_sessions').select('*, profiles(full_name, email)').order('completed_at', { ascending: false }).limit(50)
+  if (studentId) q = q.eq('student_id', studentId)
+  const { data } = await q
+  const el = document.getElementById('tests-list')
+  if (!data?.length) { el.innerHTML = '<div class="empty">No tests taken yet.</div>'; return }
+  el.innerHTML = data.map(t => `
+    <div class="test-row">
+      <div>
+        <div class="test-type">${esc(t.profiles?.full_name || t.profiles?.email || 'Unknown')}</div>
+        <div style="font-size:.8rem;color:var(--muted)">${t.test_type} — ${t.section}</div>
+        ${t.feedback ? `<div style="font-size:.78rem;color:var(--muted);margin-top:.2rem;font-style:italic">${esc(t.feedback.substring(0, 80))}…</div>` : ''}
+      </div>
+      <div class="test-score">${t.score !== null ? Math.round(t.score) + '/100' : '—'}</div>
+      <div style="font-size:.75rem;color:var(--muted);font-family:monospace">${t.duration_sec ? Math.round(t.duration_sec/60) + ' min' : '—'}</div>
+      <div class="test-date">${formatDate(t.completed_at)}</div>
+    </div>
+  `).join('')
+}
+
+// ── UTILS ──────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['students', 'notes', 'resources', 'tests']
+    b.classList.toggle('active', tabs[i] === name)
+  })
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
+  document.getElementById('tab-' + name).classList.add('active')
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open') }
+
+function showToast(msg, err = false) {
+  const t = document.getElementById('toast')
+  t.textContent = msg
+  t.className = 'toast show' + (err ? ' err' : '')
+  setTimeout(() => t.className = 'toast', 2800)
+}
+
+function formatDate(d) {
+  if (!d) return '—'
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open') })
+})
+
+init()
+</script>
+</body>
+</html>

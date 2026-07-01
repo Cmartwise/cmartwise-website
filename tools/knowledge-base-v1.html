@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cmartwise · Portuguese Knowledge Base</title>
+<style>
+:root {
+  --ocean: #1A3A4A;
+  --terra: #C4683A;
+  --sand: #EDE5D8;
+  --ivory: #FAF7F3;
+  --muted: #7A6E64;
+  --light: #F2EDE5;
+  --white: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; background: var(--ivory); color: var(--ocean); display: flex; min-height: 100vh; font-size: 15px; }
+
+/* ── SIDEBAR ── */
+.sidebar { width: 220px; min-height: 100vh; background: var(--ocean); position: fixed; top: 0; left: 0; overflow-y: auto; z-index: 100; }
+.sb-logo { padding: 28px 20px 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sb-logo .brand { font-family: Georgia, serif; color: var(--sand); font-size: 17px; font-weight: bold; letter-spacing: 0.3px; }
+.sb-logo .sub { color: var(--muted); font-size: 11px; margin-top: 3px; }
+.sb-logo .badge { display: inline-block; background: var(--terra); color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 2px; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.sb-section { padding: 16px 20px 4px; color: var(--terra); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar a { display: block; padding: 8px 20px; color: rgba(237,229,216,0.65); text-decoration: none; font-size: 13px; transition: all 0.15s; border-left: 3px solid transparent; }
+.sidebar a:hover, .sidebar a.active { color: var(--sand); background: rgba(255,255,255,0.07); border-left-color: var(--terra); }
+
+/* ── MAIN ── */
+.main { margin-left: 220px; flex: 1; padding: 44px 52px; max-width: 1040px; }
+.page-header { margin-bottom: 44px; }
+.page-header .tag { display: inline-block; background: var(--terra); color: #fff; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 3px 9px; border-radius: 2px; margin-bottom: 10px; }
+.page-header h1 { font-family: Georgia, serif; font-size: 30px; color: var(--ocean); margin-bottom: 6px; }
+.page-header .desc { color: var(--muted); font-size: 14px; max-width: 580px; line-height: 1.6; }
+.page-header .meta { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.page-header .meta span { margin-right: 16px; }
+
+/* ── SECTIONS ── */
+.section { margin-bottom: 60px; scroll-margin-top: 20px; }
+.section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; padding-bottom: 12px; border-bottom: 2px solid var(--sand); }
+.section-header .ico { font-size: 20px; }
+.section-header h2 { font-family: Georgia, serif; font-size: 21px; color: var(--ocean); }
+.section-header .count { font-size: 12px; background: var(--sand); color: var(--muted); padding: 2px 8px; border-radius: 10px; }
+
+/* ── SUBSECTION ── */
+.subsection { margin-bottom: 32px; }
+.subsection-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--terra); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.subsection-title::after { content: ''; flex: 1; height: 1px; background: var(--sand); }
+
+/* ── VOCAB TABLE ── */
+.vocab-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 4px; }
+.vocab-table th { background: var(--ocean); color: var(--sand); padding: 9px 13px; text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.vocab-table th:first-child { border-radius: 4px 0 0 0; }
+.vocab-table th:last-child { border-radius: 0 4px 0 0; }
+.vocab-table td { padding: 9px 13px; border-bottom: 1px solid var(--sand); vertical-align: top; line-height: 1.5; }
+.vocab-table tr:nth-child(even) td { background: var(--light); }
+.vocab-table tr:hover td { background: #e8e0d5; }
+.pt { font-weight: 600; color: var(--ocean); }
+.en { color: var(--muted); font-size: 13px; }
+.note { font-size: 12px; color: var(--terra); font-style: italic; }
+.pron { font-size: 12px; color: #999; font-style: italic; }
+.multi-cat { font-size: 11px; }
+.cat-pill { display: inline-block; background: rgba(196,104,58,0.12); color: var(--terra); font-size: 10px; padding: 1px 6px; border-radius: 8px; margin: 1px; font-weight: 600; }
+
+/* ── RULE CARDS ── */
+.rule-card { background: var(--white); border-left: 4px solid var(--terra); padding: 15px 18px; margin-bottom: 12px; border-radius: 0 6px 6px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.rule-card .rt { font-weight: 700; color: var(--ocean); font-size: 15px; margin-bottom: 5px; }
+.rule-card .rb { color: #444; font-size: 14px; line-height: 1.7; }
+.rule-card .ex { margin-top: 8px; background: var(--light); padding: 8px 12px; border-radius: 4px; font-size: 13px; line-height: 1.8; }
+.rule-card .ex .pt { display: block; }
+.rule-card .ex .en { display: block; }
+
+/* ── EXPRESSION GRID ── */
+.expr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.expr-card { background: var(--white); border: 1px solid var(--sand); border-radius: 7px; padding: 13px 15px; }
+.expr-card .ept { font-weight: 700; font-size: 15px; color: var(--ocean); margin-bottom: 3px; }
+.expr-card .een { color: var(--muted); font-size: 13px; margin-bottom: 5px; }
+.expr-card .enote { font-size: 12px; color: var(--terra); font-style: italic; }
+
+/* ── PRACTICE CARDS ── */
+.practice-card { background: var(--white); border: 1px solid var(--sand); border-radius: 10px; padding: 20px 22px; margin-bottom: 14px; }
+.practice-card .ph { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+.practice-card .pico { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.practice-card .ptitle { font-weight: 700; font-size: 16px; color: var(--ocean); }
+.practice-card .ptag { display: inline-block; font-size: 11px; background: rgba(196,104,58,0.12); color: var(--terra); padding: 2px 8px; border-radius: 8px; font-weight: 600; margin-top: 3px; }
+.practice-card p { color: #444; font-size: 14px; line-height: 1.7; margin-bottom: 8px; }
+.practice-card .try-this { background: var(--light); padding: 12px 14px; border-radius: 6px; font-size: 13px; line-height: 1.7; margin-top: 10px; }
+.practice-card .try-label { color: var(--terra); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 5px; }
+
+/* ── STRUGGLE ALERT ── */
+.struggle-note { background: rgba(196,104,58,0.07); border: 1px solid rgba(196,104,58,0.25); border-radius: 7px; padding: 12px 16px; margin-bottom: 12px; font-size: 13px; color: #555; }
+.struggle-note strong { color: var(--terra); display: block; margin-bottom: 3px; font-size: 13px; }
+
+/* ── INFO BOX ── */
+.info-box { background: rgba(26,58,74,0.05); border: 1px solid rgba(26,58,74,0.15); border-radius: 7px; padding: 14px 18px; margin-bottom: 20px; font-size: 14px; color: #444; line-height: 1.7; }
+.info-box strong { color: var(--ocean); }
+
+/* ── CONJUGATION BOX ── */
+.conj-wrap { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; }
+.conj-box { background: var(--white); border: 1px solid var(--sand); border-radius: 7px; overflow: hidden; min-width: 180px; }
+.conj-box .cv { font-weight: 700; color: var(--ocean); font-size: 14px; background: var(--light); padding: 8px 12px; }
+.conj-box table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.conj-box td { padding: 5px 12px; border-bottom: 1px solid var(--sand); }
+.conj-box td:first-child { color: var(--muted); width: 70px; }
+.conj-box td:last-child { font-weight: 500; color: var(--ocean); }
+
+/* ── PHONETICS ── */
+.phon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.phon-card { background: var(--white); border: 1px solid var(--sand); border-radius: 7px; padding: 12px 15px; }
+.phon-card .pc-sound { font-size: 20px; font-weight: 700; color: var(--terra); font-family: monospace; margin-bottom: 4px; }
+.phon-card .pc-rule { font-size: 13px; color: #444; line-height: 1.6; margin-bottom: 6px; }
+.phon-card .pc-ex { font-size: 12px; color: var(--muted); font-style: italic; }
+
+/* ── SEARCH ── */
+.search-wrap { display: flex; align-items: center; gap: 8px; background: var(--white); border: 2px solid var(--sand); border-radius: 7px; padding: 7px 13px; margin-bottom: 18px; max-width: 340px; }
+.search-wrap input { border: none; outline: none; font-size: 14px; color: var(--ocean); background: transparent; flex: 1; }
+.search-wrap input::placeholder { color: var(--muted); }
+
+/* ── FOOTER ── */
+.kb-footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--sand); font-size: 12px; color: var(--muted); }
+
+@media(max-width:768px){.sidebar{display:none}.main{margin-left:0;padding:20px}}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="brand">cmartwise</div>
+    <div class="sub">Portuguese Coaching</div>
+    <div class="badge">Knowledge Base</div>
+  </div>
+  <div class="sb-section">Reference</div>
+  <a href="#phonetics">🔊 Pronunciation</a>
+  <a href="#grammar">📐 Grammar Rules</a>
+  <a href="#ep-specifics">🇵🇹 EP Specifics</a>
+  <div class="sb-section">Vocabulary</div>
+  <a href="#verbs">Verbs by Category</a>
+  <a href="#nouns">Nouns by Category</a>
+  <a href="#adjectives">Adjectives by Category</a>
+  <a href="#expressions">Idioms &amp; Expressions</a>
+  <div class="sb-section">Practice</div>
+  <a href="#exercises">Exercises &amp; Games</a>
+  <a href="#tips">Student Tips</a>
+</nav>
+
+<main class="main">
+
+<div class="page-header">
+  <div class="tag">Shared Knowledge Base · v1</div>
+  <h1>Portuguese Language Reference</h1>
+  <p class="desc">Compiled from cmartwise coaching sessions. All vocabulary, grammar rules, pronunciation patterns, and expressions encountered during lessons. Reviewed and approved by Cédric Martin.</p>
+  <div class="meta">
+    <span>📅 Last updated: June 2026</span>
+    <span>👤 Source: Coaching sessions</span>
+    <span>🔒 Student portal only</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- PRONUNCIATION -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="phonetics">
+  <div class="section-header">
+    <span class="ico">🔊</span>
+    <h2>Pronunciation &amp; Phonetics</h2>
+    <span class="count">European Portuguese</span>
+  </div>
+
+  <div class="info-box">European Portuguese is different from Brazilian Portuguese in one key way: <strong>vowels are swallowed.</strong> Unstressed vowels are reduced or dropped entirely. This is why EP sounds fast and "closed" compared to Brazilian. Once you hear this pattern, everything starts to click.</div>
+
+  <div class="subsection-title">Consonant Rules</div>
+  <div class="phon-grid">
+    <div class="phon-card"><div class="pc-sound">Es- → SH-</div><div class="pc-rule">Words starting with <em>es-</em> or <em>ex-</em> begin with a "sh" sound.</div><div class="pc-ex">estar → <strong>SH</strong>tar · esperar → <strong>SH</strong>perar · escola → <strong>SH</strong>cola · excelente → <strong>eeSH</strong>lente</div></div>
+    <div class="phon-card"><div class="pc-sound">c + a/o/u → K</div><div class="pc-rule">The letter <em>c</em> before a, o or u makes a hard K sound.</div><div class="pc-ex">casa → <strong>K</strong>aza · como → <strong>K</strong>omoo · curto → <strong>K</strong>oortoo</div></div>
+    <div class="phon-card"><div class="pc-sound">c + e/i → S</div><div class="pc-rule">The letter <em>c</em> before e or i makes an S sound.</div><div class="pc-ex">cedo → <strong>S</strong>edoo · cidade → <strong>S</strong>eedade</div></div>
+    <div class="phon-card"><div class="pc-sound">ç → S</div><div class="pc-rule">Cedilha always makes an S sound, regardless of the vowel that follows.</div><div class="pc-ex">coração → koo-ra-<strong>S</strong>oun · açúcar → a-<strong>S</strong>ookar</div></div>
+    <div class="phon-card"><div class="pc-sound">nh → NY</div><div class="pc-rule">Like the Spanish <em>ñ</em> — a nasal "ny" sound.</div><div class="pc-ex">sonho → son-<strong>NY</strong>oo · banho → ban-<strong>NY</strong>oo · minha → mee-<strong>NY</strong>a</div></div>
+    <div class="phon-card"><div class="pc-sound">lh → LY</div><div class="pc-rule">Like the Italian <em>gli</em> — a "ly" sound.</div><div class="pc-ex">bolha → bô-<strong>LY</strong>a · rolha → rô-<strong>LY</strong>a · trabalho → tra-ba-<strong>LY</strong>oo</div></div>
+    <div class="phon-card"><div class="pc-sound">ch → SH</div><div class="pc-rule">Always a "sh" sound in EP (never "ch" as in English).</div><div class="pc-ex">chá → <strong>SH</strong>aa · chamar → <strong>SH</strong>amar · cheio → <strong>SH</strong>ayoo</div></div>
+    <div class="phon-card"><div class="pc-sound">x → SH (often)</div><div class="pc-rule">In many words, <em>x</em> makes a "sh" sound.</div><div class="pc-ex">caixa → kai-<strong>SH</strong>a · baixo → bai-<strong>SH</strong>oo</div></div>
+    <div class="phon-card"><div class="pc-sound">g + e/i → ZH</div><div class="pc-rule">Soft G before e or i — like the French <em>j</em> in "je".</div><div class="pc-ex">gente → <strong>ZH</strong>ente · girassol → <strong>ZH</strong>irassol</div></div>
+    <div class="phon-card"><div class="pc-sound">gu + e/i → G (hard)</div><div class="pc-rule">The u is silent — keeps the G hard before e or i.</div><div class="pc-ex">guerra → <strong>G</strong>erra · guia → <strong>G</strong>ia · guitarra → <strong>G</strong>itarra</div></div>
+    <div class="phon-card"><div class="pc-sound">J → ZH</div><div class="pc-rule">Always the French-style "zh" sound (like the s in "measure").</div><div class="pc-ex">janela → <strong>ZH</strong>anela · João → <strong>ZH</strong>owão</div></div>
+    <div class="phon-card"><div class="pc-sound">qu + e/i → K</div><div class="pc-rule">The u is silent before e or i.</div><div class="pc-ex">que → <strong>K</strong>eh · quem → <strong>K</strong>aim · quinto → <strong>K</strong>intoo</div></div>
+  </div>
+
+  <div class="subsection-title">Vowel &amp; Nasal Rules</div>
+  <div class="phon-grid">
+    <div class="phon-card"><div class="pc-sound">-ão → nasal OWN</div><div class="pc-rule">A nasal "own" sound — like saying "own" through your nose.</div><div class="pc-ex">são → <strong>sown</strong> · não → <strong>nown</strong> · coração → koo-ra-<strong>sown</strong></div></div>
+    <div class="phon-card"><div class="pc-sound">-em / -ens → -AIN</div><div class="pc-rule">Words ending in <em>-em</em> or <em>-ens</em> are pronounced with a nasal "-ain" sound.</div><div class="pc-ex">também → tam-<strong>bain</strong> · ninguém → nin-<strong>gain</strong> · homens → <strong>omain</strong>sh</div></div>
+    <div class="phon-card"><div class="pc-sound">Swallowed vowels</div><div class="pc-rule">Unstressed <em>e</em> and <em>o</em> at the end of words are often barely pronounced or completely dropped.</div><div class="pc-ex">como → <strong>comm</strong> · onde → <strong>ond'</strong> · grande → <strong>grand'</strong></div></div>
+    <div class="phon-card"><div class="pc-sound">Estou / Está</div><div class="pc-rule">In natural speech these contract. Estar forms lose the "E" entirely.</div><div class="pc-ex">Estou → <strong>'tow</strong> or <strong>SHtow</strong> · Está → <strong>'tá</strong> or <strong>SHtá</strong></div></div>
+    <div class="phon-card"><div class="pc-sound">Numbers (1, 2, 6)</div><div class="pc-rule">Key number pronunciations that catch learners out.</div><div class="pc-ex">um → <strong>oom</strong> · uma → <strong>oo-ma</strong> · dois → <strong>doysh</strong> · seis → <strong>saysh</strong></div></div>
+    <div class="phon-card"><div class="pc-sound">-able → -ável</div><div class="pc-rule">Many English -able words become -ável in Portuguese (singular) / -áveis (plural).</div><div class="pc-ex">comfortable → confortável · available → disponível</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- GRAMMAR RULES -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="grammar">
+  <div class="section-header">
+    <span class="ico">📐</span>
+    <h2>Grammar Rules</h2>
+  </div>
+
+  <div class="subsection-title">Ser vs Estar — the Big One</div>
+  <div class="rule-card">
+    <div class="rt">SER — permanent identity</div>
+    <div class="rb">Use <em>ser</em> for things that define what something IS: nationality, profession, personality, origin, material, permanent characteristics, time/dates.</div>
+    <div class="ex"><span class="pt">Eu sou português. · Ela é médica. · O carro é vermelho.</span><span class="en">I am Portuguese. · She is a doctor. · The car is red (its colour).</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">ESTAR — temporary state or location</div>
+    <div class="rb">Use <em>estar</em> for how something IS RIGHT NOW: mood, health, location, temporary conditions, ongoing actions.</div>
+    <div class="ex"><span class="pt">Estou cansado. · Ela está em Lisboa. · O café está frio.</span><span class="en">I am tired (right now). · She is in Lisbon. · The coffee is cold (got cold).</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">FICAR — to stay, to end up, to become</div>
+    <div class="rb"><em>Ficar</em> often sits between ser and estar. It describes a change of state or staying somewhere.</div>
+    <div class="ex"><span class="pt">Fiquei contente. · Vou ficar em casa. · Ficou zangado.</span><span class="en">I became/ended up happy. · I'll stay home. · He got angry.</span></div>
+  </div>
+
+  <div class="subsection-title">Articles</div>
+  <div class="rule-card">
+    <div class="rt">Definite articles agree with the noun</div>
+    <div class="rb"><strong>o / a</strong> (the, singular) · <strong>os / as</strong> (the, plural). In Portuguese, you use the article before names and at the start of sentences more than in English.</div>
+    <div class="ex"><span class="pt">O Barrie é canadiano. · Adoro a praia. · Os amigos chegaram.</span><span class="en">Barrie is Canadian. · I love the beach. · The friends arrived.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Indefinite articles</div>
+    <div class="rb"><strong>um / uma</strong> (a/an) · <strong>uns / umas</strong> (some). Gender must match the noun.</div>
+    <div class="ex"><span class="pt">Um café, por favor. · Uma mesa para dois.</span><span class="en">A coffee, please. · A table for two.</span></div>
+  </div>
+
+  <div class="subsection-title">Contractions — must learn these</div>
+  <div class="rule-card">
+    <div class="rt">Preposition + article contractions</div>
+    <div class="rb">In Portuguese, prepositions fuse with the article that follows them. You cannot separate them.</div>
+    <div class="ex">
+      <span class="pt">em + o = <strong>no</strong> · em + a = <strong>na</strong> · em + os = <strong>nos</strong> · em + as = <strong>nas</strong></span>
+      <span class="pt">de + o = <strong>do</strong> · de + a = <strong>da</strong> · de + os = <strong>dos</strong> · de + as = <strong>das</strong></span>
+      <span class="pt">a + o = <strong>ao</strong> · a + a = <strong>à</strong> · a + os = <strong>aos</strong> · a + as = <strong>às</strong></span>
+      <span class="pt">por + o = <strong>pelo</strong> · por + a = <strong>pela</strong> · por + os = <strong>pelos</strong> · por + as = <strong>pelas</strong></span>
+      <span class="en">Fui ao mercado. → Fui a + o mercado. I went to the market.</span>
+    </div>
+  </div>
+
+  <div class="subsection-title">Por vs Para</div>
+  <div class="rule-card">
+    <div class="rt">PARA — destination, purpose, recipient, deadline</div>
+    <div class="rb">Think: <em>heading somewhere</em>, or <em>meant for someone/something</em>.</div>
+    <div class="ex"><span class="pt">Vou para Lisboa. · Este livro é para ti. · Para quando? · Estudo para aprender.</span><span class="en">I'm going to Lisbon. · This book is for you. · By when? · I study (in order) to learn.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">POR — reason, exchange, duration, movement through</div>
+    <div class="rb">Think: <em>because of</em>, <em>in exchange for</em>, <em>during/over a period</em>, <em>passing through somewhere</em>.</div>
+    <div class="ex"><span class="pt">Obrigado por tudo. · Por quanto? · Passamos pelo parque. · Fiz isso por ti.</span><span class="en">Thank you for everything. · For how much? · We walked through the park. · I did it because of you.</span></div>
+  </div>
+
+  <div class="subsection-title">Adjectives</div>
+  <div class="rule-card">
+    <div class="rt">Adjectives come AFTER the noun (usually)</div>
+    <div class="rb">The default position is noun first, adjective second. This is the opposite of English. The adjective must also agree in gender and number with the noun.</div>
+    <div class="ex"><span class="pt">um carro vermelho · uma casa bonita · amigos simpáticos</span><span class="en">a red car · a beautiful house · friendly friends</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Adjective gender agreement</div>
+    <div class="rb">Most adjectives: masculine ends in <strong>-o</strong>, feminine ends in <strong>-a</strong>. Adjectives ending in <strong>-e</strong> don't change. Plural: add <strong>-s</strong> (or <strong>-es</strong> if ending in consonant).</div>
+    <div class="ex"><span class="pt">cansado / cansada / cansados / cansadas · feliz / felizes</span><span class="en">tired (m/f/m.pl/f.pl) · happy (sg/pl)</span></div>
+  </div>
+
+  <div class="subsection-title">Possessives</div>
+  <div class="rule-card">
+    <div class="rt">Possessives agree with what is OWNED, not the owner</div>
+    <div class="rb">This is very different from English. The possessive changes to match the noun being possessed, not the person who owns it.</div>
+    <div class="ex"><span class="pt">o meu carro · a minha casa · os meus filhos · as minhas amigas</span><span class="en">my car · my house · my sons · my (female) friends</span></div>
+  </div>
+
+  <div class="subsection-title">Present Tense — Regular Verbs</div>
+  <div class="conj-wrap">
+    <div class="conj-box"><div class="cv">falar (to speak) — AR</div><table><tr><td>eu</td><td>fal<strong>o</strong></td></tr><tr><td>tu</td><td>fal<strong>as</strong></td></tr><tr><td>ele/ela</td><td>fal<strong>a</strong></td></tr><tr><td>nós</td><td>fal<strong>amos</strong></td></tr><tr><td>vocês</td><td>fal<strong>am</strong></td></tr></table></div>
+    <div class="conj-box"><div class="cv">comer (to eat) — ER</div><table><tr><td>eu</td><td>com<strong>o</strong></td></tr><tr><td>tu</td><td>com<strong>es</strong></td></tr><tr><td>ele/ela</td><td>com<strong>e</strong></td></tr><tr><td>nós</td><td>com<strong>emos</strong></td></tr><tr><td>vocês</td><td>com<strong>em</strong></td></tr></table></div>
+    <div class="conj-box"><div class="cv">partir (to leave) — IR</div><table><tr><td>eu</td><td>part<strong>o</strong></td></tr><tr><td>tu</td><td>part<strong>es</strong></td></tr><tr><td>ele/ela</td><td>part<strong>e</strong></td></tr><tr><td>nós</td><td>part<strong>imos</strong></td></tr><tr><td>vocês</td><td>part<strong>em</strong></td></tr></table></div>
+  </div>
+
+  <div class="subsection-title">Key Tenses &amp; Structures</div>
+  <div class="rule-card">
+    <div class="rt">Present Continuous — Estar + a + infinitive</div>
+    <div class="rb">For what is happening RIGHT NOW.</div>
+    <div class="ex"><span class="pt">Estou a comer. · Ela está a falar. · Estamos a estudar.</span><span class="en">I am eating. · She is speaking. · We are studying.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Near Future — Ir + infinitive</div>
+    <div class="rb">Like "going to" in English. Very common in everyday speech.</div>
+    <div class="ex"><span class="pt">Vou comer. · Vamos ao mercado. · Ela vai telefonar.</span><span class="en">I'm going to eat. · We're going to the market. · She's going to call.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Simple Past (Pretérito Perfeito)</div>
+    <div class="rb">For completed actions. Key irregular forms: <em>fui</em> (I went/was), <em>fiz</em> (I did), <em>tive</em> (I had), <em>disse</em> (I said), <em>vim</em> (I came).</div>
+    <div class="ex"><span class="pt">Fui ao ginásio. · Comemos juntos. · Ela disse que sim.</span><span class="en">I went to the gym. · We ate together. · She said yes.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Imperfect Past — ongoing or habitual past</div>
+    <div class="rb">For what <em>used to happen</em> or was <em>ongoing</em> in the past. Formed by adding <strong>-ava/-ava/-ávamos/-avam</strong> (AR) or <strong>-ia/-ias/-íamos/-iam</strong> (ER/IR).</div>
+    <div class="ex"><span class="pt">Quando era criança, vivia em Portugal. · Ele trabalhava todos os dias.</span><span class="en">When I was a child, I lived in Portugal. · He used to work every day.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Conditional — gostaria / faria / poderia / deveria</div>
+    <div class="rb">For polite requests and hypotheticals. These are the conditional forms of <em>gostar, fazer, poder, dever</em>.</div>
+    <div class="ex"><span class="pt">Gostaria de um café. · Poderia repetir? · Deveria ir ao médico.</span><span class="en">I would like a coffee. · Could you repeat? · I should go to the doctor.</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Reflexive Verbs</div>
+    <div class="rb">Actions done to oneself. The reflexive pronoun (<em>me, te, se, nos</em>) normally comes AFTER the verb in EP (but before in questions and negatives).</div>
+    <div class="ex"><span class="pt">Chamo-me Barrie. · Levantei-me cedo. · Não me lembro.</span><span class="en">My name is Barrie. · I got up early. · I don't remember. (EP — não me lembro, NOT não lembro)</span></div>
+  </div>
+  <div class="rule-card">
+    <div class="rt">Comparatives &amp; Superlatives</div>
+    <div class="rb"><strong>mais ... (do) que</strong> = more ... than · <strong>menos ... (do) que</strong> = less ... than · <strong>o/a mais ...</strong> = the most ... Special forms: melhor (better), pior (worse), maior (bigger), menor (smaller).</div>
+    <div class="ex"><span class="pt">É mais fácil do que pensava. · Ela é a mais inteligente. · Melhor do que ontem.</span><span class="en">It's easier than I thought. · She's the most intelligent. · Better than yesterday.</span></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- EP SPECIFICS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="ep-specifics">
+  <div class="section-header">
+    <span class="ico">🇵🇹</span>
+    <h2>European Portuguese Specificities</h2>
+  </div>
+  <div class="info-box">These are differences between <strong>European Portuguese (EP)</strong> and Brazilian Portuguese (BR) — plus some things specific to the Algarve region. If you've learned Portuguese from apps or Brazilian content, these will feel surprising at first.</div>
+
+  <div class="subsection-title">Key EP vs BR Differences</div>
+  <table class="vocab-table">
+    <tr><th>European Portuguese</th><th>Brazilian Portuguese</th><th>Meaning</th><th>Note</th></tr>
+    <tr><td class="pt">comboio</td><td class="en">trem</td><td>train</td><td class="note">Always comboio in Portugal</td></tr>
+    <tr><td class="pt">autocarro</td><td class="en">ônibus</td><td>bus</td><td class="note">Very different words</td></tr>
+    <tr><td class="pt">casa de banho</td><td class="en">banheiro</td><td>bathroom</td><td></td></tr>
+    <tr><td class="pt">telemóvel</td><td class="en">celular</td><td>mobile phone</td><td></td></tr>
+    <tr><td class="pt">pequeno-almoço</td><td class="en">café da manhã</td><td>breakfast</td><td></td></tr>
+    <tr><td class="pt">equipa</td><td class="en">equipe</td><td>team</td><td class="note">EP keeps the -a ending</td></tr>
+    <tr><td class="pt">Não me lembro</td><td class="en">Não lembro</td><td>I don't remember</td><td class="note">EP requires the reflexive pronoun</td></tr>
+    <tr><td class="pt">Estou a comer</td><td class="en">Estou comendo</td><td>I am eating</td><td class="note">EP: estar + a + infinitive</td></tr>
+    <tr><td class="pt">se faz favor</td><td class="en">por favor</td><td>please</td><td class="note">Both work in EP; se faz favor is more formal/polite</td></tr>
+    <tr><td class="pt">frigorífico</td><td class="en">geladeira</td><td>fridge</td><td></td></tr>
+    <tr><td class="pt">ecrã</td><td class="en">tela</td><td>screen</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Portuguese Coffee Culture (Important Vocabulary)</div>
+  <table class="vocab-table">
+    <tr><th>Word</th><th>What It Is</th><th>Notes</th></tr>
+    <tr><td class="pt">bica</td><td>espresso</td><td class="note">The standard word in Lisbon/South. In the North it's "cimbalino".</td></tr>
+    <tr><td class="pt">galão</td><td>large latte (in a glass)</td><td class="note">About 1/4 espresso, 3/4 foamed milk. Very Portuguese.</td></tr>
+    <tr><td class="pt">meia de leite</td><td>half coffee, half milk</td><td class="note">In a cup, not a glass.</td></tr>
+    <tr><td class="pt">abatanado</td><td>long black / Americano</td><td class="note">Used in the Algarve/South specifically.</td></tr>
+    <tr><td class="pt">café com leite</td><td>coffee with milk</td><td></td></tr>
+    <tr><td class="pt">Super Bock / Sagres</td><td>the two main Portuguese beers</td><td class="note">Super Bock is slightly more popular in the South.</td></tr>
+  </table>
+
+  <div class="subsection-title">Algarvian &amp; Regional Usage</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Já era!</div><div class="een">It's gone / sold out / done</div><div class="enote">Very Algarvian. Means something is finished, no longer available.</div></div>
+    <div class="expr-card"><div class="ept">trespassar</div><div class="een">to sell a business / hand over a lease</div><div class="enote">In Portugal, "trespasse" signs on shops mean the business is for sale — not "no trespassing"!</div></div>
+    <div class="expr-card"><div class="ept">Acordo Ortográfico</div><div class="een">The 1990 spelling reform</div><div class="enote">Changed some spellings to align EP/BR. Not everyone uses it consistently.</div></div>
+    <div class="expr-card"><div class="ept">Vais bem?</div><div class="een">How's it going? / You OK?</div><div class="enote">Casual greeting. Very natural in everyday conversation.</div></div>
+    <div class="expr-card"><div class="ept">Rádio Gilão / RTP 1 / RTP 2</div><div class="een">Local/national radio &amp; TV</div><div class="enote">Great for immersion listening. RTP Play app is free.</div></div>
+    <div class="expr-card"><div class="ept">Santinho</div><div class="een">Bless you (after a sneeze)</div><div class="enote">Literally "little saint". The standard response to a sneeze.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- VERBS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="verbs">
+  <div class="section-header">
+    <span class="ico">⚡</span>
+    <h2>Verbs by Category</h2>
+    <span class="count">A verb can appear in multiple categories</span>
+  </div>
+  <div class="info-box">Verbs are grouped by how they are typically used, not by grammar class. A verb like <em>ficar</em> appears under both State/Change and Emotion because context determines meaning. This is intentional.</div>
+
+  <div class="subsection-title">Motion &amp; Movement</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">ir</td><td class="en">to go</td><td class="en">Vou ao mercado.</td><td class="note">Irregular. Eu vou, tu vais, ele vai, nós vamos, vocês vão</td></tr>
+    <tr><td class="pt">vir</td><td class="en">to come</td><td class="en">Ela vem amanhã.</td><td class="note">Irregular. Eu venho, tu vens</td></tr>
+    <tr><td class="pt">andar</td><td class="en">to walk / to go around</td><td class="en">Andámos pela praia.</td><td></td></tr>
+    <tr><td class="pt">caminhar</td><td class="en">to walk (purposeful)</td><td class="en">Gosto de caminhar.</td><td></td></tr>
+    <tr><td class="pt">correr</td><td class="en">to run</td><td class="en">Corro todas as manhãs.</td><td></td></tr>
+    <tr><td class="pt">chegar</td><td class="en">to arrive</td><td class="en">Chegámos a casa.</td><td class="note">chegar a = arrive at/in</td></tr>
+    <tr><td class="pt">partir / sair</td><td class="en">to leave / to go out</td><td class="en">Partiu cedo. · Saímos às oito.</td><td class="note">partir = depart · sair = go out</td></tr>
+    <tr><td class="pt">voltar</td><td class="en">to return / come back</td><td class="en">Quando vais voltar?</td><td></td></tr>
+    <tr><td class="pt">levar</td><td class="en">to take (with you)</td><td class="en">Leva o casaco.</td><td class="note">You take something away from here</td></tr>
+    <tr><td class="pt">trazer</td><td class="en">to bring (here)</td><td class="en">Traz o livro.</td><td class="note">You bring something to here</td></tr>
+    <tr><td class="pt">devolver</td><td class="en">to return / give back</td><td class="en">Devolvi o livro à biblioteca.</td><td></td></tr>
+    <tr><td class="pt">viajar</td><td class="en">to travel</td><td class="en">Gostamos de viajar.</td><td></td></tr>
+    <tr><td class="pt">conduzir</td><td class="en">to drive</td><td class="en">Ela conduz muito bem.</td><td class="note">EP. Brazilians say "dirigir"</td></tr>
+    <tr><td class="pt">passear</td><td class="en">to stroll / go for a walk</td><td class="en">Fomos passear.</td><td></td></tr>
+    <tr><td class="pt">entrar</td><td class="en">to enter / go in</td><td class="en">Entra, por favor.</td><td></td></tr>
+    <tr><td class="pt">subir / descer</td><td class="en">to go up / go down</td><td class="en">Sobe as escadas.</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">State, Being &amp; Change</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">ser</td><td class="en">to be (permanent)</td><td class="en">Sou canadiano.</td><td class="note">Defines identity. See grammar section.</td></tr>
+    <tr><td class="pt">estar</td><td class="en">to be (temporary)</td><td class="en">Estou cansado.</td><td class="note">State, feeling, location.</td></tr>
+    <tr><td class="pt">ficar</td><td class="en">to stay / become / end up</td><td class="en">Fiquei surpreso. · Fica em casa.</td><td class="note">Versatile — learn all its uses</td></tr>
+    <tr><td class="pt">tornar-se</td><td class="en">to become</td><td class="en">Tornou-se famoso.</td><td class="note">More formal than ficar</td></tr>
+    <tr><td class="pt">parecer</td><td class="en">to seem / look like</td><td class="en">Parece fácil.</td><td></td></tr>
+    <tr><td class="pt">mudar</td><td class="en">to change</td><td class="en">Mudei de ideia.</td><td></td></tr>
+    <tr><td class="pt">continuar</td><td class="en">to continue</td><td class="en">Continua a estudar.</td><td></td></tr>
+    <tr><td class="pt">existir / haver</td><td class="en">to exist / there is, there are</td><td class="en">Há um problema. · Houve um acidente.</td><td class="note">Há = present · Houve = past · Havia = imperfect</td></tr>
+  </table>
+
+  <div class="subsection-title">Communication &amp; Social</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">falar</td><td class="en">to speak / talk</td><td class="en">Falo português.</td><td></td></tr>
+    <tr><td class="pt">dizer</td><td class="en">to say / tell</td><td class="en">Disse que sim.</td><td class="note">Irregular past: disse, disseste, disse</td></tr>
+    <tr><td class="pt">perguntar</td><td class="en">to ask (a question)</td><td class="en">Vou perguntar.</td><td class="note">perguntar = ask a question · pedir = ask for something</td></tr>
+    <tr><td class="pt">pedir</td><td class="en">to ask for / request / order</td><td class="en">Pedi um café.</td><td class="note">Also used for ordering in restaurants/cafés</td></tr>
+    <tr><td class="pt">responder</td><td class="en">to answer / reply</td><td class="en">Respondeu depressa.</td><td></td></tr>
+    <tr><td class="pt">chamar</td><td class="en">to call / name</td><td class="en">Chamo-me Barrie.</td><td class="note">Reflexive when used for one's own name</td></tr>
+    <tr><td class="pt">telefonar / ligar</td><td class="en">to phone / call</td><td class="en">Vou ligar mais tarde.</td><td></td></tr>
+    <tr><td class="pt">ensinar</td><td class="en">to teach</td><td class="en">O Cédric ensina português.</td><td></td></tr>
+    <tr><td class="pt">aprender</td><td class="en">to learn</td><td class="en">Estou a aprender muito.</td><td></td></tr>
+    <tr><td class="pt">explicar</td><td class="en">to explain</td><td class="en">Podes explicar?</td><td></td></tr>
+    <tr><td class="pt">concordar / discordar</td><td class="en">to agree / disagree</td><td class="en">Concordo contigo.</td><td></td></tr>
+    <tr><td class="pt">prometer</td><td class="en">to promise</td><td class="en">Prometo.</td><td></td></tr>
+    <tr><td class="pt">cancelar / confirmar</td><td class="en">to cancel / confirm</td><td class="en">Precisas de confirmar.</td><td></td></tr>
+    <tr><td class="pt">reservar / marcar</td><td class="en">to book / reserve</td><td class="en">Marquei uma mesa.</td><td></td></tr>
+    <tr><td class="pt">convidar</td><td class="en">to invite</td><td class="en">Convidámos os amigos.</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Cognition &amp; Perception</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">saber</td><td class="en">to know (facts / how to)</td><td class="en">Sei nadar. · Sei que é verdade.</td><td class="note">saber = know facts. Use this for languages too: Sei português.</td></tr>
+    <tr><td class="pt">conhecer</td><td class="en">to know (people / places)</td><td class="en">Conheço Lisboa. · Conheces o Barrie?</td><td class="note">conhecer = be acquainted with someone/somewhere</td></tr>
+    <tr><td class="pt">pensar / achar</td><td class="en">to think</td><td class="en">Acho que está certo.</td><td class="note">acho que... = I think that... (very common)</td></tr>
+    <tr><td class="pt">acreditar</td><td class="en">to believe</td><td class="en">Acredito nisso.</td><td></td></tr>
+    <tr><td class="pt">perceber / compreender</td><td class="en">to understand</td><td class="en">Percebes? · Não compreendo.</td><td class="note">perceber is more colloquial</td></tr>
+    <tr><td class="pt">lembrar-se</td><td class="en">to remember</td><td class="en">Não me lembro.</td><td class="note">Always reflexive in EP</td></tr>
+    <tr><td class="pt">esquecer-se</td><td class="en">to forget</td><td class="en">Esqueci-me do livro.</td><td class="note">Always reflexive in EP</td></tr>
+    <tr><td class="pt">decidir</td><td class="en">to decide</td><td class="en">Decidimos ficar.</td><td></td></tr>
+    <tr><td class="pt">ver</td><td class="en">to see</td><td class="en">Vi o filme. · Vês?</td><td></td></tr>
+    <tr><td class="pt">ouvir</td><td class="en">to hear / listen</td><td class="en">Ouves bem?</td><td></td></tr>
+    <tr><td class="pt">sentir</td><td class="en">to feel / sense</td><td class="en">Sinto falta de ti.</td><td class="note">sentir falta de = to miss someone/something</td></tr>
+  </table>
+
+  <div class="subsection-title">Emotion &amp; Desire</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">gostar (de)</td><td class="en">to like</td><td class="en">Gosto de café.</td><td class="note">Always followed by de. Gostar = like, adorar = love</td></tr>
+    <tr><td class="pt">adorar</td><td class="en">to love / adore</td><td class="en">Adoro a praia.</td><td></td></tr>
+    <tr><td class="pt">querer</td><td class="en">to want / to love</td><td class="en">Quero um café. · Quero-te.</td><td class="note">quero = I want · quero-te = I love you (intimate)</td></tr>
+    <tr><td class="pt">preferir</td><td class="en">to prefer</td><td class="en">Prefiro o vinho.</td><td></td></tr>
+    <tr><td class="pt">esperar</td><td class="en">to hope / wait / expect</td><td class="en">Espero que sim. · Estou à espera.</td><td></td></tr>
+    <tr><td class="pt">preocupar-se</td><td class="en">to worry</td><td class="en">Não te preocupes.</td><td></td></tr>
+    <tr><td class="pt">divertir-se</td><td class="en">to enjoy oneself / have fun</td><td class="en">Divertimo-nos muito.</td><td class="note">Reflexive</td></tr>
+    <tr><td class="pt">tentar</td><td class="en">to try</td><td class="en">Vou tentar.</td><td></td></tr>
+    <tr><td class="pt">hesitar</td><td class="en">to hesitate</td><td class="en">Não hesites!</td><td></td></tr>
+    <tr><td class="pt">confiar</td><td class="en">to trust / confide</td><td class="en">Confia em mim.</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Daily Life &amp; Routine</div>
+  <table class="vocab-table">
+    <tr><th>Verb</th><th>Meaning</th><th>Example</th><th>Notes</th></tr>
+    <tr><td class="pt">comer</td><td class="en">to eat</td><td class="en">Comemos juntos.</td><td></td></tr>
+    <tr><td class="pt">beber</td><td class="en">to drink</td><td class="en">Bebo muito café.</td><td></td></tr>
+    <tr><td class="pt">dormir</td><td class="en">to sleep</td><td class="en">Dormi bem.</td><td class="note">Stem-changing: durmo, dormes, dorme</td></tr>
+    <tr><td class="pt">acordar</td><td class="en">to wake up</td><td class="en">Acordo cedo.</td><td></td></tr>
+    <tr><td class="pt">levantar-se</td><td class="en">to get up</td><td class="en">Levantei-me às sete.</td><td></td></tr>
+    <tr><td class="pt">deitar-se</td><td class="en">to lie down / go to bed</td><td class="en">Deitei-me tarde.</td><td></td></tr>
+    <tr><td class="pt">vestir-se</td><td class="en">to get dressed</td><td class="en">Visto-me rapidamente.</td><td></td></tr>
+    <tr><td class="pt">cozinhar</td><td class="en">to cook</td><td class="en">Ela cozinha muito bem.</td><td></td></tr>
+    <tr><td class="pt">trabalhar</td><td class="en">to work</td><td class="en">Trabalho em casa.</td><td></td></tr>
+    <tr><td class="pt">estudar</td><td class="en">to study</td><td class="en">Estudo todos os dias.</td><td></td></tr>
+    <tr><td class="pt">jogar / praticar</td><td class="en">to play / practise</td><td class="en">Jogo pickleball. · Pratico português.</td><td class="note">jogar = play a game · tocar = play an instrument</td></tr>
+    <tr><td class="pt">descansar</td><td class="en">to rest</td><td class="en">Precisas de descansar.</td><td></td></tr>
+    <tr><td class="pt">fazer</td><td class="en">to do / make</td><td class="en">Fiz exercício. · O que fazes?</td><td class="note">Irregular. fiz, fizeste, fez, fizemos, fizeram</td></tr>
+    <tr><td class="pt">comprar / vender</td><td class="en">to buy / sell</td><td class="en">Comprei pão.</td><td></td></tr>
+    <tr><td class="pt">pagar</td><td class="en">to pay</td><td class="en">Posso pagar?</td><td></td></tr>
+    <tr><td class="pt">ajudar</td><td class="en">to help</td><td class="en">Podes ajudar-me?</td><td></td></tr>
+    <tr><td class="pt">ter</td><td class="en">to have</td><td class="en">Tenho fome. · Tive sorte.</td><td class="note">Irregular. tenho, tens, tem, temos, têm</td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- NOUNS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="nouns">
+  <div class="section-header">
+    <span class="ico">🏷️</span>
+    <h2>Nouns by Category</h2>
+  </div>
+
+  <div class="subsection-title">People &amp; Relationships</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Gender</th><th>Notes</th></tr>
+    <tr><td class="pt">pessoa</td><td class="en">person</td><td>f</td><td></td></tr>
+    <tr><td class="pt">homem / mulher</td><td class="en">man / woman</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">marido / esposa / mulher</td><td class="en">husband / wife</td><td>m/f</td><td class="note">mulher = woman OR wife</td></tr>
+    <tr><td class="pt">filho / filha</td><td class="en">son / daughter</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">irmão / irmã</td><td class="en">brother / sister</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">avô / avó</td><td class="en">grandfather / grandmother</td><td>m/f</td><td class="note">Accent changes: avô (m) vs avó (f)</td></tr>
+    <tr><td class="pt">sobrinho / sobrinha</td><td class="en">nephew / niece</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">amigo / amiga</td><td class="en">friend</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">vizinho / vizinha</td><td class="en">neighbour</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">professor / professora</td><td class="en">teacher</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">treinador</td><td class="en">coach / trainer</td><td>m</td><td></td></tr>
+    <tr><td class="pt">árbitro</td><td class="en">referee</td><td>m</td><td></td></tr>
+    <tr><td class="pt">dono / dona</td><td class="en">owner</td><td>m/f</td><td></td></tr>
+    <tr><td class="pt">rei / rainha</td><td class="en">king / queen</td><td>m/f</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Places</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Gender</th></tr>
+    <tr><td class="pt">casa / lar</td><td class="en">house / home</td><td>f</td></tr>
+    <tr><td class="pt">praia</td><td class="en">beach</td><td>f</td></tr>
+    <tr><td class="pt">restaurante</td><td class="en">restaurant</td><td>m</td></tr>
+    <tr><td class="pt">café</td><td class="en">café / coffee</td><td>m</td></tr>
+    <tr><td class="pt">ginásio</td><td class="en">gym</td><td>m</td></tr>
+    <tr><td class="pt">mercado / supermercado</td><td class="en">market / supermarket</td><td>m</td></tr>
+    <tr><td class="pt">loja</td><td class="en">shop / store</td><td>f</td></tr>
+    <tr><td class="pt">hospital</td><td class="en">hospital</td><td>m</td></tr>
+    <tr><td class="pt">escola</td><td class="en">school</td><td>f</td></tr>
+    <tr><td class="pt">parque / jardim</td><td class="en">park / garden</td><td>m</td></tr>
+    <tr><td class="pt">aeroporto</td><td class="en">airport</td><td>m</td></tr>
+    <tr><td class="pt">estrada / rua</td><td class="en">road / street</td><td>f</td></tr>
+    <tr><td class="pt">quinta</td><td class="en">country house / farm</td><td>f</td></tr>
+    <tr><td class="pt">porto</td><td class="en">port / harbour</td><td>m</td></tr>
+  </table>
+
+  <div class="subsection-title">Food &amp; Drink</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">pão</td><td class="en">bread</td><td></td></tr>
+    <tr><td class="pt">tosta / sandes</td><td class="en">toasted sandwich / sandwich</td><td class="note">sandes is EP (brazilians say sanduíche)</td></tr>
+    <tr><td class="pt">frango / galinha</td><td class="en">chicken (cooked) / chicken (bird)</td><td></td></tr>
+    <tr><td class="pt">peixe / atum</td><td class="en">fish / tuna</td><td></td></tr>
+    <tr><td class="pt">polvo / raia / ameijoas</td><td class="en">octopus / ray / clams</td><td class="note">Typical Algarvian seafood</td></tr>
+    <tr><td class="pt">camarão / gambas</td><td class="en">prawn / shrimp</td><td></td></tr>
+    <tr><td class="pt">borrego</td><td class="en">lamb</td><td></td></tr>
+    <tr><td class="pt">queijo / chouriço</td><td class="en">cheese / chorizo</td><td></td></tr>
+    <tr><td class="pt">salmão</td><td class="en">salmon</td><td></td></tr>
+    <tr><td class="pt">cebola / salada</td><td class="en">onion / salad</td><td></td></tr>
+    <tr><td class="pt">café / galão / bica</td><td class="en">coffee (general) / latte / espresso</td><td class="note">See EP specifics section</td></tr>
+    <tr><td class="pt">vinho / cerveja / água</td><td class="en">wine / beer / water</td><td></td></tr>
+    <tr><td class="pt">sumo</td><td class="en">juice</td><td class="note">EP. Brazilians say suco.</td></tr>
+    <tr><td class="pt">bolo</td><td class="en">cake</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Nature &amp; Weather</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">sol / chuva / vento</td><td class="en">sun / rain / wind</td><td></td></tr>
+    <tr><td class="pt">nuvem (nuvens)</td><td class="en">cloud(s)</td><td></td></tr>
+    <tr><td class="pt">mar / onda</td><td class="en">sea / wave</td><td></td></tr>
+    <tr><td class="pt">praia / areia</td><td class="en">beach / sand</td><td></td></tr>
+    <tr><td class="pt">campo / montanha / rio</td><td class="en">countryside / mountain / river</td><td></td></tr>
+    <tr><td class="pt">flor / árvore</td><td class="en">flower / tree</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Time</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">manhã / tarde / noite</td><td class="en">morning / afternoon / night</td><td></td></tr>
+    <tr><td class="pt">madrugada</td><td class="en">early hours / dawn</td><td class="note">Roughly midnight to 5am</td></tr>
+    <tr><td class="pt">serão</td><td class="en">evening (at home)</td><td class="note">Homely connotation — a relaxed evening</td></tr>
+    <tr><td class="pt">ontem / hoje / amanhã</td><td class="en">yesterday / today / tomorrow</td><td></td></tr>
+    <tr><td class="pt">semana / mês / ano</td><td class="en">week / month / year</td><td></td></tr>
+    <tr><td class="pt">vez (vezes)</td><td class="en">time(s) / occasion(s)</td><td class="note">às vezes = sometimes · de vez em quando = from time to time</td></tr>
+    <tr><td class="pt">altura / época</td><td class="en">moment/period / season/time of year</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Sports &amp; Activities</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">pickleball</td><td class="en">pickleball</td><td class="note">Barrie plays competitively in Canada and Portugal</td></tr>
+    <tr><td class="pt">ténis</td><td class="en">tennis</td><td></td></tr>
+    <tr><td class="pt">pilates / natação</td><td class="en">pilates / swimming</td><td></td></tr>
+    <tr><td class="pt">caminhada</td><td class="en">hike / long walk</td><td></td></tr>
+    <tr><td class="pt">kayak / ciclismo</td><td class="en">kayaking / cycling</td><td></td></tr>
+    <tr><td class="pt">arbitragem</td><td class="en">refereeing</td><td class="note">Barrie referees pickleball</td></tr>
+    <tr><td class="pt">campeonato / torneio</td><td class="en">championship / tournament</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Abstract &amp; Feelings</div>
+  <table class="vocab-table">
+    <tr><th>Portuguese</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">saudade</td><td class="en">deep longing / nostalgic yearning</td><td class="note">Untranslatable. The melancholic feeling for something or someone loved that is distant or gone.</td></tr>
+    <tr><td class="pt">saúde</td><td class="en">health</td><td class="note">Also the Portuguese "cheers!" when toasting</td></tr>
+    <tr><td class="pt">sorte</td><td class="en">luck / fate</td><td class="note">Tive sorte = I was lucky · Boa sorte = Good luck</td></tr>
+    <tr><td class="pt">sonho / pesadelo</td><td class="en">dream / nightmare</td><td></td></tr>
+    <tr><td class="pt">confiança</td><td class="en">confidence / trust</td><td></td></tr>
+    <tr><td class="pt">dúvida</td><td class="en">doubt / question</td><td class="note">Sem dúvida = without a doubt / definitely</td></tr>
+    <tr><td class="pt">problema / solução</td><td class="en">problem / solution</td><td></td></tr>
+    <tr><td class="pt">vida</td><td class="en">life</td><td></td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ADJECTIVES -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="adjectives">
+  <div class="section-header">
+    <span class="ico">🎨</span>
+    <h2>Adjectives by Category</h2>
+  </div>
+  <div class="info-box">Remember: adjectives in Portuguese must agree in <strong>gender</strong> (masculine/feminine) and <strong>number</strong> (singular/plural) with the noun. Most adjectives ending in -o change to -a for feminine. Adjectives ending in -e don't change for gender.</div>
+
+  <div class="subsection-title">Quality &amp; Value</div>
+  <table class="vocab-table">
+    <tr><th>Masc. / Fem.</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">bom / boa</td><td class="en">good</td><td class="note">Irregular: bons / boas (plural)</td></tr>
+    <tr><td class="pt">mau / má</td><td class="en">bad</td><td class="note">Irregular feminine: má</td></tr>
+    <tr><td class="pt">excelente / excelente</td><td class="en">excellent</td><td class="note">No gender change (-e ending)</td></tr>
+    <tr><td class="pt">bonito / bonita</td><td class="en">beautiful / pretty</td><td></td></tr>
+    <tr><td class="pt">feio / feia</td><td class="en">ugly</td><td></td></tr>
+    <tr><td class="pt">perfeito / perfeita</td><td class="en">perfect</td><td></td></tr>
+    <tr><td class="pt">interessante / interessante</td><td class="en">interesting</td><td></td></tr>
+    <tr><td class="pt">importante / importante</td><td class="en">important</td><td></td></tr>
+    <tr><td class="pt">diferente / diferente</td><td class="en">different</td><td></td></tr>
+    <tr><td class="pt">simples / simples</td><td class="en">simple</td><td></td></tr>
+    <tr><td class="pt">fácil / fácil</td><td class="en">easy</td><td class="note">Plural: fáceis</td></tr>
+    <tr><td class="pt">difícil / difícil</td><td class="en">difficult</td><td class="note">Plural: difíceis</td></tr>
+  </table>
+
+  <div class="subsection-title">Emotional States</div>
+  <table class="vocab-table">
+    <tr><th>Masc. / Fem.</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">feliz / feliz</td><td class="en">happy</td><td class="note">No gender change. Plural: felizes</td></tr>
+    <tr><td class="pt">triste / triste</td><td class="en">sad</td><td></td></tr>
+    <tr><td class="pt">contente / contente</td><td class="en">content / pleased</td><td></td></tr>
+    <tr><td class="pt">cansado / cansada</td><td class="en">tired</td><td></td></tr>
+    <tr><td class="pt">animado / animada</td><td class="en">excited / lively</td><td></td></tr>
+    <tr><td class="pt">nervoso / nervosa</td><td class="en">nervous</td><td></td></tr>
+    <tr><td class="pt">confiante / confiante</td><td class="en">confident</td><td></td></tr>
+    <tr><td class="pt">surpreendido / surpreendida</td><td class="en">surprised</td><td></td></tr>
+    <tr><td class="pt">zangado / zangada</td><td class="en">angry / upset</td><td></td></tr>
+    <tr><td class="pt">preocupado / preocupada</td><td class="en">worried</td><td></td></tr>
+    <tr><td class="pt">entusiasmado / entusiasmada</td><td class="en">enthusiastic</td><td></td></tr>
+    <tr><td class="pt">orgulhoso / orgulhosa</td><td class="en">proud</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Size, Quantity &amp; Degree</div>
+  <table class="vocab-table">
+    <tr><th>Masc. / Fem.</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">grande / grande</td><td class="en">big / great</td><td class="note">Placed before noun for emphasis: um grande homem</td></tr>
+    <tr><td class="pt">pequeno / pequena</td><td class="en">small</td><td></td></tr>
+    <tr><td class="pt">alto / alta</td><td class="en">tall / high / loud</td><td></td></tr>
+    <tr><td class="pt">baixo / baixa</td><td class="en">short / low / quiet</td><td></td></tr>
+    <tr><td class="pt">muito / muita</td><td class="en">a lot / very much</td><td class="note">As adverb (muito bom) doesn't change. As adjective agrees: muitas pessoas.</td></tr>
+    <tr><td class="pt">pouco / pouca</td><td class="en">little / not much</td><td></td></tr>
+    <tr><td class="pt">todo / toda</td><td class="en">all / every</td><td class="note">todos os dias = every day</td></tr>
+    <tr><td class="pt">mesmo / mesma</td><td class="en">same / even</td><td></td></tr>
+    <tr><td class="pt">próximo / próxima</td><td class="en">next / near</td><td></td></tr>
+    <tr><td class="pt">último / última</td><td class="en">last</td><td></td></tr>
+    <tr><td class="pt">primeiro / primeira</td><td class="en">first</td><td></td></tr>
+  </table>
+
+  <div class="subsection-title">Physical &amp; Descriptive</div>
+  <table class="vocab-table">
+    <tr><th>Masc. / Fem.</th><th>English</th><th>Notes</th></tr>
+    <tr><td class="pt">frio / fria</td><td class="en">cold</td><td class="note">Está frio (weather) · Estou com frio (I'm cold)</td></tr>
+    <tr><td class="pt">quente / quente</td><td class="en">hot / warm</td><td class="note">Faz calor (it's hot weather) · Está quente (object is hot)</td></tr>
+    <tr><td class="pt">novo / nova</td><td class="en">new / young</td><td class="note">Placed before noun = young; after = new</td></tr>
+    <tr><td class="pt">velho / velha</td><td class="en">old</td><td></td></tr>
+    <tr><td class="pt">forte / forte</td><td class="en">strong</td><td></td></tr>
+    <tr><td class="pt">fraco / fraca</td><td class="en">weak</td><td></td></tr>
+    <tr><td class="pt">ocupado / ocupada</td><td class="en">busy / occupied</td><td></td></tr>
+    <tr><td class="pt">livre / livre</td><td class="en">free / available</td><td></td></tr>
+    <tr><td class="pt">sozinho / sozinha</td><td class="en">alone</td><td></td></tr>
+    <tr><td class="pt">seguro / segura</td><td class="en">safe / secure</td><td></td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- EXPRESSIONS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="expressions">
+  <div class="section-header">
+    <span class="ico">💬</span>
+    <h2>Idioms &amp; Fixed Expressions</h2>
+  </div>
+
+  <div class="subsection-title">Everyday Greetings &amp; Social</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Tudo bem? / Tudo óptimo?</div><div class="een">Everything okay? / Everything great?</div><div class="enote">Very common greeting. Reply: Tudo bem, obrigado! E tu/você?</div></div>
+    <div class="expr-card"><div class="ept">Pois pois / Pois é</div><div class="een">Yes indeed / I see / Right</div><div class="enote">Conversation filler. Shows you're listening and agreeing.</div></div>
+    <div class="expr-card"><div class="ept">Isso!</div><div class="een">That's it! / Exactly!</div><div class="enote">Positive reinforcement. Very natural when something is correct.</div></div>
+    <div class="expr-card"><div class="ept">Vais bem?</div><div class="een">How's it going? / You OK?</div><div class="enote">Casual, informal check-in. Very natural between friends.</div></div>
+    <div class="expr-card"><div class="ept">Até à próxima</div><div class="een">Until next time / See you next time</div><div class="enote">Standard farewell. Also: Até logo (see you later), Até já (see you shortly).</div></div>
+    <div class="expr-card"><div class="ept">Tenha um bom dia</div><div class="een">Have a good day</div><div class="enote">Polite. Tenha = formal/polite command of ter.</div></div>
+    <div class="expr-card"><div class="ept">De nada</div><div class="een">You're welcome</div><div class="enote">Response to obrigado/obrigada.</div></div>
+    <div class="expr-card"><div class="ept">Santinho</div><div class="een">Bless you (after sneezing)</div><div class="enote">Literally "little saint". Always use after someone sneezes.</div></div>
+    <div class="expr-card"><div class="ept">Desculpe / Desculpa</div><div class="een">Sorry / Excuse me</div><div class="enote">Desculpe = formal · Desculpa = informal</div></div>
+    <div class="expr-card"><div class="ept">Se faz favor</div><div class="een">Please</div><div class="enote">Literally "if you please". Very common in EP, especially when ordering.</div></div>
+  </div>
+
+  <div class="subsection-title">Thinking &amp; Expressing Opinion</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Acho que...</div><div class="een">I think that...</div><div class="enote">One of the most useful phrases. Acho que está correcto.</div></div>
+    <div class="expr-card"><div class="ept">Na verdade</div><div class="een">Actually / In truth</div><div class="enote">Na verdade, prefiro café.</div></div>
+    <div class="expr-card"><div class="ept">Pelo menos</div><div class="een">At least</div><div class="enote">Pelo menos tentei!</div></div>
+    <div class="expr-card"><div class="ept">Sem dúvida</div><div class="een">Without a doubt / Definitely</div><div class="enote">Strong affirmation.</div></div>
+    <div class="expr-card"><div class="ept">Tanto faz</div><div class="een">Doesn't matter / Either way</div><div class="enote">Casual. Use when you have no preference.</div></div>
+    <div class="expr-card"><div class="ept">Pelos vistos / Pelo que parece</div><div class="een">Apparently / It seems so</div><div class="enote">Pelos vistos, vai chover. — Apparently it's going to rain.</div></div>
+    <div class="expr-card"><div class="ept">Não sei</div><div class="een">I don't know</div><div class="enote">Simple but essential!</div></div>
+    <div class="expr-card"><div class="ept">Depende</div><div class="een">It depends</div><div class="enote">Universally useful answer.</div></div>
+  </div>
+
+  <div class="subsection-title">Emotion &amp; Feeling</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Sinto falta de...</div><div class="een">I miss... (things / places)</div><div class="enote">Sinto falta do sol. — I miss the sun.</div></div>
+    <div class="expr-card"><div class="ept">Tenho saudades de...</div><div class="een">I deeply miss...</div><div class="enote">More emotional, deeper longing than "sinto falta".</div></div>
+    <div class="expr-card"><div class="ept">Matou saudades</div><div class="een">Killed the saudades</div><div class="enote">The feeling after finally reuniting with someone you missed.</div></div>
+    <div class="expr-card"><div class="ept">Tive sorte</div><div class="een">I was lucky</div><div class="enote">Boa sorte! = Good luck! · Que sorte! = How lucky!</div></div>
+    <div class="expr-card"><div class="ept">É de malucos</div><div class="een">It's crazy / It's mad</div><div class="enote">Colloquial. maluco = madman.</div></div>
+    <div class="expr-card"><div class="ept">Que raios!</div><div class="een">What the heck! / Bloody hell!</div><div class="enote">Mild expletive. Raios = thunderbolts.</div></div>
+    <div class="expr-card"><div class="ept">Que coincidência!</div><div class="een">What a coincidence!</div><div class="enote"></div></div>
+    <div class="expr-card"><div class="ept">Vai mas é embora!</div><div class="een">Just go away! / Get out of here!</div><div class="enote">Playful or serious depending on tone.</div></div>
+  </div>
+
+  <div class="subsection-title">Proverbs &amp; Portuguese Wisdom</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Já era!</div><div class="een">It's done / It's gone / Too late now</div><div class="enote">Very Algarvian. Means the opportunity or thing is finished.</div></div>
+    <div class="expr-card"><div class="ept">Há males que vêm por bem</div><div class="een">Every cloud has a silver lining</div><div class="enote">Literally: There are bad things that come for good.</div></div>
+    <div class="expr-card"><div class="ept">Devagar se vai ao longe</div><div class="een">Slowly but surely</div><div class="enote">Literally: Going slowly, one goes far. Perfect for language learning!</div></div>
+    <div class="expr-card"><div class="ept">Quem não arrisca não petisca</div><div class="een">Nothing ventured, nothing gained</div><div class="enote">Literally: He who doesn't risk doesn't snack!</div></div>
+  </div>
+
+  <div class="subsection-title">Communication Helpers — for Lessons</div>
+  <div class="expr-grid">
+    <div class="expr-card"><div class="ept">Pode repetir?</div><div class="een">Can you repeat?</div><div class="enote">Essential for lessons!</div></div>
+    <div class="expr-card"><div class="ept">Fala mais devagar?</div><div class="een">Can you speak more slowly?</div><div class="enote">Fala = informal, Fale = formal</div></div>
+    <div class="expr-card"><div class="ept">O que significa...?</div><div class="een">What does ... mean?</div><div class="enote">O que significa "saudade"?</div></div>
+    <div class="expr-card"><div class="ept">Como se diz ... em português?</div><div class="een">How do you say ... in Portuguese?</div><div class="enote">One of the most useful questions to know.</div></div>
+    <div class="expr-card"><div class="ept">Não percebi</div><div class="een">I didn't understand</div><div class="enote">Natural. Don't be shy to use it!</div></div>
+    <div class="expr-card"><div class="ept">Obrigado por...</div><div class="een">Thank you for...</div><div class="enote">Obrigado por tudo. — Thank you for everything.</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- EXERCISES -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="exercises">
+  <div class="section-header">
+    <span class="ico">🎯</span>
+    <h2>Exercises &amp; Games</h2>
+    <span class="count">Designed for A2–B1 level</span>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🃏</span><div><div class="ptitle">The Verb Battle</div><div class="ptag">🔄 Ser / Estar / Ficar</div></div></div>
+    <p>One of the most common sources of error. The goal is to get this automatic — no thinking required.</p>
+    <div class="try-this">
+      <span class="try-label">How to play</span>
+      Write 10 sentences about your day using only ser, estar, and ficar. Mix them up. Then try to explain WHY you chose each one. Examples to start: <em>O café ___ frio. · Eu ___ cansado. · Ela ___ médica. · Fiquei ___ surpreendido.</em>
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">☕</span><div><div class="ptitle">The Café Simulation</div><div class="ptag">🗣️ Speaking practice</div></div></div>
+    <p>Order at a real café entirely in Portuguese. No English allowed, even if the staff switch. This builds real confidence fast — much faster than studying vocabulary lists.</p>
+    <div class="try-this">
+      <span class="try-label">Script to memorise first</span>
+      "Bom dia. Gostaria de [um galão / uma bica / um abatanado], se faz favor." → They respond. → "Quanto custa?" → "Obrigado, até logo."
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">⚡</span><div><div class="ptitle">Por vs Para Sprint</div><div class="ptag">📝 Gap-fill</div></div></div>
+    <p>Fill in the blank — no looking it up first. Then check. The goal is to build intuition, not translate consciously.</p>
+    <div class="try-this">
+      <span class="try-label">Try these (answers at the bottom)</span>
+      1. Comprei este livro ___ ti.<br>
+      2. Obrigado ___ tudo.<br>
+      3. Vou ___ Lisboa amanhã.<br>
+      4. Trabalhou ___ três horas.<br>
+      5. Fiz isso ___ aprender.<br>
+      <em style="color:var(--muted);margin-top:8px;display:block">Answers: 1.para 2.por 3.para 4.por 5.para</em>
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🎲</span><div><div class="ptitle">Verb Conjugation Dice</div><div class="ptag">🧠 Memory game</div></div></div>
+    <p>Pick any verb from the verbs section. Conjugate it in all 5 persons (eu, tu, ele/ela, nós, vocês) in the present tense. Then the past. Time yourself — aim for under 30 seconds per tense once you know the verb.</p>
+    <div class="try-this">
+      <span class="try-label">Start with these 10 essential irregulars</span>
+      ser · estar · ter · fazer · ir · vir · saber · poder · querer · dizer
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">📖</span><div><div class="ptitle">Caption the Photo</div><div class="ptag">✍️ Writing practice</div></div></div>
+    <p>Take a photo on your phone — anything around you. Write 5 sentences about it in Portuguese. At least one must use an adjective after the noun. At least one must use ser vs estar correctly. Good for attention to detail.</p>
+    <div class="try-this">
+      <span class="try-label">Self-check before sending</span>
+      ✓ Does every adjective agree with its noun?<br>
+      ✓ Did you use the right ser/estar?<br>
+      ✓ Are the articles correct (o/a/os/as)?
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🎙️</span><div><div class="ptitle">Talk the Streets — Daily Shadowing</div><div class="ptag">🔊 Pronunciation</div></div></div>
+    <p>The Talk the Streets app (free) uses native speakers filmed on actual Portuguese streets. Shadow the audio — play, pause, repeat out loud. The goal is not to understand everything at once, but to train your ear to the rhythm and swallowed vowels of natural EP speech.</p>
+    <div class="try-this">
+      <span class="try-label">Tip</span>
+      10 minutes of shadowing a day is more effective than 1 hour of grammar study once a week. Consistency beats volume.
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🔁</span><div><div class="ptitle">Quizzlet — Spaced Repetition</div><div class="ptag">💡 Vocabulary</div></div></div>
+    <p>Already using this — keep it up. The key is not to add too many words at once. Add the vocabulary you encounter in lessons, not random lists from the internet. 10–15 new cards per session maximum.</p>
+    <div class="try-this">
+      <span class="try-label">Priority decks to build</span>
+      1. Irregular verb conjugations (top 20 verbs)<br>
+      2. Expressions from this knowledge base<br>
+      3. Words you've mispronounced in lessons
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- TIPS -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<section class="section" id="tips">
+  <div class="section-header">
+    <span class="ico">💡</span>
+    <h2>Personalised Tips</h2>
+    <span class="count">Based on sessions</span>
+  </div>
+
+  <div class="struggle-note">
+    <strong>Identified in sessions: "Estou a hesitar falar porque falo muito devagar"</strong>
+    You know the words — the hesitation is about retrieving them under pressure, not about not knowing them.
+  </div>
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🐢</span><div><div class="ptitle">Slow is fine. Stopping isn't.</div><div class="ptag">Speaking confidence</div></div></div>
+    <p>Native speakers never judge a slow learner. They judge silence and apology. Keep going even when the sentence isn't perfect — you will be understood. The goal in natural conversation is communication, not correctness.</p>
+    <div class="try-this">
+      <span class="try-label">Try this rule for one week</span>
+      When you don't know a word: describe it instead of stopping. "A coisa que usamos para beber" (the thing we use to drink) = copo. This is what fluent speakers do when they forget a word too.
+    </div>
+  </div>
+
+  <div class="struggle-note">
+    <strong>Identified in sessions: "Estou muito confiante quando tenho tempo para preparar as palavras"</strong>
+    Your confidence is there — it just needs to survive contact with real-time conversation.
+  </div>
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🎯</span><div><div class="ptitle">The 5-minute prep before lessons</div><div class="ptag">Lesson preparation</div></div></div>
+    <p>Before each session, spend 5 minutes talking to yourself in Portuguese about what happened that day. You already know how to do this — you're just practising the retrieval speed. By the time the lesson starts, you're already warmed up.</p>
+    <div class="try-this">
+      <span class="try-label">Today's prompt</span>
+      "Hoje acordei às ____. Depois, _____. O tempo está _____. Estou a _____."
+    </div>
+  </div>
+
+  <div class="struggle-note">
+    <strong>Identified in sessions: "Confundi muitos verbos" and "falta de atenção aos detalhes"</strong>
+    This is normal at A2–B1 level. The solution is not to study more — it's to slow down the writing process.
+  </div>
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🔍</span><div><div class="ptitle">The 3-Check Rule</div><div class="ptag">Writing accuracy</div></div></div>
+    <p>After writing anything in Portuguese — a message, a sentence, a WhatsApp — read it back with these three specific questions. Not a general re-read. Specific checks.</p>
+    <div class="try-this">
+      <span class="try-label">The 3 checks</span>
+      <strong>1. Gender:</strong> Does each article match the noun? (o/a/os/as)<br>
+      <strong>2. Verb form:</strong> Is this the right person and tense?<br>
+      <strong>3. Adjective agreement:</strong> Does the adjective match the noun's gender and number?
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">🎧</span><div><div class="ptitle">Passive immersion — RTP Play</div><div class="ptag">Listening</div></div></div>
+    <p>The RTP Play app (free — Portugal's public broadcaster) gives you access to Portuguese news, shows, and documentaries. You don't need to understand everything. Even having it on in the background tunes your ear to the rhythm of European Portuguese.</p>
+    <div class="try-this">
+      <span class="try-label">Start here</span>
+      RTP 1 news at 8pm. Watch for 10 minutes. Don't try to translate — just listen for words you recognise. Write down 3 words you caught. That's a win.
+    </div>
+  </div>
+
+  <div class="practice-card">
+    <div class="ph"><span class="pico">📍</span><div><div class="ptitle">Algarve is your classroom</div><div class="ptag">Real-world practice</div></div></div>
+    <p>You live in the Algarve part of the year. Every shop, every café, every market is a practice session. Locals appreciate any effort — even imperfect Portuguese gets a warm response. Use it.</p>
+    <div class="try-this">
+      <span class="try-label">This week's challenges</span>
+      🔲 Order coffee entirely in Portuguese<br>
+      🔲 Ask how much something costs: "Quanto custa?"<br>
+      🔲 Say goodbye: "Obrigado, até logo!"<br>
+      🔲 Say thank you and you're welcome in a shop
+    </div>
+  </div>
+</section>
+
+<div class="kb-footer">
+  <p>cmartwise · Portuguese Knowledge Base · Built from coaching sessions · All content reviewed by Cédric Martin</p>
+  <p style="margin-top:6px">To suggest corrections or additions, contact your coach at cmartwise-coaching.eu</p>
+</div>
+
+</main>
+
+<script>
+// Smooth scroll for sidebar links
+document.querySelectorAll('.sidebar a').forEach(link => {
+  link.addEventListener('click', e => {
+    const href = link.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const target = document.querySelector(href);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    }
+  });
+});
+
+// Highlight active section on scroll
+const sections = document.querySelectorAll('.section');
+const sidebarLinks = document.querySelectorAll('.sidebar a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 60) current = s.id;
+  });
+  sidebarLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>

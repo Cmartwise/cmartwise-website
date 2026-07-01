@@ -1,232 +1,100 @@
-// Supabase Edge Function: generate-test
-// Generates language test questions via Claude API
-// Deploy: supabase.com → Edge Functions → generate-test → paste code → Deploy
-// Secret needed: ANTHROPIC_API_KEY (Project Settings → Edge Functions → Secrets)
+import Anthropic from 'npm:@anthropic-ai/sdk@0.27.3'
 
-const CORS = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
-type TestConfig = {
-  testType: "CIPLE" | "DIPLE" | "GRE" | "IELTS"
-  section: "reading" | "writing" | "listening" | "speaking"
-  level?: string
-  language?: string
-}
+const PROMPTS: Record<string, Record<string, string>> = {
+  CIPLE: {
+    reading: `Generate a CIPLE (A2 Portuguese) reading comprehension test. Return ONLY valid JSON, no markdown fences.
+Schema: {"passage":"<150-word European Portuguese text on everyday topic>","questions":[8 questions, mix of {"type":"multiple_choice","question":"...","options":["A","B","C","D"],"correct":"A"} and {"type":"true_false","question":"...","correct":true}],"duration_minutes":20}
+Topics: daily routine, shopping, weather, family, leisure. Use simple European Portuguese.`,
 
-function buildTestPrompt(config: TestConfig): string {
-  const { testType, section, level, language = "Portuguese" } = config
+    writing: `Generate a CIPLE (A2 Portuguese) writing test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tasks":[{"prompt":"<short Portuguese writing prompt>","prompt_en":"<English translation>","word_count_min":40,"word_count_max":80},{"prompt":"<slightly longer prompt>","prompt_en":"<translation>","word_count_min":60,"word_count_max":120}],"duration_minutes":30}
+Tasks: postcard, short email to a friend, describe your weekend.`,
 
-  const levelMap: Record<string, string> = {
-    CIPLE: "A2 (beginner-intermediate)",
-    DIPLE: "B1-B2 (intermediate)",
-    GRE: "C1-C2 (advanced English academic)",
-    IELTS: "B1-C1 (international English)",
+    listening: `Generate a CIPLE (A2 Portuguese) listening test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tracks":[{"id":"t1","title":"<title>","context":"<setting>","script":"<120-word European Portuguese dialogue>","questions":[5 questions with correct answers]},{"id":"t2","title":"...","context":"...","script":"...","questions":[3 questions]}],"duration_minutes":25}`,
+
+    speaking: `Generate a CIPLE (A2 Portuguese) speaking test. Return ONLY valid JSON, no markdown fences.
+Schema: {"parts":[{"type":"describe_image","instruction":"Descreve a imagem que imaginas.","topic":"<simple scene in Portuguese>","topic_en":"<English>","prep_time_seconds":30,"speak_time_seconds":45},{"type":"interaction","instruction":"Responde às perguntas.","prompts":[{"question":"Como te chamas e de onde és?"},{"question":"O que gostas de fazer nos tempos livres?"},{"question":"Descreve a tua rotina diária."}],"speak_time_seconds_per_prompt":30}],"evaluation_rubric":{"fluency":"Speaks with minimal hesitation","vocabulary":"Appropriate A2 vocabulary","grammar":"Correct present and past tense","communication":"Gets the message across"},"duration_minutes":10}`
+  },
+  DIPLE: {
+    reading: `Generate a DIPLE (B1-B2 Portuguese) reading test. Return ONLY valid JSON, no markdown fences.
+Schema: {"passage":"<250-word European Portuguese text on current affairs or culture>","questions":[10 questions mixing multiple_choice and true_false and short, include correct for mc/tf],"duration_minutes":30}`,
+
+    writing: `Generate a DIPLE (B1-B2 Portuguese) writing test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tasks":[{"prompt":"<formal letter prompt in Portuguese>","prompt_en":"<translation>","word_count_min":80,"word_count_max":150},{"prompt":"<argumentative task>","prompt_en":"<translation>","word_count_min":150,"word_count_max":250}],"duration_minutes":40}`,
+
+    listening: `Generate a DIPLE (B1-B2 Portuguese) listening test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tracks":[{"id":"t1","title":"...","context":"News or interview","script":"<200-word European Portuguese>","questions":[6 questions]},{"id":"t2","title":"...","context":"...","script":"...","questions":[4 questions]}],"duration_minutes":35}`,
+
+    speaking: `Generate a DIPLE (B1-B2 Portuguese) speaking test. Return ONLY valid JSON, no markdown fences.
+Schema: {"parts":[{"type":"opinion","instruction":"Dá a tua opinião.","topic":"<debatable topic in Portuguese>","topic_en":"<English>","prep_time_seconds":60,"speak_time_seconds":90},{"type":"interaction","instruction":"Participa na conversa.","prompts":[{"question":"Qual é a tua opinião sobre as redes sociais?"},{"question":"Como resolverias o problema do tráfego nas cidades?"},{"question":"Compara a vida urbana e rural."}],"speak_time_seconds_per_prompt":45}],"evaluation_rubric":{"fluency":"Sustains speech with good pace","vocabulary":"B1-B2 range","grammar":"Multiple tenses used accurately","coherence":"Logical structure"},"duration_minutes":15}`
+  },
+  IELTS: {
+    reading: `Generate an IELTS Academic Reading practice test. Return ONLY valid JSON, no markdown fences.
+Schema: {"passage":"<300-word academic English passage>","questions":[10 questions mixing multiple_choice and true_false and short, include correct for mc/tf],"duration_minutes":20}`,
+
+    writing: `Generate an IELTS Writing practice test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tasks":[{"prompt":"Task 1: Describe the following graph or chart (describe a trend or comparison).","prompt_en":"Summarise the main features and make comparisons where relevant.","word_count_min":150,"word_count_max":200},{"prompt":"Task 2: Some people believe that universities should focus on practical skills rather than theoretical knowledge. To what extent do you agree?","prompt_en":"Give your opinion with examples.","word_count_min":250,"word_count_max":350}],"duration_minutes":60}`,
+
+    listening: `Generate an IELTS Listening practice test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tracks":[{"id":"s1","title":"Section 1","context":"Social conversation","script":"<200-word British English dialogue>","questions":[5 questions]},{"id":"s2","title":"Section 2","context":"Information talk","script":"<200-word monologue>","questions":[5 questions]}],"duration_minutes":30}`,
+
+    speaking: `Generate an IELTS Speaking test. Return ONLY valid JSON, no markdown fences.
+Schema: {"parts":[{"type":"opinion","instruction":"Part 2: Speak for 1-2 minutes.","topic":"Describe a time when you had to make an important decision.","topic_en":"Talk about what the decision was, why it was difficult, and what happened.","prep_time_seconds":60,"speak_time_seconds":120},{"type":"interaction","instruction":"Part 3 discussion.","prompts":[{"question":"How has technology changed decision-making in modern life?"},{"question":"Do you think people today face more difficult choices than previous generations?"},{"question":"What role should education play in helping young people make good decisions?"}],"speak_time_seconds_per_prompt":60}],"evaluation_rubric":{"fluency":"Fluency and coherence","vocabulary":"Lexical resource","grammar":"Grammatical range and accuracy","pronunciation":"Clear pronunciation"},"duration_minutes":15}`
+  },
+  GRE: {
+    reading: `Generate a GRE Verbal Reasoning reading comprehension practice test. Return ONLY valid JSON, no markdown fences.
+Schema: {"passage":"<250-word dense academic passage>","questions":[6 multiple_choice questions with 5 options A-E, GRE critical reasoning style, include correct],"duration_minutes":15}`,
+
+    writing: `Generate a GRE Analytical Writing practice test. Return ONLY valid JSON, no markdown fences.
+Schema: {"tasks":[{"prompt":"Issue Task: As societies become increasingly digital, the skills most valued in the workforce have fundamentally changed. Write an essay discussing this claim.","prompt_en":"Develop a well-reasoned argument with specific examples.","word_count_min":450,"word_count_max":650},{"prompt":"Argument Task: The following appeared in a business report: 'Our company should switch to remote work permanently because productivity increased by 15% during our six-month trial.' Evaluate this argument.","prompt_en":"Identify logical flaws and explain what evidence would strengthen or weaken the conclusion.","word_count_min":350,"word_count_max":500}],"duration_minutes":60}`,
+
+    listening: `Generate a GRE-style critical listening exercise. Return ONLY valid JSON, no markdown fences.
+Schema: {"tracks":[{"id":"a1","title":"Academic Lecture Excerpt","context":"Graduate seminar on cognitive science","script":"<250-word dense academic English with complex vocabulary>","questions":[5 critical reasoning questions with 4 options each, include correct]}],"duration_minutes":20}`,
+
+    speaking: `Generate a GRE-style oral academic exercise. Return ONLY valid JSON, no markdown fences.
+Schema: {"parts":[{"type":"opinion","instruction":"Analyse and respond to the prompt.","topic":"The most significant advances in human history have come from individual genius rather than collective effort.","topic_en":"Support or refute this claim with reasoning and specific examples.","prep_time_seconds":120,"speak_time_seconds":180},{"type":"interaction","instruction":"Respond to follow-up questions.","prompts":[{"question":"What counterarguments exist against your position?"},{"question":"How does this idea apply to contemporary scientific or technological development?"},{"question":"What historical evidence most strongly supports or undermines this view?"}],"speak_time_seconds_per_prompt":90}],"evaluation_rubric":{"argumentation":"Clear thesis with evidence","vocabulary":"Graduate-level vocabulary","coherence":"Logical structure","critical_thinking":"Depth of analysis"},"duration_minutes":20}`
   }
-  const targetLevel = level || levelMap[testType] || "B1"
-
-  const sectionPrompts: Record<string, string> = {
-    reading: `Create a ${testType} reading comprehension test at ${targetLevel} level.
-
-Return ONLY valid JSON (no markdown):
-{
-  "section": "reading",
-  "duration_minutes": 20,
-  "passage": "A ${language} reading passage of 200-300 words appropriate for ${targetLevel} level. Use authentic, natural language.",
-  "passage_translation_hint": "Brief English note on topic/context only (1 sentence)",
-  "questions": [
-    {
-      "id": 1,
-      "type": "multiple_choice",
-      "question": "Question about the passage in ${language}",
-      "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
-      "correct": "A",
-      "explanation": "Why this answer is correct (in English)"
-    }
-  ],
-  "total_questions": 8
-}
-
-Include 5 multiple choice, 2 true/false, 1 short answer. Questions in ${language}, answers in ${language}.`,
-
-    writing: `Create a ${testType} writing test at ${targetLevel} level for ${language}.
-
-Return ONLY valid JSON:
-{
-  "section": "writing",
-  "duration_minutes": 30,
-  "tasks": [
-    {
-      "id": 1,
-      "type": "short_text",
-      "prompt": "Writing prompt in ${language} (e.g. write a short message/email/description)",
-      "prompt_en": "English translation of the prompt",
-      "word_count_min": 60,
-      "word_count_max": 100,
-      "scoring_criteria": ["vocabulary variety", "grammar accuracy", "task completion", "coherence"],
-      "example_answer": "A model answer at exactly ${targetLevel} level"
-    },
-    {
-      "id": 2,
-      "type": "longer_text",
-      "prompt": "A longer writing task prompt in ${language}",
-      "prompt_en": "English translation",
-      "word_count_min": 100,
-      "word_count_max": 150,
-      "scoring_criteria": ["vocabulary variety", "grammar accuracy", "task completion", "coherence", "structure"],
-      "example_answer": "A model answer"
-    }
-  ]
-}`,
-
-    listening: `Create a ${testType} listening comprehension test at ${targetLevel} level for ${language}.
-
-The audio will be generated via browser Text-to-Speech. Design the content accordingly.
-
-Return ONLY valid JSON:
-{
-  "section": "listening",
-  "duration_minutes": 25,
-  "tracks": [
-    {
-      "id": 1,
-      "title": "Short dialogue or monologue title",
-      "type": "dialogue",
-      "script": "The full script in ${language} to be read aloud (120-180 words). Write naturally, as people actually speak.",
-      "speakers": ["Speaker A name", "Speaker B name"],
-      "context": "Brief context in English (where/who/what)",
-      "questions": [
-        {
-          "id": 1,
-          "question": "Question about the audio in ${language}",
-          "type": "multiple_choice",
-          "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
-          "correct": "B",
-          "explanation": "Explanation in English"
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "title": "Second track title",
-      "type": "monologue",
-      "script": "Second script in ${language} (150-200 words)",
-      "speakers": ["Narrator"],
-      "context": "Context in English",
-      "questions": [
-        {"id": 4, "question": "...", "type": "true_false", "correct": true, "explanation": "..."},
-        {"id": 5, "question": "...", "type": "true_false", "correct": false, "explanation": "..."},
-        {"id": 6, "question": "...", "type": "multiple_choice", "options": ["A)...","B)...","C)...","D)..."], "correct": "C", "explanation": "..."}
-      ]
-    }
-  ],
-  "total_questions": 6
-}`,
-
-    speaking: `Create a ${testType} speaking test at ${targetLevel} level for ${language}.
-
-The student will speak aloud and their speech will be transcribed by the browser. AI will then evaluate.
-
-Return ONLY valid JSON:
-{
-  "section": "speaking",
-  "duration_minutes": 15,
-  "parts": [
-    {
-      "id": 1,
-      "type": "describe_image",
-      "instruction": "You will see a short description of a scene. Describe what you imagine in ${language} for 45 seconds.",
-      "scene_description": "Describe this imagined scene in English for the student to understand and then speak about it in ${language}: [create a vivid, realistic everyday scene]",
-      "prep_time_seconds": 30,
-      "speak_time_seconds": 45,
-      "scoring_criteria": ["fluency", "vocabulary", "grammar", "pronunciation clarity", "task completion"]
-    },
-    {
-      "id": 2,
-      "type": "opinion",
-      "instruction": "Give your opinion on the following topic in ${language}. Speak for 60 seconds.",
-      "topic": "A topic appropriate for ${targetLevel} — something everyday and relatable for an expat in Portugal",
-      "topic_en": "English translation of the topic",
-      "prep_time_seconds": 45,
-      "speak_time_seconds": 60,
-      "scoring_criteria": ["fluency", "vocabulary range", "grammar accuracy", "coherence", "expressing opinions"]
-    },
-    {
-      "id": 3,
-      "type": "interaction",
-      "instruction": "Respond to these prompts as if in a real conversation:",
-      "prompts": [
-        {"question": "Conversational question in ${language}", "expected_length": "2-3 sentences"},
-        {"question": "Another conversational question", "expected_length": "2-3 sentences"},
-        {"question": "A third question, slightly more complex", "expected_length": "3-4 sentences"}
-      ],
-      "speak_time_seconds_per_prompt": 30
-    }
-  ],
-  "evaluation_rubric": {
-    "fluency": "Speaks without excessive hesitation, maintains flow",
-    "vocabulary": "Uses appropriate and varied vocabulary for ${targetLevel}",
-    "grammar": "Uses correct grammar structures expected at ${targetLevel}",
-    "pronunciation": "Speech is intelligible and reasonably clear",
-    "task_completion": "Addresses the prompt fully"
-  }
-}`
-  }
-
-  return sectionPrompts[section] || sectionPrompts.reading
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: CORS })
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
   try {
-    const apiKey = Deno.env.get("ANTHROPIC_API_KEY")
-    if (!apiKey) throw new Error("ANTHROPIC_API_KEY secret not set")
+    const { testType, section } = await req.json()
+    const promptKey = testType as keyof typeof PROMPTS
 
-    const config: TestConfig = await req.json()
-    if (!config.testType || !config.section) throw new Error("testType and section required")
+    if (!PROMPTS[promptKey]?.[section]) {
+      return new Response(JSON.stringify({ error: `Unknown: ${testType}/${section}` }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
 
-    const prompt = buildTestPrompt(config)
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set in Supabase secrets')
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 4000,
-        messages: [{ role: "user", content: prompt }],
-      }),
+    const client = new Anthropic({ apiKey })
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 3000,
+      messages: [{ role: 'user', content: PROMPTS[promptKey][section] }]
     })
 
-    if (!response.ok) {
-      const err = await response.text()
-      throw new Error(`Anthropic API error ${response.status}: ${err}`)
-    }
-
-    const data = await response.json()
-    const raw = data.content?.[0]?.text || ""
-
-    let parsed
-    try {
-      parsed = JSON.parse(raw)
-    } catch {
-      const match = raw.match(/\{[\s\S]*\}/)
-      if (match) parsed = JSON.parse(match[0])
-      else throw new Error("Could not parse model response as JSON")
-    }
+    const raw = (message.content[0] as { text: string }).text.trim()
+    const clean = raw.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim()
+    const parsed = JSON.parse(clean)
 
     return new Response(JSON.stringify(parsed), {
-      headers: { ...CORS, "Content-Type": "application/json" },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
-  } catch (err) {
-    return new Response(JSON.stringify({ error: String(err) }), {
-      status: 500,
-      headers: { ...CORS, "Content-Type": "application/json" },
+  } catch(e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
     })
   }
 })
