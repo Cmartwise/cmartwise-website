@@ -280,17 +280,21 @@ async function init() {
   document.getElementById('session-progress').style.display = 'block'
 
   // Show 3 most recent notes (numbered)
-  if (allNotes?.length) {
-    const recent = [...allNotes].reverse().slice(0, 3)
-    document.getElementById('recent-notes').innerHTML = recent.map((n, i) => {
+  if (allNotes && allNotes.length) {
+    const recent = allNotes.slice().reverse().slice(0, 3)
+    document.getElementById('recent-notes').innerHTML = recent.map(function(n, i) {
       const sessionNum = totalSessions - i
-      return \`
-      <div class="note-preview" onclick="window.location='/portal-notes.html'">
-        <div class="note-date">Session \${sessionNum} · \${formatDate(n.session_date)}</div>
-        <div class="note-title">\${esc(n.title)}</div>
-        \${n.tags?.length ? \`<div class="note-tags">\${n.tags.map(t => \`<span class="note-tag">\${esc(t)}</span>\`).join('')}</div>\` : ''}
-      </div>\`
+      const tags = n.tags && n.tags.length ? n.tags.map(function(t){ return '<span class="note-tag">' + esc(t) + '</span>' }).join('') : ''
+      const tagsHtml = tags ? '<div class="note-tags">' + tags + '</div>' : ''
+      return '<div class="note-preview" data-href="/portal-notes.html" style="cursor:pointer">' +
+        '<div class="note-date">Session ' + sessionNum + ' · ' + formatDate(n.session_date) + '</div>' +
+        '<div class="note-title">' + esc(n.title) + '</div>' +
+        tagsHtml + '</div>'
     }).join('')
+    document.getElementById('recent-notes').addEventListener('click', function(e) {
+      const card = e.target.closest('[data-href]')
+      if (card) window.location.href = card.dataset.href
+    }, { once: true })
   }
 
   // Load recent tests
