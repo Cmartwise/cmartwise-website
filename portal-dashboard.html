@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard — CmartWise Portal</title>
 <style>
 :root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
   --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
   --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
 
 /* NAV */
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
@@ -21,14 +24,14 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
 .logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
   display:flex;align-items:center;justify-content:center;color:#fff;
-  font-style:italic;font-size:.95rem;font-family:Georgia,serif;font-weight:700}
+  font-style:italic;font-size:.95rem;font-family:'DM Sans',sans-serif;font-weight:700}
 .logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
 .logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;
   padding:.15rem .45rem;margin-left:.25rem;letter-spacing:.05em}
 .nav-spacer{flex:1}
 .nav-user{font-size:.82rem;color:var(--muted)}
 .nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
 .nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
 .nav-admin{font-size:.78rem;background:var(--terra);color:#fff;border-radius:4px;
   padding:.2rem .55rem;text-decoration:none;margin-right:.5rem}
@@ -90,14 +93,44 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .stat{text-align:center}
 .stat-num{font-size:1.5rem;color:var(--ocean);font-weight:600}
 .stat-lbl{font-size:.75rem;color:var(--muted)}
+.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
+/* == Brand font alignment == */
+body{font-family:'DM Sans',sans-serif}
+h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
+.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
+.logo-name em{font-style:normal;color:#C4683A}
+.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
+
+/* ── CARD GROUPS ── */
+.card-group{margin-bottom:2.25rem}
+.group-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem}
+.group-label{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--muted);font-family:monospace;white-space:nowrap}
+.group-line{flex:1;height:1px;background:var(--border)}
+
+/* ── SESSION PROGRESS ── */
+.session-progress{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
+  padding:1.5rem;box-shadow:var(--shadow);margin-bottom:2.25rem}
+.sp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem}
+.sp-label{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace}
+.sp-count{font-size:1.55rem;color:var(--ocean);font-weight:600}
+.sp-count span{font-size:.9rem;color:var(--muted);font-weight:400}
+.sp-bar-wrap{background:var(--cream);border-radius:20px;height:7px;overflow:hidden;margin-bottom:.9rem}
+.sp-bar{background:linear-gradient(to right,var(--ocean),#2A5570);border-radius:20px;height:100%;transition:width .6s ease}
+.sp-footer{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.sp-next{font-size:.85rem;color:var(--muted)}
+.sp-next strong{color:var(--ocean)}
+.sp-next a{color:var(--terra);text-decoration:none;font-weight:500}
+.sp-next a:hover{text-decoration:underline}
+.sp-prog{font-size:.73rem;color:var(--muted);font-family:monospace;opacity:.75}
+
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <div class="logo-mark">C</div>
-    <span class="logo-text">CmartWise</span>
+    <span class="logo-name">Cmart<em>Wise</em></span><span class="logo-sub">Language Coaching</span>
   </a>
   <span class="logo-badge">Student Portal</span>
   <div class="nav-spacer"></div>
@@ -116,28 +149,57 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
     <p class="greeting-sub" id="greeting-sub">Here's everything you need for your Portuguese journey.</p>
   </div>
 
-  <div class="dash-grid">
-    <a href="/portal-notes.html" class="dash-card">
-      <div class="dash-card-icon">📋</div>
-      <div class="dash-card-title">Coaching Notes</div>
-      <div class="dash-card-desc">Your private session notes — what we covered, what to practise, what's clicking.</div>
-      <span class="dash-card-badge" id="notes-count">—</span>
-    </a>
-    <a href="/portal-resources.html" class="dash-card">
-      <div class="dash-card-icon">📚</div>
-      <div class="dash-card-title">Resources</div>
-      <div class="dash-card-desc">Shared guides, vocabulary lists, and the Portuguese translator tool — all in one place.</div>
-    </a>
-    <a href="/portal-tests.html" class="dash-card">
-      <div class="dash-card-icon">🎯</div>
-      <div class="dash-card-title">Practice Tests</div>
-      <div class="dash-card-desc">Generate timed CIPLE, DIPLE, IELTS or GRE practice tests with AI feedback on your answers.</div>
-    </a>
-    <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="dash-card">
-      <div class="dash-card-icon">📅</div>
-      <div class="dash-card-title">Book a Session</div>
-      <div class="dash-card-desc">Schedule your next coaching session with Cédric directly.</div>
-    </a>
+  <!-- SESSION PROGRESS -->
+  <div class="session-progress" id="session-progress" style="display:none">
+    <div class="sp-top">
+      <span class="sp-label">Session Progress</span>
+      <span class="sp-count"><span id="sp-done">0</span> <span>sessions completed</span></span>
+    </div>
+    <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar" style="width:0%"></div></div>
+    <div class="sp-footer">
+      <span class="sp-next" id="sp-next"></span>
+      <span class="sp-prog" id="sp-prog"></span>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="card-group">
+    <div class="group-header"><span class="group-label">Resources</span><div class="group-line"></div></div>
+    <div class="dash-grid">
+      <a href="/portal-notes.html" class="dash-card">
+        <div class="dash-card-icon">📋</div>
+        <div class="dash-card-title">Coaching Notes</div>
+        <div class="dash-card-desc">Your private session notes — what we covered, what to practise, what's clicking.</div>
+        <span class="dash-card-badge" id="notes-count">—</span>
+      </a>
+      <a href="/portal-resources.html" class="dash-card">
+        <div class="dash-card-icon">📂</div>
+        <div class="dash-card-title">Documents & Links</div>
+        <div class="dash-card-desc">Guides, vocab lists, worksheets and reference materials shared by Cédric.</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- TOOLS -->
+  <div class="card-group">
+    <div class="group-header"><span class="group-label">Tools</span><div class="group-line"></div></div>
+    <div class="dash-grid">
+      <a href="/portal-tests.html" class="dash-card">
+        <div class="dash-card-icon">🎯</div>
+        <div class="dash-card-title">Practice Tests</div>
+        <div class="dash-card-desc">Generate timed CIPLE, DIPLE, IELTS or GRE practice tests with AI feedback.</div>
+      </a>
+      <a href="/portal-resources.html#translator" class="dash-card">
+        <div class="dash-card-icon">🌍</div>
+        <div class="dash-card-title">Language Tools</div>
+        <div class="dash-card-desc">Translate between English, Portuguese, French, Spanish and more instantly.</div>
+      </a>
+      <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="dash-card">
+        <div class="dash-card-icon">📅</div>
+        <div class="dash-card-title">Book a Session</div>
+        <div class="dash-card-desc">Schedule your next coaching session with Cédric directly.</div>
+      </a>
+    </div>
   </div>
 
   <!-- RECENT NOTES -->
@@ -189,23 +251,46 @@ async function init() {
     document.getElementById('greeting-sub').textContent = 'Manage your students, notes, and resources.'
   }
 
-  // Load recent notes
-  const { data: notes } = await sb.from('coaching_notes')
+  // Load ALL notes ordered ASC for session numbering
+  const { data: allNotes } = await sb.from('coaching_notes')
     .select('*')
     .eq('student_id', user.id)
-    .order('session_date', { ascending: false })
-    .limit(3)
+    .order('session_date', { ascending: true })
 
-  document.getElementById('notes-count').textContent = notes?.length || '0'
+  const totalSessions = allNotes?.length || 0
+  document.getElementById('notes-count').textContent = totalSessions || '0'
 
-  if (notes?.length) {
-    document.getElementById('recent-notes').innerHTML = notes.map(n => `
+  // Session progress
+  const sessionsTotal = profile?.sessions_total || 12
+  const programme = profile?.programme || 'Full Fluency Programme'
+  const pct = Math.min(100, Math.round((totalSessions / sessionsTotal) * 100))
+
+  document.getElementById('sp-done').textContent = totalSessions
+  document.getElementById('sp-bar').style.width = pct + '%'
+  document.getElementById('sp-prog').textContent = programme + ' · ' + sessionsTotal + ' sessions total'
+
+  const nextSession = profile?.next_session
+  if (nextSession) {
+    const d = new Date(nextSession)
+    const formatted = d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' })
+    document.getElementById('sp-next').innerHTML = 'Next session: <strong>' + formatted + '</strong>'
+  } else {
+    document.getElementById('sp-next').innerHTML = '<a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank">Book your next session →</a>'
+  }
+  document.getElementById('session-progress').style.display = 'block'
+
+  // Show 3 most recent notes (numbered)
+  if (allNotes?.length) {
+    const recent = [...allNotes].reverse().slice(0, 3)
+    document.getElementById('recent-notes').innerHTML = recent.map((n, i) => {
+      const sessionNum = totalSessions - i
+      return \`
       <div class="note-preview" onclick="window.location='/portal-notes.html'">
-        <div class="note-date">${formatDate(n.session_date)}</div>
-        <div class="note-title">${esc(n.title)}</div>
-        ${n.tags?.length ? `<div class="note-tags">${n.tags.map(t => `<span class="note-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-      </div>
-    `).join('')
+        <div class="note-date">Session \${sessionNum} · \${formatDate(n.session_date)}</div>
+        <div class="note-title">\${esc(n.title)}</div>
+        \${n.tags?.length ? \`<div class="note-tags">\${n.tags.map(t => \`<span class="note-tag">\${esc(t)}</span>\`).join('')}</div>\` : ''}
+      </div>\`
+    }).join('')
   }
 
   // Load recent tests

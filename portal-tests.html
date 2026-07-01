@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Practice Tests — CmartWise Portal</title>
 <style>
 :root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
   --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;--gold:#C8881A;
   --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
 
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
   padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
@@ -26,7 +29,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .nav-back{font-size:.82rem;color:var(--muted);text-decoration:none}
 .nav-back:hover{color:var(--ocean)}
 .nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
 .nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
 
 .container{max-width:800px;margin:0 auto;padding:2.5rem 1.5rem}
@@ -65,7 +68,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .section-info-desc{font-size:.75rem;color:var(--muted)}
 
 .start-btn{width:100%;padding:1rem;background:var(--ocean);color:#fff;border:none;
-  border-radius:10px;font-family:Georgia,serif;font-size:1rem;cursor:pointer;transition:.2s;margin-top:.5rem}
+  border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1rem;cursor:pointer;transition:.2s;margin-top:.5rem}
 .start-btn:hover{background:#152d3c}
 .start-btn:disabled{opacity:.4;cursor:not-allowed}
 
@@ -115,14 +118,14 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 
 .tf-options{display:flex;gap:.75rem}
 .tf-btn{flex:1;padding:.75rem;border-radius:8px;border:1.5px solid var(--border);
-  cursor:pointer;font-family:Georgia,serif;font-size:.9rem;background:var(--sand);
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.9rem;background:var(--sand);
   color:var(--ocean);transition:.15s;text-align:center}
 .tf-btn:hover,.tf-btn.selected{border-color:var(--ocean);background:var(--ivory)}
 .tf-btn.correct{border-color:var(--leaf);background:#f0faf0}
 .tf-btn.wrong{border-color:var(--terra);background:#fdf0ee}
 
 .short-input{width:100%;padding:.75rem 1rem;border-radius:8px;border:1.5px solid var(--border);
-  font-family:Georgia,serif;font-size:.9rem;background:var(--sand);color:var(--ocean);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;background:var(--sand);color:var(--ocean);
   outline:none;transition:.15s;resize:vertical;min-height:80px}
 .short-input:focus{border-color:var(--ocean);background:#fff}
 
@@ -142,7 +145,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .audio-context{font-size:.8rem;color:var(--muted);margin-bottom:1rem;font-style:italic}
 .play-btn{display:flex;align-items:center;gap:.6rem;padding:.65rem 1.25rem;
   border-radius:8px;border:1.5px solid var(--ocean);background:none;
-  color:var(--ocean);font-family:Georgia,serif;font-size:.9rem;cursor:pointer;transition:.2s}
+  color:var(--ocean);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;transition:.2s}
 .play-btn:hover{background:var(--ocean);color:#fff}
 .play-btn.playing{background:var(--ocean);color:#fff}
 .plays-remaining{font-size:.75rem;color:var(--muted);margin-top:.35rem;font-style:italic}
@@ -153,7 +156,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .prep-phase{background:var(--ivory);border-radius:8px;padding:1rem;margin-bottom:1rem}
 .prep-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace;margin-bottom:.4rem}
 .prep-countdown{font-size:2rem;font-family:monospace;color:var(--ocean);text-align:center;padding:.5rem 0}
-.record-btn{width:100%;padding:.9rem;border:none;border-radius:10px;font-family:Georgia,serif;
+.record-btn{width:100%;padding:.9rem;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;
   font-size:.95rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:.6rem}
 .record-btn.idle{background:var(--ocean);color:#fff}
 .record-btn.recording{background:#c03020;color:#fff;animation:pulse 1.5s infinite}
@@ -171,7 +174,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   font-size:.95rem;line-height:1.6;color:var(--ocean);border-left:3px solid var(--ocean)}
 .writing-prompt-en{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:.35rem}
 .writing-area{width:100%;border:1.5px solid var(--border);border-radius:8px;
-  padding:.85rem 1rem;font-family:Georgia,serif;font-size:.95rem;background:var(--sand);
+  padding:.85rem 1rem;font-family:'DM Sans',sans-serif;font-size:.95rem;background:var(--sand);
   color:var(--ocean);outline:none;resize:vertical;min-height:140px;line-height:1.7;transition:.15s}
 .writing-area:focus{border-color:var(--ocean);background:#fff}
 .word-count{font-size:.75rem;color:var(--muted);font-family:monospace;margin-top:.4rem;text-align:right}
@@ -180,7 +183,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 
 /* NAVIGATION */
 .nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:2rem;gap:1rem}
-.prev-btn,.next-btn,.submit-btn{padding:.75rem 1.5rem;border-radius:8px;font-family:Georgia,serif;
+.prev-btn,.next-btn,.submit-btn{padding:.75rem 1.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;
   font-size:.9rem;cursor:pointer;transition:.2s;border:1.5px solid var(--border)}
 .prev-btn{background:none;color:var(--muted)}
 .prev-btn:hover{border-color:var(--ocean);color:var(--ocean)}
@@ -214,17 +217,23 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   border-left:3px solid var(--terra);margin-top:1rem}
 
 .restart-btn{width:100%;padding:1rem;background:var(--ocean);color:#fff;border:none;
-  border-radius:10px;font-family:Georgia,serif;font-size:.95rem;cursor:pointer;
+  border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;cursor:pointer;
   margin-top:1.5rem;transition:.2s}
 .restart-btn:hover{background:#152d3c}
+.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
+/* == Brand font alignment == */
+body{font-family:'DM Sans',sans-serif}
+h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
+.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
+.logo-name em{font-style:normal;color:#C4683A}
+.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <div class="logo-mark">C</div>
-    <span class="logo-text">CmartWise</span>
+    <span class="logo-name">Cmart<em>Wise</em></span><span class="logo-sub">Language Coaching</span>
   </a>
   <span class="logo-badge">Student Portal</span>
   <div class="nav-spacer"></div>

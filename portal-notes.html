@@ -2,17 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Coaching Notes — CmartWise Portal</title>
 <style>
 :root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#5A7A8A;
+  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
   --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
   --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Georgia',serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
 
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
   padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
@@ -20,7 +23,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
 .logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
   display:flex;align-items:center;justify-content:center;color:#fff;
-  font-style:italic;font-size:.95rem;font-family:Georgia,serif;font-weight:700}
+  font-style:italic;font-size:.95rem;font-family:'DM Sans',sans-serif;font-weight:700}
 .logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
 .logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;
   padding:.15rem .45rem;margin-left:.25rem;letter-spacing:.05em}
@@ -28,7 +31,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .nav-back{font-size:.82rem;color:var(--muted);text-decoration:none}
 .nav-back:hover{color:var(--ocean)}
 .nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:Georgia,serif;transition:.15s}
+  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
 .nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
 
 #loading{display:flex;align-items:center;justify-content:center;min-height:60vh;
@@ -49,7 +52,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   color:var(--muted);font-family:monospace;margin-bottom:.4rem;display:block}
 .tag-filter{display:flex;flex-wrap:wrap;gap:.4rem}
 .tag-btn{font-size:.75rem;padding:.25rem .6rem;border-radius:20px;border:1px solid var(--border);
-  background:#fff;color:var(--muted);cursor:pointer;transition:.15s;font-family:Georgia,serif}
+  background:#fff;color:var(--muted);cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
 .tag-btn.active{background:var(--ocean);color:#fff;border-color:var(--ocean)}
 .tag-btn:hover:not(.active){border-color:var(--ocean);color:var(--ocean)}
 
@@ -98,17 +101,23 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 
 /* ADMIN: add note button */
 .add-note-btn{width:100%;padding:.7rem;border:1.5px dashed var(--border);border-radius:8px;
-  background:none;color:var(--muted);font-family:Georgia,serif;font-size:.85rem;
+  background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;
   cursor:pointer;transition:.15s;margin-bottom:1rem}
 .add-note-btn:hover{border-color:var(--ocean);color:var(--ocean)}
+.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
+/* == Brand font alignment == */
+body{font-family:'DM Sans',sans-serif}
+h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
+.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
+.logo-name em{font-style:normal;color:#C4683A}
+.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <div class="logo-mark">C</div>
-    <span class="logo-text">CmartWise</span>
+    <span class="logo-name">Cmart<em>Wise</em></span><span class="logo-sub">Language Coaching</span>
   </a>
   <span class="logo-badge">Student Portal</span>
   <div class="nav-spacer"></div>
@@ -138,7 +147,7 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
     <!-- Admin: student selector -->
     <div class="filter-group" id="student-filter" style="display:none">
       <span class="filter-label">Student</span>
-      <select id="student-select" style="width:100%;padding:.5rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif;font-size:.85rem;color:var(--ocean)" onchange="loadNotes()">
+      <select id="student-select" style="width:100%;padding:.5rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ocean)" onchange="loadNotes()">
         <option value="">All students</option>
       </select>
     </div>
@@ -162,27 +171,27 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
     <h2 style="color:var(--ocean);margin-bottom:1.25rem">Add coaching note</h2>
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Student</label>
-      <select id="modal-student" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif"></select>
+      <select id="modal-student" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif"></select>
     </div>
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Session date</label>
-      <input type="date" id="modal-date" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif">
+      <input type="date" id="modal-date" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif">
     </div>
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Title</label>
-      <input type="text" id="modal-title" placeholder="e.g. Session 3 — Pronunciation & Shopping Vocab" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif">
+      <input type="text" id="modal-title" placeholder="e.g. Session 3 — Pronunciation & Shopping Vocab" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif">
     </div>
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Tags (comma separated)</label>
-      <input type="text" id="modal-tags" placeholder="pronunciation, vocabulary, grammar" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:Georgia,serif">
+      <input type="text" id="modal-tags" placeholder="pronunciation, vocabulary, grammar" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif">
     </div>
     <div style="margin-bottom:1.25rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Notes (supports **bold**, *italic*, ## headings, - lists)</label>
       <textarea id="modal-content" rows="12" style="width:100%;padding:.75rem;border-radius:6px;border:1px solid var(--border);font-family:monospace;font-size:.85rem;resize:vertical" placeholder="## What we covered&#10;&#10;- ...&#10;&#10;## Key phrases to practise&#10;&#10;- ...&#10;&#10;## Homework&#10;&#10;- ..."></textarea>
     </div>
     <div style="display:flex;gap:.75rem">
-      <button onclick="saveNote()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:8px;font-family:Georgia,serif;font-size:.95rem;cursor:pointer">Save note</button>
-      <button onclick="closeModal()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:8px;font-family:Georgia,serif;cursor:pointer;color:var(--muted)">Cancel</button>
+      <button onclick="saveNote()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;cursor:pointer">Save note</button>
+      <button onclick="closeModal()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--muted)">Cancel</button>
     </div>
     <div id="modal-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--terra);display:none"></div>
   </div>
@@ -225,7 +234,8 @@ async function init() {
 }
 
 async function loadNotes() {
-  let query = sb.from('coaching_notes').select('*').order('session_date', { ascending: false })
+  // Load ASC to assign session numbers, then reverse for display
+  let query = sb.from('coaching_notes').select('*').order('session_date', { ascending: true })
   if (!isAdmin) query = query.eq('student_id', currentUser.id)
   else {
     const studentId = document.getElementById('student-select')?.value
@@ -233,7 +243,9 @@ async function loadNotes() {
   }
 
   const { data: notes } = await query
-  allNotes = notes || []
+  // Tag each note with its session number (1-indexed from oldest)
+  const numbered = (notes || []).map((n, i) => ({ ...n, sessionNumber: i + 1 }))
+  allNotes = numbered.reverse() // newest first for display
   renderNoteList()
 }
 
@@ -257,7 +269,7 @@ function renderNoteList() {
   list.innerHTML = notes.map(n => `
     <div class="note-item" onclick="showNote('${n.id}')">
       ${n.pinned ? `<span class="note-pin">📌</span>` : ''}
-      <div class="note-item-date">${formatDate(n.session_date)}</div>
+      <div class="note-item-date">Session ${n.sessionNumber} · ${formatDate(n.session_date)}</div>
       <div class="note-item-title">${esc(n.title)}</div>
       ${n.tags?.length ? `<div class="note-item-tags">${n.tags.map(t => `<span class="note-item-tag">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
@@ -277,7 +289,7 @@ function showNote(id) {
 
   document.getElementById('note-view').innerHTML = `
     <div class="note-view-header">
-      <div class="note-view-date">${formatDate(note.session_date)}</div>
+      <div class="note-view-date">Session ${note.sessionNumber} · ${formatDate(note.session_date)}</div>
       <h2 class="note-view-title">${esc(note.title)}</h2>
       ${note.tags?.length ? `<div class="note-view-tags">${note.tags.map(t => `<span class="note-view-tag">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
