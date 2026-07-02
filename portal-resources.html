@@ -243,7 +243,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 <script>
 const SUPABASE_URL  = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZ25nZ3R3Znh5cXp2cm5sYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTYzMzIsImV4cCI6MjA5NjY3MjMzMn0.7iclLaCjyejXHmCcWAJvRJTICrCGt7ks5LieRY0Z9aM'
-const TRANSLATE_FN  = 'YOUR_SUPABASE_URL/functions/v1/translate'  // Same project, translate edge function
+const TRANSLATE_FN  = SUPABASE_URL + '/functions/v1/translate'
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
 
 let isAdmin = false, sbSession = null
@@ -409,3 +409,4 @@ if (window.location.hash === '#translator') {
 </script>
 </body>
 </html>
+                                            

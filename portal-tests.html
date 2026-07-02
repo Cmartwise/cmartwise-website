@@ -773,13 +773,19 @@ async function submitTest() {
 function scoreObjective() {
   const questions = getQuestions()
   if (!questions.length) return 0
+  // NOTE: use "correct is undefined/null" rather than a falsy check — true_false
+  // questions can legitimately have correct === false, which is a valid gradable
+  // answer, not a missing one. A falsy check here was silently excluding those
+  // questions from grading (never counted right OR wrong), which could inflate
+  // the score when a student got them wrong.
+  const isGradable = q => q.type !== 'short' && q.correct !== undefined && q.correct !== null
   let correct = 0
   questions.forEach((q, i) => {
+    if (!isGradable(q)) return
     const ans = answers[i]
-    if (q.type === 'short' || !q.correct) return // skip
     if (String(ans).toLowerCase() === String(q.correct).toLowerCase()) correct++
   })
-  const gradable = questions.filter(q => q.type !== 'short' && q.correct).length
+  const gradable = questions.filter(isGradable).length
   return gradable ? Math.round((correct / gradable) * 100) : 0
 }
 
@@ -868,21 +874,4 @@ function showResults(score, breakdown, feedback) {
     feedbackEl.innerHTML = `
       <div class="feedback-section">
         <div class="feedback-title">Result</div>
-        <p style="font-size:.9rem;color:var(--muted)">Score: ${Math.round(score)}/100. Check your coaching notes and resources to work on areas that felt difficult.</p>
-      </div>
-    `
-  }
-
-  showScreen('results')
-}
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-
-// Load voices early (Chrome requires this)
-window.speechSynthesis?.getVoices()
-window.speechSynthesis?.addEventListener?.('voiceschanged', () => window.speechSynthesis.getVoices())
-
-init()
-</script>
-</body>
-</html>
+        <p style="font-size:.9rem;color:var(--muted)">Score: ${Math.round(score)}/100. Check your coaching notes and resources t

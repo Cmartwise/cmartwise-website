@@ -1,0 +1,71 @@
+import Anthropic from 'npm:@anthropic-ai/sdk@0.27.3'
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+const LANG_NAMES: Record<string, string> = {
+  en: 'English',
+  pt: 'European Portuguese',
+  fr: 'French',
+  es: 'Spanish',
+}
+
+Deno.serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+
+  try {
+    const { text, fromLang, toLang } = await req.json()
+
+    if (!text?.trim()) throw new Error('No text provided.')
+    if (!fromLang || !toLang) throw new Error('Missing fromLang or toLang.')
+    if (fromLang === toLang) throw new Error('Source and target languages must differ.')
+
+    const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
+    if (!apiKey) throw new Error('ANTHROPIC_API_KEY not set in Supabase secrets')
+
+    const fromName = LANG_NAMES[fromLang] || fromLang
+    const toName = LANG_NAMES[toLang] || toLang
+
+    const prompt = `You are a translator and language coach helping a student go from ${fromName} to ${toName}. Note that "Portuguese" always means European Portuguese, not Brazilian.
+
+Translate this text: "${text}"
+
+Return ONLY valid JSON, no markdown fences, in this exact schema:
+{
+  "original": "<the original text, verbatim>",
+  "translation": "<formal/neutral written translation into ${toName}>",
+  "colloquial": "<how a native speaker would actually say it day-to-day — can equal translation if there's no real difference>",
+  "full_phonetic": "<simple phonetic pronunciation guide for the colloquial translation, readable by an English speaker with no IPA training>",
+  "cultural_note": "<1 short sentence on register, regional usage, or a false-friend trap — omit as empty string if nothing noteworthy>",
+  "words": [
+    {"pt": "<word or short phrase from the source text>", "en": "<its translation>", "type": "<noun/verb/adj/etc>", "phonetic": "<simple pronunciation guide>", "note": "<short usage note, or empty string>"}
+  ]
+}
+
+Break "words" into the meaningful words/short phrases of the source text (skip trivial function words like "the"/"a" unless genuinely useful to a learner). Keep it concise — this is for a language-coaching tool, not a linguistics paper.`
+
+    const client = new Anthropic({ apiKey })
+    const message = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
+      messages: [{ role: 'user', content: prompt }],
+    })
+
+    const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
+    if (!textBlock) throw new Error('Model response had no text content block.')
+    const raw = textBlock.text.trim()
+    const clean = raw.replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
+    const result = JSON.parse(clean)
+
+    return new Response(JSON.stringify(result), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
+  }
+})

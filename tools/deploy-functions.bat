@@ -25,7 +25,15 @@ echo  Step 4: Deploying evaluate-speaking function...
 call npx supabase functions deploy evaluate-speaking --project-ref zsgnggtwfxyqzvrnlaqg --no-verify-jwt
 
 echo.
-echo  Done! Both functions deployed.
+echo  Step 5: Deploying process-lesson function...
+call npx supabase functions deploy process-lesson --project-ref zsgnggtwfxyqzvrnlaqg
+
+echo.
+echo  Step 6: Deploying translate function...
+call npx supabase functions deploy translate --project-ref zsgnggtwfxyqzvrnlaqg
+
+echo.
+echo  Done! All four functions deployed.
 echo.
 echo  IMPORTANT: Set your Anthropic API key in Supabase:
 echo  Dashboard ^> Edge Functions ^> Manage secrets ^> Add ANTHROPIC_API_KEY
