@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.add('js')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CIPLE Exam Prep · A2 Portuguese for Citizenship · CmartWise</title>
@@ -54,8 +55,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 h1{font-family:'Playfair Display',serif;font-size:3rem;line-height:1.1;font-weight:600;color:var(--dark);max-width:700px;margin:0 auto .9rem}
 h1 em{font-style:italic;color:var(--terra)}
 .hero-sub{font-size:1rem;color:var(--muted);line-height:1.75;max-width:560px;margin:0 auto 2rem;font-weight:300}
-.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--terra);color:#fff;padding:.95rem 2rem;border-radius:4px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.25s;letter-spacing:.02em}
-.cta-btn:hover{background:var(--ocean);transform:translateY(-2px)}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--terra);color:#fff;padding:.95rem 2rem;border-radius:999px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.35s cubic-bezier(.22,1,.36,1);letter-spacing:.02em;box-shadow:0 0 0 0 rgba(196,104,58,0)}
+.cta-btn:hover{background:var(--ocean);transform:translateY(-2px);box-shadow:0 10px 30px rgba(196,104,58,.35)}
 
 /* TRUST BAR */
 .trust-bar{background:var(--ocean);padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap}
@@ -115,8 +116,8 @@ h2.s-title-lt{color:#fff}
 .cta-section{text-align:center;padding:6rem 2.5rem;position:relative;overflow:hidden}
 .cta-h{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:600;color:var(--dark);margin-bottom:1rem;line-height:1.2}
 .cta-sub{color:var(--muted);font-size:.97rem;max-width:500px;margin:0 auto 1.5rem;line-height:1.7;font-weight:300}
-.cta-ocean{display:inline-flex;align-items:center;gap:10px;background:var(--ocean);color:#fff;padding:1rem 2.2rem;border-radius:4px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.25s;letter-spacing:.02em}
-.cta-ocean:hover{background:var(--terra);transform:translateY(-2px)}
+.cta-ocean{display:inline-flex;align-items:center;gap:10px;background:var(--ocean);color:#fff;padding:1rem 2.2rem;border-radius:999px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.35s cubic-bezier(.22,1,.36,1);letter-spacing:.02em;box-shadow:0 0 0 0 rgba(26,58,74,0)}
+.cta-ocean:hover{background:var(--terra);transform:translateY(-2px);box-shadow:0 10px 30px rgba(196,104,58,.3)}
 .reassurance{margin-top:1.2rem;font-size:.8rem;color:var(--muted)}
 
 /* CONTACT + FOOTER */
@@ -167,6 +168,20 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
 .lang-drop .nav-drop-item{padding:.5rem .8rem;font-size:.82rem}
 /* hide old lang switcher */
 .lang-switcher-nav{display:none!important}
+
+/* ── FLUID DESIGN UPGRADE ── */
+@keyframes azDrift{from{background-position:0 0,20px 20px,0 0,20px 20px}to{background-position:40px 40px,60px 60px,40px 40px,60px 60px}}
+.az-blue,.az-terra,.az-dark{animation:azDrift 55s linear infinite}
+.section,.cta-section{border-radius:28px 28px 0 0;margin-top:-28px;z-index:1}
+html.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+html.js .reveal.in-view{opacity:1;transform:translateY(0)}
+@media(max-width:900px){
+  .section,.cta-section{border-radius:18px 18px 0 0;margin-top:-18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .az-blue,.az-terra,.az-dark{animation:none}
+  html.js .reveal{transition:none;opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -185,7 +200,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
         <a href="/" class="nav-drop-item">Homepage</a>
         <a href="/coaching.html" class="nav-drop-item">Full Fluency Programme</a>
         <a href="/ciple.html" class="nav-drop-item active">CIPLE · Citizenship (A2)</a>
-        <a href="/diple.html" class="nav-drop-item">DIPLE · Advanced (B1)</a>
+        <a href="/diple.html" class="nav-drop-item">DIPLE · Advanced (B2)</a>
       </div></div>
     </div>
     <a href="/portal.html" class="nav-portal-link">Student portal</a>
@@ -327,7 +342,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
       <div style="font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">add-on</div>
     </div>
   </div>
-  <p style="text-align:center;margin-top:2rem;font-size:.88rem;color:var(--muted)">Need B1 level (DIPLE) instead? <a href="/diple.html" style="color:var(--terra);text-decoration:none;font-weight:500">See the DIPLE programme →</a></p>
+  <p style="text-align:center;margin-top:2rem;font-size:.88rem;color:var(--muted)">Need B2 level (DIPLE) instead? <a href="/diple.html" style="color:var(--terra);text-decoration:none;font-weight:500">See the DIPLE programme →</a></p>
 </section>
 
 <div class="tile-mosaic"></div><div class="az-divider"></div><div class="tile-mosaic"></div>
@@ -392,9 +407,19 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
   <span>© 2026 Cédric Martin · Algarve, Portugal · <a href="mailto:cmartwise@gmail.com">cmartwise@gmail.com</a></span>
 </footer>
 
-</body>
-</html>
 
-
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var els=document.querySelectorAll('.s-title,.cta-h');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('reveal','in-view')});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){entry.target.classList.add('in-view');io.unobserve(entry.target);}
+    });
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){e.classList.add('reveal');io.observe(e);});
+})();
+</script>
 </body>
 </html>

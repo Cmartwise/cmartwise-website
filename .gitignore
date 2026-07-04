@@ -1,3 +1,26 @@
 .DS_Store
 Thumbs.db
 *.log
+
+# Private lesson recordings/transcripts — never publish these (netlify.toml publishes the repo root)
+tools/transcripts/
+tools/.recorder_auth.json
+
+# Local notes pipeline (student notes) — stays on this machine only, never published
+tools/local-notes/notes_inbox/
+tools/local-notes/notes_processed/
+
+# Supabase CLI local cache
+supabase/.temp/
+
+# Personal learning tool (Agentic AI Academy) — never publish, not site content
+curriculum/
+
+# Real student's private coaching notes sitting at repo root — same
+# publish-whole-root risk as tools/transcripts/ above.
+allison-benn-notes.html
+
+# Internal business drafts — not client-facing, never publish
+# (same publish-whole-root risk: netlify.toml publishes the repo root)
+marketing/
+planning/

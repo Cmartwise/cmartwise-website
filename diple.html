@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>document.documentElement.classList.add('js')</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DIPLE Exam Prep · B1 Portuguese Certification · CmartWise</title>
-<meta name="description" content="Pass your DIPLE (B1) exam with a certified coach. 8-week intensive programme, 100% online, €750. Go from A2 to exam-ready — real materials, expert guidance.">
+<title>DIPLE Exam Prep · B2 Portuguese Certification · CmartWise</title>
+<meta name="description" content="Pass your DIPLE (B2) exam with a certified coach. 8-week intensive programme, 100% online, €750. Go from A2 to exam-ready — real materials, expert guidance.">
 <link rel="canonical" href="https://cmartwise-coaching.eu/diple.html">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://cmartwise-coaching.eu/diple.html">
-<meta property="og:title" content="DIPLE Exam Prep · B1 Portuguese Certification · CmartWise">
-<meta property="og:description" content="Pass your DIPLE (B1) exam with a certified coach. 8 weeks, 100% online, €750. Working with expats across Portugal.">
+<meta property="og:title" content="DIPLE Exam Prep · B2 Portuguese Certification · CmartWise">
+<meta property="og:description" content="Pass your DIPLE (B2) exam with a certified coach. 8 weeks, 100% online, €750. Working with expats across Portugal.">
 <meta property="og:image" content="https://cmartwise-coaching.eu/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="DIPLE Exam Prep · CmartWise Language Coaching">
-<meta name="twitter:description" content="Pass your DIPLE (B1) exam in 8 weeks. Certified coach, 100% online, €750.">
+<meta name="twitter:description" content="Pass your DIPLE (B2) exam in 8 weeks. Certified coach, 100% online, €750.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -54,8 +55,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 h1{font-family:'Playfair Display',serif;font-size:3rem;line-height:1.1;font-weight:600;color:var(--dark);max-width:700px;margin:0 auto .9rem}
 h1 em{font-style:italic;color:var(--terra)}
 .hero-sub{font-size:1rem;color:var(--muted);line-height:1.75;max-width:560px;margin:0 auto 2rem;font-weight:300}
-.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--terra);color:#fff;padding:.95rem 2rem;border-radius:4px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.25s;letter-spacing:.02em}
-.cta-btn:hover{background:var(--ocean);transform:translateY(-2px)}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;background:var(--terra);color:#fff;padding:.95rem 2rem;border-radius:999px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.35s cubic-bezier(.22,1,.36,1);letter-spacing:.02em;box-shadow:0 0 0 0 rgba(196,104,58,0)}
+.cta-btn:hover{background:var(--ocean);transform:translateY(-2px);box-shadow:0 10px 30px rgba(196,104,58,.35)}
 
 /* TRUST BAR */
 .trust-bar{background:var(--ocean);padding:.9rem 2.5rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap}
@@ -115,8 +116,8 @@ h2.s-title-lt{color:#fff}
 .cta-section{text-align:center;padding:6rem 2.5rem;position:relative;overflow:hidden}
 .cta-h{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:600;color:var(--dark);margin-bottom:1rem;line-height:1.2}
 .cta-sub{color:var(--muted);font-size:.97rem;max-width:500px;margin:0 auto 1.5rem;line-height:1.7;font-weight:300}
-.cta-ocean{display:inline-flex;align-items:center;gap:10px;background:var(--ocean);color:#fff;padding:1rem 2.2rem;border-radius:4px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.25s;letter-spacing:.02em}
-.cta-ocean:hover{background:var(--terra);transform:translateY(-2px)}
+.cta-ocean{display:inline-flex;align-items:center;gap:10px;background:var(--ocean);color:#fff;padding:1rem 2.2rem;border-radius:999px;font-size:.92rem;font-weight:500;text-decoration:none;transition:.35s cubic-bezier(.22,1,.36,1);letter-spacing:.02em;box-shadow:0 0 0 0 rgba(26,58,74,0)}
+.cta-ocean:hover{background:var(--terra);transform:translateY(-2px);box-shadow:0 10px 30px rgba(196,104,58,.3)}
 .reassurance{margin-top:1.2rem;font-size:.8rem;color:var(--muted)}
 
 /* CONTACT + FOOTER */
@@ -167,6 +168,20 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
 .lang-drop .nav-drop-item{padding:.5rem .8rem;font-size:.82rem}
 /* hide old lang switcher */
 .lang-switcher-nav{display:none!important}
+
+/* ── FLUID DESIGN UPGRADE ── */
+@keyframes azDrift{from{background-position:0 0,20px 20px,0 0,20px 20px}to{background-position:40px 40px,60px 60px,40px 40px,60px 60px}}
+.az-blue,.az-terra,.az-dark{animation:azDrift 55s linear infinite}
+.section,.cta-section{border-radius:28px 28px 0 0;margin-top:-28px;z-index:1}
+html.js .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+html.js .reveal.in-view{opacity:1;transform:translateY(0)}
+@media(max-width:900px){
+  .section,.cta-section{border-radius:18px 18px 0 0;margin-top:-18px}
+}
+@media(prefers-reduced-motion:reduce){
+  .az-blue,.az-terra,.az-dark{animation:none}
+  html.js .reveal{transition:none;opacity:1;transform:none}
+}
 </style>
 </head>
 <body>
@@ -185,7 +200,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
         <a href="/" class="nav-drop-item">Homepage</a>
         <a href="/coaching.html" class="nav-drop-item">Full Fluency Programme</a>
         <a href="/ciple.html" class="nav-drop-item">CIPLE · Citizenship (A2)</a>
-        <a href="/diple.html" class="nav-drop-item active">DIPLE · Advanced (B1)</a>
+        <a href="/diple.html" class="nav-drop-item active">DIPLE · Advanced (B2)</a>
       </div></div>
     </div>
     <a href="/portal.html" class="nav-portal-link">Student portal</a>
@@ -201,9 +216,9 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
 
 <!-- HERO -->
 <div class="page-hero">
-  <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text">B1 Certification · Portugal</span></div>
+  <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text">B2 Certification · Portugal</span></div>
   <h1>Pass your <em>DIPLE</em><br>and prove your fluency.</h1>
-  <p class="hero-sub">DIPLE is the B1 Portuguese certification — required for some work visas and professional credentials, or chosen by people who want stronger proof of real language ability. I take you from A2 to exam-ready in 8 weeks.</p>
+  <p class="hero-sub">DIPLE is the B2 Portuguese certification — required for some work visas and professional credentials, or chosen by people who want stronger proof of real language ability. I take you from A2 to exam-ready in 8 weeks.</p>
   <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="cta-btn">Book a free 30-minute call <span>→</span></a>
 </div>
 
@@ -217,7 +232,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
   <div class="trust-dot"></div>
   <div class="trust-item"><strong>8 weeks</strong> · fully online</div>
   <div class="trust-dot"></div>
-  <div class="trust-item">DIPLE · B1 · Work & certification</div>
+  <div class="trust-item">DIPLE · B2 · Work & certification</div>
 </div>
 
 <div class="tile-mosaic"></div><div class="az-divider"></div><div class="tile-mosaic"></div>
@@ -226,13 +241,13 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
 <section class="section" style="background:var(--ivory)">
   <p class="s-label">The exam</p>
   <h2 class="s-title">What is the DIPLE?</h2>
-  <p class="s-sub">DIPLE (Diploma Intermédio de Português Língua Estrangeira) is an official B1-level certification from the University of Lisbon — one level above CIPLE. It proves intermediate command of Portuguese in professional and everyday contexts.</p>
+  <p class="s-sub">DIPLE (Diploma Intermédio de Português Língua Estrangeira) is an official B2-level certification from the University of Lisbon — two levels above CIPLE. It proves upper-intermediate command of Portuguese in professional and everyday contexts.</p>
   <div class="exam-grid">
     <div class="exam-card">
       <span class="exam-badge" style="background:var(--ocean)">What it tests</span>
       <div class="exam-name">4 components</div>
       <div class="exam-level">Reading · Listening · Writing · Speaking</div>
-      <div class="exam-desc">At B1 level, the exam covers longer texts, more complex listening tasks, structured written responses, and a real dialogue with an examiner. The writing and oral sections carry significant weight — and that's where focused preparation pays off most.</div>
+      <div class="exam-desc">At B2 level, the exam covers longer texts, more complex listening tasks, structured written responses, and a real dialogue with an examiner. The writing and oral sections carry significant weight — and that's where focused preparation pays off most.</div>
     </div>
     <div class="exam-card">
       <span class="exam-badge" style="background:var(--ocean)">Who needs it</span>
@@ -249,8 +264,8 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
 <!-- PAIN -->
 <section class="section az-blue">
   <p class="s-label">Sound familiar?</p>
-  <h2 class="s-title">Why B1 feels so hard to reach</h2>
-  <p class="s-sub">Getting from A2 to B1 is where most learners stall — not because they've stopped improving, but because the jump in complexity is real.</p>
+  <h2 class="s-title">Why B2 feels so hard to reach</h2>
+  <p class="s-sub">Getting from A2 to B2 is where most learners stall — not because they've stopped improving, but because the jump in complexity is real.</p>
   <div class="pain-grid">
     <div class="pain-card">
       <div class="pain-q">"</div>
@@ -262,7 +277,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
     </div>
     <div class="pain-card">
       <div class="pain-q">"</div>
-      <p class="pain-txt">"I've been at A2 for a year. I know enough Portuguese to get by but not enough to pass a structured B1 exam under pressure."</p>
+      <p class="pain-txt">"I've been at A2 for a year. I know enough Portuguese to get by but not enough to pass a structured B2 exam under pressure."</p>
     </div>
   </div>
 </section>
@@ -277,13 +292,13 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
   <div class="prog-grid">
     <div class="prog-card" style="border-top-color:var(--ocean-light)">
       <div class="prog-week" style="color:var(--ocean-light)">Weeks 1–3</div>
-      <div class="prog-title">Consolidating A2 → B1</div>
-      <p class="prog-desc">We build on your existing A2 base — expanding vocabulary, strengthening grammar, and getting you comfortable with the longer, more complex Portuguese that B1 demands.</p>
+      <div class="prog-title">Consolidating A2 → B2</div>
+      <p class="prog-desc">We build on your existing A2 base — expanding vocabulary, strengthening grammar, and getting you comfortable with the longer, more complex Portuguese that B2 demands.</p>
     </div>
     <div class="prog-card" style="border-top-color:var(--ocean-light)">
       <div class="prog-week" style="color:var(--ocean-light)">Weeks 4–6</div>
       <div class="prog-title">All Four Exam Sections</div>
-      <p class="prog-desc">Reading, writing, listening, and speaking — each worked through with real DIPLE past materials. Specific attention to the written tasks and the oral interaction format that B1 requires.</p>
+      <p class="prog-desc">Reading, writing, listening, and speaking — each worked through with real DIPLE past materials. Specific attention to the written tasks and the oral interaction format that B2 requires.</p>
     </div>
     <div class="prog-card" style="border-top-color:var(--ocean-light)">
       <div class="prog-week" style="color:var(--ocean-light)">Weeks 7–8</div>
@@ -308,7 +323,7 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
   <p class="s-label">Investment</p>
   <h2 class="s-title" style="margin-bottom:2.5rem">One programme, one price</h2>
   <div class="price-card" style="border-top:3px solid var(--ocean)">
-    <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ocean);font-weight:500;margin-bottom:.5rem">DIPLE · A2 → B1</div>
+    <div style="font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ocean);font-weight:500;margin-bottom:.5rem">DIPLE · A2 → B2</div>
     <div class="price-num">€750</div>
     <div class="price-period">8 weeks · 2 sessions/week · 100% online</div>
     <div class="price-divider" style="background:var(--ocean)"></div>
@@ -392,9 +407,19 @@ nav{display:flex!important;align-items:center!important;gap:.75rem!important;jus
   <span>© 2026 Cédric Martin · Algarve, Portugal · <a href="mailto:cmartwise@gmail.com">cmartwise@gmail.com</a></span>
 </footer>
 
-</body>
-</html>
 
-
+<script>
+(function(){
+  document.documentElement.classList.add("js");
+  var els=document.querySelectorAll(".s-title,.cta-h");
+  if(!("IntersectionObserver" in window)){els.forEach(function(e){e.classList.add("reveal","in-view")});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){entry.target.classList.add("in-view");io.unobserve(entry.target);}
+    });
+  },{threshold:.15,rootMargin:"0px 0px -8% 0px"});
+  els.forEach(function(e){e.classList.add("reveal");io.observe(e);});
+})();
+</script>
 </body>
 </html>

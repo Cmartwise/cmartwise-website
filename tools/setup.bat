@@ -6,7 +6,7 @@ echo.
 echo  Installing required packages...
 echo.
 
-python -m pip install faster-whisper pyaudiowpatch numpy scipy --quiet
+python -m pip install faster-whisper pyaudiowpatch numpy scipy requests --quiet
 
 echo.
 echo  Done! All packages installed.

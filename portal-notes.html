@@ -99,6 +99,24 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .empty-portal{text-align:center;padding:3rem;color:var(--muted)}
 .empty-portal .icon{font-size:2.5rem;margin-bottom:.75rem}
 
+/* PRACTICE / EXERCISES */
+.practice-block{margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--cream)}
+.practice-title{font-size:1rem;color:var(--ocean);margin-bottom:.25rem}
+.practice-sub{font-size:.8rem;color:var(--muted);margin-bottom:1rem}
+.ex-card{background:var(--ivory);border-radius:10px;padding:1rem 1.1rem;margin-bottom:.75rem;cursor:default}
+.ex-type{font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--terra);margin-bottom:.4rem;display:block}
+.ex-prompt{font-size:.95rem;color:#2a3a3a;margin-bottom:.5rem}
+.ex-flip{cursor:pointer;user-select:none}
+.ex-answer{font-size:.88rem;color:var(--ocean);background:#fff;border-radius:6px;padding:.5rem .7rem;margin-top:.5rem;display:none}
+.ex-answer.shown{display:block}
+.ex-hint{font-size:.75rem;color:var(--muted);margin-top:.3rem}
+.ex-input-row{display:flex;gap:.5rem;margin-top:.4rem}
+.ex-input-row input{flex:1;padding:.5rem .7rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem}
+.ex-input-row button{padding:.5rem 1rem;border-radius:6px;border:none;background:var(--ocean);color:#fff;font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer}
+.ex-feedback{margin-top:.5rem;font-size:.85rem;display:none}
+.ex-feedback.correct{color:#3D7A5A;display:block}
+.ex-feedback.incorrect{color:var(--terra);display:block}
+
 /* ADMIN: add note button */
 .add-note-btn{width:100%;padding:.7rem;border:1.5px dashed var(--border);border-radius:8px;
   background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;
@@ -294,7 +312,70 @@ function showNote(id) {
       ${note.tags?.length ? `<div class="note-view-tags">${note.tags.map(t => `<span class="note-view-tag">${esc(t)}</span>`).join('')}</div>` : ''}
     </div>
     <div class="note-content">${renderMarkdown(note.content || '')}</div>
+    <div class="practice-block" id="practice-block" style="display:none">
+      <h3 class="practice-title">Practice this session</h3>
+      <p class="practice-sub">A few quick ones built from what we actually talked about.</p>
+      <div id="practice-list"></div>
+    </div>
   `
+  loadExercisesForNote(id)
+}
+
+let currentExercises = []
+
+async function loadExercisesForNote(noteId) {
+  const { data } = await sb.from('exercises').select('*').eq('coaching_note_id', noteId)
+  currentExercises = data || []
+  const block = document.getElementById('practice-block')
+  const list = document.getElementById('practice-list')
+  if (!currentExercises.length) { block.style.display = 'none'; return }
+  block.style.display = 'block'
+  list.innerHTML = currentExercises.map((ex, i) => renderExercise(ex, i)).join('')
+}
+
+function renderExercise(ex, i) {
+  const labels = { flashcard: 'Flashcard', fill_blank: 'Fill in the blank', open_prompt: 'Try it yourself' }
+  if (ex.type === 'flashcard') {
+    return `
+      <div class="ex-card ex-flip" onclick="document.getElementById('ex-ans-${i}').classList.toggle('shown')">
+        <span class="ex-type">${labels.flashcard}</span>
+        <div class="ex-prompt">${esc(ex.prompt)} <span style="color:var(--muted);font-size:.78rem">(tap to reveal)</span></div>
+        <div class="ex-answer" id="ex-ans-${i}">${esc(ex.answer || '')}${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}</div>
+      </div>`
+  }
+  if (ex.type === 'fill_blank') {
+    return `
+      <div class="ex-card">
+        <span class="ex-type">${labels.fill_blank}</span>
+        <div class="ex-prompt">${esc(ex.prompt)}</div>
+        <div class="ex-input-row">
+          <input type="text" id="ex-input-${i}" placeholder="Your answer…" onkeydown="if(event.key==='Enter')checkFillBlank(${i})">
+          <button onclick="checkFillBlank(${i})">Check</button>
+        </div>
+        <div class="ex-feedback" id="ex-feedback-${i}"></div>
+      </div>`
+  }
+  // open_prompt
+  return `
+    <div class="ex-card">
+      <span class="ex-type">${labels.open_prompt}</span>
+      <div class="ex-prompt">${esc(ex.prompt)}</div>
+      ${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}
+    </div>`
+}
+
+function checkFillBlank(i) {
+  const ex = currentExercises[i]
+  const val = (document.getElementById(`ex-input-${i}`).value || '').trim().toLowerCase()
+  const correct = (ex.answer || '').trim().toLowerCase()
+  const fb = document.getElementById(`ex-feedback-${i}`)
+  if (val && correct && val === correct) {
+    fb.textContent = 'Right ✓' + (ex.explanation ? ' — ' + ex.explanation : '')
+    fb.className = 'ex-feedback correct'
+  } else {
+    fb.textContent = `Close — it's "${ex.answer}"` + (ex.explanation ? ' — ' + ex.explanation : '')
+    fb.className = 'ex-feedback incorrect'
+  }
 }
 
 // Simple markdown renderer

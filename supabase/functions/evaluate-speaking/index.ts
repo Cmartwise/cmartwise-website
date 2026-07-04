@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
 
     const rubricText = rubric ? Object.entries(rubric).map(([k,v]) => `- ${k}: ${v}`).join('\n') : ''
     const isPortuguese = language === 'Portuguese'
-    const levelLabel = { CIPLE: 'A2', DIPLE: 'B1-B2', IELTS: 'B1-C1', GRE: 'C1+' }[level] || level
+    const levelLabel = { CIPLE: 'A2', DEPLE: 'B1', DIPLE: 'B2', IELTS: 'B1-C1', GRE: 'C1+' }[level] || level
 
     const evaluationPrompt = `You are an experienced ${isPortuguese ? 'European Portuguese' : 'English'} language examiner evaluating a ${level} (${levelLabel}) speaking test.
 
@@ -54,7 +54,9 @@ Evaluate this response and return ONLY valid JSON, no markdown fences:
       messages: [{ role: 'user', content: evaluationPrompt }]
     })
 
-    const raw = (message.content[0] as { text: string }).text.trim()
+    const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
+    if (!textBlock) throw new Error('Model response had no text content block.')
+    const raw = textBlock.text.trim()
     const clean = raw.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim()
     const result = JSON.parse(clean)
 

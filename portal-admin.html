@@ -153,10 +153,28 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 /* TEST SESSIONS */
 .test-row{background:#fff;border-radius:8px;border:1px solid var(--border);
   padding:.85rem 1.25rem;margin-bottom:.5rem;display:grid;
-  grid-template-columns:1fr auto auto auto;gap:1rem;align-items:center}
+  grid-template-columns:1fr auto auto auto auto;gap:1rem;align-items:center}
 .test-type{font-size:.9rem;color:var(--ocean);font-weight:600}
 .test-score{font-size:1.1rem;color:var(--ocean);font-weight:700;text-align:center}
 .test-date{font-size:.78rem;color:var(--muted);font-family:monospace;text-align:right}
+
+/* TEST DETAIL REVIEW (inside modal) */
+.review-section{margin-top:.25rem}
+.review-item{background:var(--sand);border-radius:8px;border:1.5px solid var(--border);
+  padding:.85rem 1rem;margin-bottom:.6rem}
+.review-item.is-correct{border-left:3px solid var(--leaf)}
+.review-item.is-wrong{border-left:3px solid var(--terra)}
+.review-item-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem}
+.review-q-num{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:monospace}
+.review-badge{font-size:.7rem;font-family:monospace;padding:.1rem .5rem;border-radius:10px}
+.badge-correct{background:#f0faf0;color:var(--leaf)}
+.badge-wrong{background:#fdf0ee;color:var(--terra)}
+.review-q-text{font-size:.88rem;color:var(--ocean);line-height:1.5;margin-bottom:.4rem}
+.review-answer-row{font-size:.82rem;color:var(--muted);margin-bottom:.2rem}
+.review-answer-row span{font-weight:500;color:var(--ocean)}
+.review-answer-row.correct-row{color:var(--leaf)}
+.review-explanation{margin-top:.5rem;padding:.55rem .8rem;background:var(--ivory);
+  border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--ocean)}
 .tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
 /* == Brand font alignment == */
 body{font-family:'DM Sans',sans-serif}
@@ -188,12 +206,14 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
   <div class="stats-row">
     <div class="stat-card"><div class="stat-num" id="stat-students">—</div><div class="stat-lbl">Students</div></div>
     <div class="stat-card"><div class="stat-num" id="stat-notes">—</div><div class="stat-lbl">Coaching notes</div></div>
+    <div class="stat-card"><div class="stat-num" id="stat-vocab">—</div><div class="stat-lbl">Vocab terms tracked</div></div>
     <div class="stat-card"><div class="stat-num" id="stat-tests">—</div><div class="stat-lbl">Tests taken</div></div>
     <div class="stat-card"><div class="stat-num" id="stat-resources">—</div><div class="stat-lbl">Resources</div></div>
   </div>
 
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('students')">Students</button>
+    <button class="tab-btn" onclick="switchTab('process')">Process Lesson</button>
     <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
     <button class="tab-btn" onclick="switchTab('resources')">Resources</button>
     <button class="tab-btn" onclick="switchTab('tests')">Test Results</button>
@@ -206,6 +226,79 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <input type="text" id="student-search" placeholder="Search students…" oninput="filterStudents()">
     </div>
     <div id="students-list"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- ── PROCESS LESSON (AI note processing) ── -->
+  <div class="tab-panel" id="tab-process">
+    <p class="page-sub" style="margin-bottom:1.25rem">Lessons recorded with the desktop recorder show up below automatically, already processed and waiting on your review. You can also paste a transcript or upload a Canva export by hand — useful for backfilling older sessions.</p>
+
+    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Playfair Display',serif">📥 Pending review (<span id="proc-pending-count">0</span>)</h3>
+    <div id="proc-pending-list" style="margin-bottom:2rem"><div class="empty">Loading…</div></div>
+
+    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Playfair Display',serif">➕ Process something new</h3>
+
+    <div class="form-group">
+      <label>Source</label>
+      <div style="display:flex;gap:1.5rem;font-size:.88rem;color:var(--ocean)">
+        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer"><input type="radio" name="proc-source" value="transcript" checked onchange="onSourceTypeChange()"> Lesson transcript</label>
+        <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer"><input type="radio" name="proc-source" value="canva" onchange="onSourceTypeChange()"> Canva notes export (backfill)</label>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Student</label>
+      <select id="proc-student-id"></select>
+    </div>
+    <div class="form-group">
+      <label>Session date</label>
+      <input type="date" id="proc-date">
+      <div id="proc-date-hint" style="font-size:.75rem;color:var(--muted);margin-top:.3rem;display:none">Canva exports rarely have a reliable date on them — set it to your best guess for when that session happened.</div>
+    </div>
+    <div class="form-group">
+      <label>What you already know about this student (optional — improves the result)</label>
+      <textarea id="proc-profile" placeholder="e.g. C1 comprehension, B2-C1 speaking. Ex-private-equity director, now running his own coaching business. Recurring joke: the house renovation. Wants a fast way to look back at past vocabulary." style="min-height:70px"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Upload a file (.txt or .pdf) — or paste below instead</label>
+      <input type="file" id="proc-file" accept=".txt,.pdf" onchange="onFileSelected(event)" style="font-family:'DM Sans',sans-serif;font-size:.85rem">
+      <div id="proc-file-status" style="font-size:.78rem;color:var(--muted);margin-top:.3rem"></div>
+    </div>
+    <div class="form-group">
+      <label id="proc-transcript-label">Transcript</label>
+      <textarea id="proc-transcript" placeholder="Paste the raw lesson transcript here…" style="min-height:220px;font-family:monospace;font-size:.82rem"></textarea>
+    </div>
+    <button class="btn primary" id="proc-generate-btn" onclick="runProcessLesson()">Generate with AI</button>
+    <div id="proc-error" style="margin-top:.75rem;font-size:.85rem;color:#b02020;display:none"></div>
+
+    <div id="proc-preview" style="display:none;margin-top:2rem">
+      <div class="tile-mosaic" style="margin-bottom:1.5rem;border-radius:4px"></div>
+
+      <div class="form-group">
+        <label>Session title</label>
+        <input type="text" id="proc-title">
+      </div>
+
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">🔒 Admin brief — only you see this</h3>
+      <div class="form-group"><label>Comprehension level</label><input type="text" id="proc-level-comp"></div>
+      <div class="form-group"><label>Speaking level</label><input type="text" id="proc-level-speak"></div>
+      <div class="form-group"><label>What was covered (one per line)</label><textarea id="proc-covered" style="min-height:90px"></textarea></div>
+      <div class="form-group"><label>Focus for upcoming sessions (one per line)</label><textarea id="proc-focus" style="min-height:90px"></textarea></div>
+      <div class="form-group"><label>Corrections flagged (one per line)</label><textarea id="proc-corrections" style="min-height:90px"></textarea></div>
+      <div class="form-group"><label>Other context (business/personal, feedback about the portal, etc.)</label><textarea id="proc-meta" style="min-height:70px"></textarea></div>
+
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">✉️ Note to the student — this is what they'll see</h3>
+      <div class="form-group"><textarea id="proc-student-notes" style="min-height:280px;line-height:1.6"></textarea></div>
+
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">📚 New vocabulary — uncheck any to exclude</h3>
+      <div id="proc-vocab-list"></div>
+
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">🎯 Practice exercises — uncheck any to exclude</h3>
+      <div id="proc-exercises-list"></div>
+
+      <div class="modal-actions" style="justify-content:flex-start;margin-top:2rem">
+        <button class="btn primary" id="proc-publish-btn" onclick="publishProcessedLesson()">Confirm &amp; publish</button>
+        <button class="btn secondary" onclick="discardProcessed()">Discard</button>
+      </div>
+    </div>
   </div>
 
   <!-- ── NOTES ── -->
@@ -310,10 +403,25 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
   </div>
 </div>
 
+<!-- ── TEST DETAIL MODAL ── -->
+<div class="modal-overlay" id="test-detail-modal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-title" id="test-detail-title">Test review</div>
+    <div id="test-detail-body"></div>
+    <div class="modal-actions">
+      <button class="btn secondary" onclick="closeModal('test-detail-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+if (window['pdfjsLib']) {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+}
 const SUPABASE_URL  = 'https://zsgnggtwfxyqzvrnlaqg.supabase.co'
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpzZ25nZ3R3Znh5cXp2cm5sYXFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwOTYzMzIsImV4cCI6MjA5NjY3MjMzMn0.7iclLaCjyejXHmCcWAJvRJTICrCGt7ks5LieRY0Z9aM'
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
@@ -338,6 +446,7 @@ async function init() {
 
   await loadStudents()
   await loadStats()
+  await loadPendingDrafts()
   await loadNotes()
   await loadResources()
   await loadTests()
@@ -345,14 +454,16 @@ async function init() {
 
 // ── STATS ──────────────────────────────────────────────────────
 async function loadStats() {
-  const [{ count: ns }, { count: nn }, { count: nt }, { count: nr }] = await Promise.all([
+  const [{ count: ns }, { count: nn }, { count: nv }, { count: nt }, { count: nr }] = await Promise.all([
     sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
     sb.from('coaching_notes').select('*', { count: 'exact', head: true }),
+    sb.from('vocab_master').select('*', { count: 'exact', head: true }),
     sb.from('test_sessions').select('*', { count: 'exact', head: true }),
     sb.from('resources').select('*', { count: 'exact', head: true })
   ])
   document.getElementById('stat-students').textContent = ns || 0
   document.getElementById('stat-notes').textContent = nn || 0
+  document.getElementById('stat-vocab').textContent = nv || 0
   document.getElementById('stat-tests').textContent = nt || 0
   document.getElementById('stat-resources').textContent = nr || 0
 }
@@ -397,6 +508,7 @@ function populateStudentSelects() {
     `<option value="${s.id}">${esc(s.full_name || s.email)}</option>`
   ).join('')
   document.getElementById('note-student-id').innerHTML = opts
+  document.getElementById('proc-student-id').innerHTML = opts
   const filterOpts = '<option value="">All students</option>' + opts
   document.getElementById('note-student-filter').innerHTML = filterOpts
   document.getElementById('test-student-filter').innerHTML = filterOpts
@@ -411,7 +523,18 @@ async function loadNotes() {
   const { data } = await q
   const el = document.getElementById('notes-list')
   if (!data?.length) { el.innerHTML = '<div class="empty">No notes yet.</div>'; return }
-  el.innerHTML = data.map(n => `
+
+  // Pull admin-only briefs for these notes, if any (table may not exist yet — fails soft)
+  const noteIds = data.map(n => n.id)
+  let briefsByNote = {}
+  try {
+    const { data: briefs } = await sb.from('lesson_admin_notes').select('*').in('coaching_note_id', noteIds)
+    briefs?.forEach(b => { briefsByNote[b.coaching_note_id] = b })
+  } catch (e) { /* schema-lesson-processing.sql not run yet — that's fine */ }
+
+  el.innerHTML = data.map(n => {
+    const brief = briefsByNote[n.id]
+    return `
     <div class="note-item">
       <div class="note-meta">
         <span>${n.profiles?.full_name || n.profiles?.email || 'Unknown student'} · ${formatDate(n.session_date)}</span>
@@ -422,8 +545,15 @@ async function loadNotes() {
       <div class="note-title">${esc(n.title || 'Untitled')}</div>
       <div class="note-body">${esc(n.content || '')}</div>
       ${n.tags?.length ? `<div class="note-tags">${n.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      ${brief ? `
+        <div style="margin-top:.75rem;padding-top:.75rem;border-top:1px dashed var(--border);font-size:.82rem;color:var(--muted)">
+          <div><b style="color:var(--ocean)">🔒 Admin brief</b> — Comprehension ${esc(brief.level_assessment?.comprehension||'—')} · Speaking ${esc(brief.level_assessment?.speaking||'—')}</div>
+          ${brief.coach_focus_suggestions?.length ? `<div style="margin-top:.3rem"><b>Focus next:</b> ${brief.coach_focus_suggestions.map(esc).join(' · ')}</div>` : ''}
+          ${brief.corrections_flagged?.length ? `<div style="margin-top:.3rem"><b>Corrections:</b> ${brief.corrections_flagged.map(esc).join(' · ')}</div>` : ''}
+        </div>
+      ` : ''}
     </div>
-  `).join('')
+  `}).join('')
 }
 
 function openNoteModal(studentId) {
@@ -530,7 +660,253 @@ async function deleteResource(id) {
   loadStats()
 }
 
+// ── PROCESS LESSON (AI note processing) ─────────────────────────
+let lastProcessed = null
+let currentDraftId = null
+let pendingDrafts = []
+
+async function loadPendingDrafts() {
+  const el = document.getElementById('proc-pending-list')
+  try {
+    const { data, error } = await sb.from('lesson_drafts')
+      .select('*, profiles(full_name, email)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false })
+    if (error) throw error
+    pendingDrafts = data || []
+  } catch (e) {
+    document.getElementById('proc-pending-count').textContent = '0'
+    el.innerHTML = `<div class="empty">Nothing here yet — this fills up automatically once schema-lesson-processing.sql has been run and the recorder has sent a lesson over.</div>`
+    return
+  }
+  document.getElementById('proc-pending-count').textContent = pendingDrafts.length
+  if (!pendingDrafts.length) { el.innerHTML = '<div class="empty">All caught up — nothing waiting for review.</div>'; return }
+  el.innerHTML = pendingDrafts.map(d => `
+    <div class="note-item">
+      <div class="note-meta">
+        <span>${esc(d.profiles?.full_name || d.profiles?.email || 'Unknown student')} · ${formatDate(d.session_date)} · ${d.source_type === 'canva' ? 'Canva backfill' : 'Recorded lesson'}</span>
+        <span style="cursor:pointer;color:var(--terra)" onclick="discardDraft('${d.id}')">Discard</span>
+      </div>
+      <div class="note-title">${esc(d.ai_output?.session_title || 'Untitled session')}</div>
+      <button class="btn-sm primary" style="margin-top:.5rem" onclick="reviewDraft('${d.id}')">Review &amp; approve</button>
+    </div>
+  `).join('')
+}
+
+function reviewDraft(id) {
+  const d = pendingDrafts.find(x => x.id === id)
+  if (!d) return
+  currentDraftId = id
+  lastProcessed = d.ai_output
+  document.getElementById('proc-student-id').value = d.student_id
+  document.getElementById('proc-date').value = d.session_date
+  document.querySelector(`input[name=proc-source][value="${d.source_type || 'transcript'}"]`).checked = true
+  onSourceTypeChange()
+  renderProcessPreview(d.ai_output)
+  document.getElementById('proc-preview').scrollIntoView({ behavior: 'smooth' })
+}
+
+async function discardDraft(id) {
+  if (!confirm('Discard this draft? The lesson audio/transcript stays on your computer either way.')) return
+  await sb.from('lesson_drafts').update({ status: 'discarded' }).eq('id', id)
+  if (currentDraftId === id) discardProcessed()
+  loadPendingDrafts()
+}
+
+function onSourceTypeChange() {
+  const isCanva = document.querySelector('input[name=proc-source]:checked').value === 'canva'
+  document.getElementById('proc-date-hint').style.display = isCanva ? 'block' : 'none'
+  document.getElementById('proc-transcript-label').textContent = isCanva ? 'Extracted Canva notes text' : 'Transcript'
+}
+
+function onFileSelected(event) {
+  const file = event.target.files[0]
+  const statusEl = document.getElementById('proc-file-status')
+  if (!file) return
+  statusEl.textContent = 'Reading ' + file.name + '…'
+
+  if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+    if (!window.pdfjsLib) { statusEl.textContent = 'PDF reader failed to load — paste the text manually instead.'; return }
+    const reader = new FileReader()
+    reader.onload = async () => {
+      try {
+        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(reader.result) }).promise
+        let text = ''
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i)
+          const content = await page.getTextContent()
+          text += `\n--- Page ${i} ---\n` + content.items.map(it => it.str).join(' ') + '\n'
+        }
+        document.getElementById('proc-transcript').value = text.trim()
+        statusEl.textContent = `Extracted text from ${pdf.numPages} page(s) of ${file.name} — check it over before generating.`
+      } catch (e) {
+        statusEl.textContent = 'Could not read that PDF (' + e.message + ') — paste the text manually instead.'
+      }
+    }
+    reader.readAsArrayBuffer(file)
+  } else {
+    const reader = new FileReader()
+    reader.onload = () => {
+      document.getElementById('proc-transcript').value = reader.result
+      statusEl.textContent = 'Loaded ' + file.name
+    }
+    reader.readAsText(file)
+  }
+}
+
+async function runProcessLesson() {
+  const studentId = document.getElementById('proc-student-id').value
+  const transcript = document.getElementById('proc-transcript').value.trim()
+  const sourceType = document.querySelector('input[name=proc-source]:checked').value
+  const errEl = document.getElementById('proc-error')
+  errEl.style.display = 'none'
+
+  if (!studentId) { errEl.textContent = 'Choose a student first.'; errEl.style.display = 'block'; return }
+  if (!transcript) { errEl.textContent = 'Paste, or upload, a transcript/notes file first.'; errEl.style.display = 'block'; return }
+
+  const student = allStudents.find(s => s.id === studentId)
+  const btn = document.getElementById('proc-generate-btn')
+  btn.disabled = true; btn.textContent = 'Generating… (can take 30–60s)'
+
+  try {
+    const { data, error } = await sb.functions.invoke('process-lesson', {
+      body: {
+        transcript,
+        studentName: student?.full_name || student?.email,
+        studentProfile: document.getElementById('proc-profile').value.trim(),
+        sessionDate: document.getElementById('proc-date').value,
+        sourceType
+      }
+    })
+    if (error) throw error
+    if (data?.error) throw new Error(data.error)
+
+    currentDraftId = null  // fresh generation, not tied to a queued draft
+    lastProcessed = data
+    renderProcessPreview(data)
+  } catch (e) {
+    errEl.textContent = 'Error: ' + (e.message || e) + '. Has the process-lesson edge function been deployed with ANTHROPIC_API_KEY set?'
+    errEl.style.display = 'block'
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate with AI'
+  }
+}
+
+function renderProcessPreview(data) {
+  document.getElementById('proc-title').value = data.session_title || ''
+  document.getElementById('proc-level-comp').value = data.admin_summary?.level_assessment?.comprehension || ''
+  document.getElementById('proc-level-speak').value = data.admin_summary?.level_assessment?.speaking || ''
+  document.getElementById('proc-covered').value = (data.admin_summary?.what_was_covered || []).join('\n')
+  document.getElementById('proc-focus').value = (data.admin_summary?.coach_focus_suggestions || []).join('\n')
+  document.getElementById('proc-corrections').value = (data.admin_summary?.corrections_flagged || []).join('\n')
+  document.getElementById('proc-meta').value = data.admin_summary?.coach_notes_meta || ''
+  document.getElementById('proc-student-notes').value = data.student_notes_markdown || ''
+
+  document.getElementById('proc-vocab-list').innerHTML = (data.vocab_additions || []).map((v, i) => `
+    <label style="display:flex;gap:.6rem;align-items:baseline;padding:.4rem 0;font-size:.88rem;border-bottom:1px solid var(--cream)">
+      <input type="checkbox" checked data-vocab-idx="${i}" style="margin-top:.2rem">
+      <span><b style="color:var(--ocean)">${esc(v.term)}</b> — ${esc(v.translation || '')} <span style="color:var(--muted);font-size:.78rem">(${esc(v.category||'general')})</span></span>
+    </label>
+  `).join('') || '<div class="empty">No vocab extracted.</div>'
+
+  document.getElementById('proc-exercises-list').innerHTML = (data.exercises || []).map((ex, i) => `
+    <label style="display:flex;gap:.6rem;align-items:baseline;padding:.4rem 0;font-size:.88rem;border-bottom:1px solid var(--cream)">
+      <input type="checkbox" checked data-exercise-idx="${i}" style="margin-top:.2rem">
+      <span><span class="tag" style="margin-right:.4rem">${esc(ex.type)}</span>${esc(ex.prompt)} <span style="color:var(--muted)">→ ${esc(ex.answer||'')}</span></span>
+    </label>
+  `).join('') || '<div class="empty">No exercises generated.</div>'
+
+  document.getElementById('proc-preview').style.display = 'block'
+}
+
+async function publishProcessedLesson() {
+  if (!lastProcessed) return
+  const studentId = document.getElementById('proc-student-id').value
+  const btn = document.getElementById('proc-publish-btn')
+  btn.disabled = true; btn.textContent = 'Publishing…'
+
+  try {
+    const tags = [...new Set((lastProcessed.vocab_additions||[]).map(v => v.category).filter(Boolean))]
+
+    // 1) student-facing note
+    const { data: note, error: noteErr } = await sb.from('coaching_notes').insert({
+      student_id: studentId,
+      session_date: document.getElementById('proc-date').value,
+      title: document.getElementById('proc-title').value.trim(),
+      content: document.getElementById('proc-student-notes').value.trim(),
+      tags
+    }).select().single()
+    if (noteErr) throw noteErr
+
+    // 2) admin-only brief
+    const { error: briefErr } = await sb.from('lesson_admin_notes').insert({
+      coaching_note_id: note.id,
+      student_id: studentId,
+      session_date: document.getElementById('proc-date').value,
+      level_assessment: {
+        comprehension: document.getElementById('proc-level-comp').value,
+        speaking: document.getElementById('proc-level-speak').value
+      },
+      what_was_covered: document.getElementById('proc-covered').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      coach_focus_suggestions: document.getElementById('proc-focus').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      corrections_flagged: document.getElementById('proc-corrections').value.split('\n').map(s=>s.trim()).filter(Boolean),
+      coach_notes_meta: document.getElementById('proc-meta').value.trim(),
+      ai_raw_summary: JSON.stringify(lastProcessed),
+      coach_confirmed: true
+    })
+    if (briefErr) throw briefErr
+
+    // 3) cumulative vocab (checked items only)
+    const vocabChecks = document.querySelectorAll('#proc-vocab-list input[type=checkbox]')
+    for (const cb of vocabChecks) {
+      if (!cb.checked) continue
+      const v = lastProcessed.vocab_additions[+cb.dataset.vocabIdx]
+      await sb.rpc('upsert_vocab', {
+        p_student_id: studentId, p_term: v.term, p_translation: v.translation,
+        p_category: v.category, p_tags: v.tags || [], p_note_id: note.id
+      })
+    }
+
+    // 4) exercises (checked items only)
+    const exChecks = document.querySelectorAll('#proc-exercises-list input[type=checkbox]')
+    const exRows = []
+    for (const cb of exChecks) {
+      if (!cb.checked) continue
+      const ex = lastProcessed.exercises[+cb.dataset.exerciseIdx]
+      exRows.push({ student_id: studentId, coaching_note_id: note.id, type: ex.type, prompt: ex.prompt, answer: ex.answer, explanation: ex.explanation })
+    }
+    if (exRows.length) {
+      const { error: exErr } = await sb.from('exercises').insert(exRows)
+      if (exErr) throw exErr
+    }
+
+    if (currentDraftId) {
+      await sb.from('lesson_drafts').update({ status: 'published' }).eq('id', currentDraftId)
+    }
+
+    showToast('Published — student note, admin brief, vocab and exercises all saved')
+    discardProcessed()
+    loadNotes(); loadStats(); loadPendingDrafts()
+  } catch (e) {
+    document.getElementById('proc-error').textContent = 'Error publishing: ' + (e.message || e)
+    document.getElementById('proc-error').style.display = 'block'
+  } finally {
+    btn.disabled = false; btn.textContent = 'Confirm & publish'
+  }
+}
+
+function discardProcessed() {
+  lastProcessed = null
+  currentDraftId = null
+  document.getElementById('proc-preview').style.display = 'none'
+  document.getElementById('proc-transcript').value = ''
+  document.getElementById('proc-file').value = ''
+  document.getElementById('proc-file-status').textContent = ''
+}
+
 // ── TESTS ──────────────────────────────────────────────────────
+let testsById = {}
+
 async function loadTests() {
   const studentId = document.getElementById('test-student-filter')?.value || ''
   let q = sb.from('test_sessions').select('*, profiles(full_name, email)').order('completed_at', { ascending: false }).limit(50)
@@ -538,6 +914,8 @@ async function loadTests() {
   const { data } = await q
   const el = document.getElementById('tests-list')
   if (!data?.length) { el.innerHTML = '<div class="empty">No tests taken yet.</div>'; return }
+  testsById = {}
+  data.forEach(t => { testsById[t.id] = t })
   el.innerHTML = data.map(t => `
     <div class="test-row">
       <div>
@@ -548,18 +926,77 @@ async function loadTests() {
       <div class="test-score">${t.score !== null ? Math.round(t.score) + '/100' : '—'}</div>
       <div style="font-size:.75rem;color:var(--muted);font-family:monospace">${t.duration_sec ? Math.round(t.duration_sec/60) + ' min' : '—'}</div>
       <div class="test-date">${formatDate(t.completed_at)}</div>
+      <div>${t.detail?.length ? `<button class="btn-sm" onclick="openTestDetail('${t.id}')">View answers</button>` : ''}</div>
     </div>
   `).join('')
+}
+
+function openTestDetail(id) {
+  const t = testsById[id]
+  if (!t) return
+  document.getElementById('test-detail-title').textContent =
+    `${t.profiles?.full_name || t.profiles?.email || 'Unknown'} — ${t.test_type} ${t.section} (${t.score !== null ? Math.round(t.score) + '/100' : '—'})`
+  document.getElementById('test-detail-body').innerHTML = renderTestReview(t.detail)
+  document.getElementById('test-detail-modal').classList.add('open')
+}
+
+function renderTestReview(detail) {
+  if (!detail || !detail.length) return '<div class="empty">No detail saved for this test.</div>'
+  const gradable = detail.filter(d => d.is_correct !== null)
+  const correctCount = gradable.filter(d => d.is_correct).length
+  return `
+    <div class="review-section">
+      ${gradable.length ? `<div style="font-size:.85rem;color:var(--muted);font-family:monospace;margin-bottom:.75rem">${correctCount}/${gradable.length} correct</div>` : ''}
+      ${detail.map((d, i) => `
+        <div class="review-item ${d.is_correct === true ? 'is-correct' : d.is_correct === false ? 'is-wrong' : ''}">
+          <div class="review-item-head">
+            <span class="review-q-num">Question ${i + 1}</span>
+            ${d.is_correct === true ? '<span class="review-badge badge-correct">✓ Correct</span>' : ''}
+            ${d.is_correct === false ? '<span class="review-badge badge-wrong">✗ Incorrect</span>' : ''}
+          </div>
+          <div class="review-q-text">${esc(d.question)}</div>
+          ${(d.is_correct === false || d.type === 'short') ? `<div class="review-answer-row"><span>Student answer:</span> ${esc(formatAnswerDisplay(d, d.student_answer))}</div>` : ''}
+          ${d.correct_answer !== null && d.correct_answer !== undefined ? `<div class="review-answer-row correct-row"><span>Correct answer:</span> ${esc(formatAnswerDisplay(d, d.correct_answer))}</div>` : ''}
+          ${d.explanation ? `<div class="review-explanation">${esc(d.explanation)}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `
+}
+
+function formatAnswerDisplay(d, val) {
+  if (val === null || val === undefined || val === '' || (Array.isArray(val) && !val.length)) return '—'
+  if ((d.type === 'multiple_choice' || d.type === 'matching') && d.options) {
+    const idx = typeof val === 'string' ? val.toUpperCase().charCodeAt(0) - 65 : -1
+    const text = d.options[idx]
+    return text ? `${val} — ${text}` : String(val)
+  }
+  if (d.type === 'multi_select' && d.options) {
+    const letters = Array.isArray(val) ? val : [val]
+    return letters.map(l => {
+      const idx = typeof l === 'string' ? l.toUpperCase().charCodeAt(0) - 65 : -1
+      const text = d.options[idx]
+      return text ? `${l} — ${text}` : String(l)
+    }).join(', ')
+  }
+  if (d.type === 'true_false') return (val === true || val === 'true') ? 'True' : 'False'
+  return String(val)
 }
 
 // ── UTILS ──────────────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const tabs = ['students', 'notes', 'resources', 'tests']
+    const tabs = ['students', 'process', 'notes', 'resources', 'tests']
     b.classList.toggle('active', tabs[i] === name)
   })
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
   document.getElementById('tab-' + name).classList.add('active')
+  if (name === 'process') {
+    if (!document.getElementById('proc-date').value) {
+      document.getElementById('proc-date').value = new Date().toISOString().split('T')[0]
+    }
+    loadPendingDrafts()
+  }
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('open') }
@@ -598,7 +1035,7 @@ init()
       <select id="edit-programme" style="width:100%;padding:.65rem;border-radius:6px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ocean)">
         <option value="Full Fluency Programme">Full Fluency Programme</option>
         <option value="CIPLE Prep">CIPLE Prep (A2)</option>
-        <option value="DIPLE Prep">DIPLE Prep (B1)</option>
+        <option value="DIPLE Prep">DIPLE Prep (B2)</option>
       </select>
     </div>
     <div style="margin-bottom:1rem">

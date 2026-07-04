@@ -57,6 +57,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .option-name{font-size:.9rem;color:var(--ocean);font-weight:600}
 .option-desc{font-size:.75rem;color:var(--muted);margin-top:.2rem}
 
+.test-info{background:var(--ivory);border-radius:8px;border-left:3px solid var(--ocean);
+  padding:.75rem 1rem;margin-bottom:1rem;font-size:.85rem;color:#2a3a3a;line-height:1.6}
+.test-info strong{color:var(--ocean)}
+
 .section-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem}
 @media(max-width:500px){.section-grid{grid-template-columns:1fr}}
 .section-card{background:#fff;border-radius:10px;border:2px solid var(--border);
@@ -216,6 +220,25 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   font-style:italic;color:var(--muted);font-size:.9rem;line-height:1.6;
   border-left:3px solid var(--terra);margin-top:1rem}
 
+/* ── REVIEW (right/wrong + explanations) ── */
+.review-section{margin-top:1.5rem}
+.review-heading{font-size:1rem;color:var(--ocean);font-weight:600;margin-bottom:1rem;
+  display:flex;align-items:center;gap:.6rem}
+.review-tally{font-size:.78rem;color:var(--muted);font-family:monospace;font-weight:400}
+.review-item{background:#fff;border-radius:10px;border:1.5px solid var(--border);
+  padding:1rem 1.25rem;margin-bottom:.75rem}
+.review-item.is-correct{border-left:3px solid var(--leaf)}
+.review-item.is-wrong{border-left:3px solid var(--terra)}
+.review-item-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem}
+.review-q-num{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:monospace}
+.review-badge{font-size:.72rem;font-family:monospace;padding:.1rem .5rem;border-radius:10px}
+.badge-correct{background:#f0faf0;color:var(--leaf)}
+.badge-wrong{background:#fdf0ee;color:var(--terra)}
+.review-q-text{font-size:.92rem;color:var(--ocean);line-height:1.5;margin-bottom:.5rem}
+.review-answer-row{font-size:.85rem;color:var(--muted);margin-bottom:.25rem}
+.review-answer-row span{font-weight:500;color:var(--ocean)}
+.review-answer-row.correct-row{color:var(--leaf)}
+
 .restart-btn{width:100%;padding:1rem;background:var(--ocean);color:#fff;border:none;
   border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;cursor:pointer;
   margin-top:1.5rem;transition:.2s}
@@ -259,10 +282,15 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
           <div class="option-name">CIPLE</div>
           <div class="option-desc">Portuguese A2</div>
         </div>
+        <div class="option-card" data-type="test" data-value="DEPLE" onclick="select(this,'test')">
+          <div class="option-icon">🇵🇹</div>
+          <div class="option-name">DEPLE</div>
+          <div class="option-desc">Portuguese B1</div>
+        </div>
         <div class="option-card" data-type="test" data-value="DIPLE" onclick="select(this,'test')">
           <div class="option-icon">🇵🇹</div>
           <div class="option-name">DIPLE</div>
-          <div class="option-desc">Portuguese B1–B2</div>
+          <div class="option-desc">Portuguese B2</div>
         </div>
         <div class="option-card" data-type="test" data-value="IELTS" onclick="select(this,'test')">
           <div class="option-icon">🇬🇧</div>
@@ -279,6 +307,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 
     <div class="config-section">
       <span class="config-label">Section</span>
+      <div class="test-info" id="test-info"></div>
       <div class="section-grid">
         <div class="section-card selected" data-type="section" data-value="reading" onclick="select(this,'section')">
           <div class="section-icon">📖</div>
@@ -294,20 +323,23 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
             <div class="section-info-desc">Short + longer written tasks</div>
           </div>
         </div>
-        <div class="section-card" data-type="section" data-value="listening" onclick="select(this,'section')">
+        <div class="section-card" data-type="section" data-value="listening" id="section-card-listening" onclick="select(this,'section')">
           <div class="section-icon">🎧</div>
           <div>
             <div class="section-info-name">Listening</div>
             <div class="section-info-desc">Audio plays, answer questions</div>
           </div>
         </div>
-        <div class="section-card" data-type="section" data-value="speaking" onclick="select(this,'section')">
+        <div class="section-card" data-type="section" data-value="speaking" id="section-card-speaking" onclick="select(this,'section')">
           <div class="section-icon">🎙️</div>
           <div>
             <div class="section-info-name">Speaking</div>
             <div class="section-info-desc">Record + AI evaluates</div>
           </div>
         </div>
+      </div>
+      <div id="gre-section-note" style="display:none;font-size:.78rem;color:var(--muted);margin-top:.6rem;font-style:italic">
+        The real GRE has no Listening or Speaking section — only Verbal Reasoning (Reading) and a single Analytical Writing essay.
       </div>
     </div>
 
@@ -356,6 +388,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
     </div>
     <div class="results-breakdown" id="results-breakdown"></div>
     <div id="results-feedback"></div>
+    <div id="results-review"></div>
     <button class="restart-btn" onclick="showScreen('setup')">Take another test →</button>
   </div>
 
@@ -389,11 +422,45 @@ function showScreen(id) {
   document.getElementById('screen-' + id).classList.add('active')
 }
 
+// What each exam actually is and who it's for — shown on the setup screen so
+// students aren't guessing. Kept short; the practice content itself follows
+// the real exam's structure (see generate-test/index.ts).
+const TEST_INFO = {
+  CIPLE: '<strong>CIPLE (A2)</strong> is Portugal\'s official beginner-level Portuguese certificate — the language exam required for Portuguese citizenship by naturalisation.',
+  DEPLE: '<strong>DEPLE (B1)</strong> is the CAPLE exam one level above CIPLE — proves intermediate everyday Portuguese, often used for residency or as general proof of ability.',
+  DIPLE: '<strong>DIPLE (B2)</strong> is CAPLE\'s upper-intermediate certificate — required for certain work visas and professional credentials, and chosen by anyone wanting solid proof of real fluency.',
+  IELTS: '<strong>IELTS Academic</strong> is the standard English test for university admissions, skilled-worker visas, and professional registration worldwide.',
+  GRE: '<strong>GRE</strong> is required for graduate school admissions (mainly in the US). This practice covers Verbal Reasoning and Analytical Writing — the real GRE has no Listening or Speaking section.'
+}
+
+function updateTestInfo() {
+  document.getElementById('test-info').innerHTML = TEST_INFO[selectedTest] || ''
+}
+
 function select(el, type) {
   document.querySelectorAll(`[data-type="${type}"]`).forEach(c => c.classList.remove('selected'))
   el.classList.add('selected')
-  if (type === 'test') selectedTest = el.dataset.value
+  if (type === 'test') { selectedTest = el.dataset.value; updateSectionAvailability(); updateTestInfo() }
   if (type === 'section') selectedSection = el.dataset.value
+}
+
+// The real GRE has no Listening or Speaking section at all (just Verbal
+// Reasoning + a single Analytical Writing essay) — hide those two buttons
+// so the picker doesn't offer something that isn't part of the real exam.
+function updateSectionAvailability() {
+  const isGRE = selectedTest === 'GRE'
+  const listeningCard = document.getElementById('section-card-listening')
+  const speakingCard = document.getElementById('section-card-speaking')
+  listeningCard.style.display = isGRE ? 'none' : 'flex'
+  speakingCard.style.display = isGRE ? 'none' : 'flex'
+  document.getElementById('gre-section-note').style.display = isGRE ? 'block' : 'none'
+
+  if (isGRE && (selectedSection === 'listening' || selectedSection === 'speaking')) {
+    document.querySelectorAll('[data-type="section"]').forEach(c => c.classList.remove('selected'))
+    const readingCard = document.querySelector('[data-type="section"][data-value="reading"]')
+    readingCard.classList.add('selected')
+    selectedSection = 'reading'
+  }
 }
 
 async function startTest() {
@@ -496,7 +563,7 @@ function renderReadingQ(q, container) {
 }
 
 function renderOptions(q) {
-  if (q.type === 'multiple_choice') {
+  if (q.type === 'multiple_choice' || q.type === 'matching') {
     return `<div class="options">
       ${(q.options || []).map((opt, i) => {
         const letter = String.fromCharCode(65 + i)
@@ -516,6 +583,27 @@ function renderOptions(q) {
       <div class="tf-btn${saved===false?' selected':''}" onclick="selectAnswer(false, this)">✗ False</div>
     </div>`
   }
+  if (q.type === 'multi_select') {
+    // GRE-style sentence equivalence: pick exactly 2 (or however many the
+    // question calls for) — a plain letter/scalar answer can't represent this.
+    const saved = Array.isArray(answers[currentQ]) ? answers[currentQ] : []
+    return `<div class="options">
+      ${(q.options || []).map((opt, i) => {
+        const letter = String.fromCharCode(65 + i)
+        const isChecked = saved.includes(letter)
+        return `<div class="option${isChecked ? ' selected' : ''}" onclick="toggleMultiSelect('${letter}', this)">
+          <div class="option-letter">${isChecked ? '✓' : letter}</div>
+          <div class="option-text">${esc(opt)}</div>
+        </div>`
+      }).join('')}
+    </div>
+    <div style="font-size:.78rem;color:var(--muted);margin-top:.5rem;font-style:italic">Select two answers.</div>`
+  }
+  if (q.type === 'gap_fill') {
+    return `<input type="text" class="short-input" style="min-height:auto" id="gap-ans-${currentQ}"
+      placeholder="Type the missing word(s)…" value="${esc(answers[currentQ]||'')}"
+      oninput="answers[${currentQ}]=this.value">`
+  }
   return `<textarea class="short-input" id="short-ans-${currentQ}" placeholder="Write your answer here…" oninput="answers[${currentQ}]=this.value">${answers[currentQ]||''}</textarea>`
 }
 
@@ -524,6 +612,12 @@ function selectAnswer(val, el) {
   // Visual update
   el.closest('.options, .tf-options')?.querySelectorAll('.option, .tf-btn').forEach(o => o.classList.remove('selected'))
   el.classList.add('selected')
+}
+
+function toggleMultiSelect(letter, el) {
+  const current = Array.isArray(answers[currentQ]) ? answers[currentQ] : []
+  answers[currentQ] = current.includes(letter) ? current.filter(l => l !== letter) : [...current, letter]
+  renderQuestion()
 }
 
 // ── LISTENING ───────────────────────────────────────────────
@@ -593,24 +687,27 @@ function playAudio(trackId) {
 
 // ── WRITING ─────────────────────────────────────────────────
 function renderWritingQ(q, container) {
+  const isRewrite = q.type === 'rewrite'
   container.innerHTML = `
     <div class="writing-task">
-      <div class="q-num">Task ${currentQ + 1}</div>
+      <div class="q-num">Task ${currentQ + 1}${isRewrite ? ' — Sentence transformation' : ''}</div>
       <div class="writing-prompt">
         ${esc(q.prompt)}
         ${q.prompt_en ? `<div class="writing-prompt-en">→ ${esc(q.prompt_en)}</div>` : ''}
       </div>
-      <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;font-family:monospace">
-        Word count: ${q.word_count_min}–${q.word_count_max} words
-      </div>
-      <textarea class="writing-area" id="writing-${currentQ}"
-        placeholder="Write your answer here in ${selectedTest === 'IELTS' || selectedTest === 'GRE' ? 'English' : 'Portuguese'}…"
+      ${!isRewrite ? `
+        <div style="font-size:.78rem;color:var(--muted);margin-bottom:.5rem;font-family:monospace">
+          Word count: ${q.word_count_min}–${q.word_count_max} words
+        </div>
+      ` : ''}
+      <textarea class="writing-area" id="writing-${currentQ}" style="${isRewrite ? 'min-height:60px' : ''}"
+        placeholder="${isRewrite ? 'Write the rewritten sentence…' : `Write your answer here in ${selectedTest === 'IELTS' || selectedTest === 'GRE' ? 'English' : 'Portuguese'}…`}"
         oninput="saveWriting(${currentQ}, this)"
       >${answers[currentQ] || ''}</textarea>
-      <div class="word-count" id="wc-${currentQ}">0 words</div>
+      ${!isRewrite ? `<div class="word-count" id="wc-${currentQ}">0 words</div>` : ''}
     </div>
   `
-  updateWordCount(currentQ)
+  if (!isRewrite) updateWordCount(currentQ)
 }
 
 function saveWriting(idx, el) {
@@ -654,7 +751,15 @@ function renderSpeakingQ(q, container) {
     const speakTime = q.speak_time_seconds || 45
     container.innerHTML = `
       <div class="speaking-task">
-        <div class="q-num">Part ${currentQ + 1} — ${q.type === 'opinion' ? 'Opinion' : q.type === 'describe_image' ? 'Description' : 'Speaking'}</div>
+        <div class="q-num">Part ${currentQ + 1} — ${
+          q.type === 'opinion' ? 'Opinion' :
+          q.type === 'describe_image' ? 'Description' :
+          q.type === 'roleplay' ? 'Roleplay' :
+          q.type === 'discussion' ? 'Discussion' :
+          q.type === 'negotiation' ? 'Negotiation' :
+          q.type === 'reaction' ? 'Reaction to a prompt' :
+          'Speaking'
+        }</div>
         <div class="q-text">${esc(q.instruction)}</div>
         <div class="prep-phase">
           <div class="prep-label">Preparation time: ${prepTime}s — read the topic, think, then record</div>
@@ -737,11 +842,12 @@ async function submitTest() {
   document.getElementById('loading-text').textContent = 'Evaluating your answers…'
 
   const timeTaken = totalTime - timeLeft
-  let score = 0, feedback = null, breakdown = {}
+  let score = 0, feedback = null, breakdown = {}, detail = null
 
   try {
     if (selectedSection === 'reading' || selectedSection === 'listening') {
-      score = scoreObjective()
+      detail = buildReviewDetail()
+      score = scoreFromDetail(detail)
       breakdown = { 'Correct answers': Math.round(score) + '/100' }
     } else if (selectedSection === 'writing') {
       score = await scoreWriting()
@@ -760,33 +866,59 @@ async function submitTest() {
       section: selectedSection,
       score,
       feedback: feedback?.coach_note || null,
-      duration_sec: timeTaken
+      duration_sec: timeTaken,
+      detail
     })
 
-    showResults(score, breakdown, feedback)
+    showResults(score, breakdown, feedback, detail)
   } catch(e) {
     alert('Could not evaluate: ' + e.message)
     showScreen('setup')
   }
 }
 
-function scoreObjective() {
+// multi_select (GRE sentence equivalence) stores an array of letters and the
+// order picked doesn't matter — a plain string compare would fail on ['E','B']
+// vs correct ['B','E'], so that type gets its own set comparison.
+function isAnswerCorrect(q, studentAnswer) {
+  if (q.type === 'multi_select') {
+    const picked = Array.isArray(studentAnswer) ? studentAnswer : []
+    const correct = Array.isArray(q.correct) ? q.correct : []
+    if (picked.length !== correct.length) return false
+    const norm = arr => [...arr].map(s => String(s).toUpperCase()).sort()
+    return JSON.stringify(norm(picked)) === JSON.stringify(norm(correct))
+  }
+  return String(studentAnswer).trim().toLowerCase() === String(q.correct).trim().toLowerCase()
+}
+
+// Builds one row per question with student answer, correct answer, right/wrong,
+// and the model's explanation — so results can show more than just a score.
+// NOTE: use "correct is undefined/null" rather than a falsy check — true_false
+// questions can legitimately have correct === false, which is a valid gradable
+// answer, not a missing one.
+function buildReviewDetail() {
   const questions = getQuestions()
-  if (!questions.length) return 0
-  // NOTE: use "correct is undefined/null" rather than a falsy check — true_false
-  // questions can legitimately have correct === false, which is a valid gradable
-  // answer, not a missing one. A falsy check here was silently excluding those
-  // questions from grading (never counted right OR wrong), which could inflate
-  // the score when a student got them wrong.
-  const isGradable = q => q.type !== 'short' && q.correct !== undefined && q.correct !== null
-  let correct = 0
-  questions.forEach((q, i) => {
-    if (!isGradable(q)) return
-    const ans = answers[i]
-    if (String(ans).toLowerCase() === String(q.correct).toLowerCase()) correct++
+  return questions.map((q, i) => {
+    const isGradable = q.type !== 'short' && q.correct !== undefined && q.correct !== null
+    const studentAnswer = answers[i] !== undefined ? answers[i] : null
+    const isCorrect = isGradable ? isAnswerCorrect(q, studentAnswer) : null
+    return {
+      question: q.question || '',
+      type: q.type || null,
+      options: q.options || null,
+      student_answer: studentAnswer,
+      correct_answer: isGradable ? q.correct : null,
+      is_correct: isCorrect,
+      explanation: q.explanation || null
+    }
   })
-  const gradable = questions.filter(isGradable).length
-  return gradable ? Math.round((correct / gradable) * 100) : 0
+}
+
+function scoreFromDetail(detail) {
+  const gradable = detail.filter(d => d.is_correct !== null)
+  if (!gradable.length) return 0
+  const correct = gradable.filter(d => d.is_correct).length
+  return Math.round((correct / gradable.length) * 100)
 }
 
 async function scoreWriting() {
@@ -794,10 +926,15 @@ async function scoreWriting() {
   const tasks = getQuestions()
   let total = 0
   tasks.forEach((t, i) => {
-    const text = answers[i] || ''
-    const wc = text.trim().split(/\s+/).filter(Boolean).length
+    const text = (answers[i] || '').trim()
+    const wc = text.split(/\s+/).filter(Boolean).length
+    if (t.type === 'rewrite') {
+      // DIPLE Part III-style sentence transformations aren't essays — a short,
+      // correct rewrite is a full pass, so grade on "attempted" not word count.
+      total += wc >= 3 ? 1 : 0
+      return
+    }
     const min = t.word_count_min || 60
-    const max = t.word_count_max || 150
     const pct = Math.min(1, wc / min)
     total += pct
   })
@@ -829,7 +966,7 @@ async function scoreSpeaking() {
   return await res.json()
 }
 
-function showResults(score, breakdown, feedback) {
+function showResults(score, breakdown, feedback, detail) {
   document.getElementById('result-score').textContent = Math.round(score)
 
   const band = score >= 85 ? 'C1+' : score >= 70 ? 'B2' : score >= 55 ? 'B1' : score >= 40 ? 'A2' : 'A1'
@@ -874,4 +1011,73 @@ function showResults(score, breakdown, feedback) {
     feedbackEl.innerHTML = `
       <div class="feedback-section">
         <div class="feedback-title">Result</div>
-        <p style="font-size:.9rem;color:var(--muted)">Score: ${Math.round(score)}/100. Check your coaching notes and resources t
+        <p style="font-size:.9rem;color:var(--muted)">Score: ${Math.round(score)}/100. Check your coaching notes and resources to work on areas that felt difficult.</p>
+      </div>
+    `
+  }
+
+  // Per-question review (reading / listening only — writing & speaking are
+  // scored qualitatively above, not right/wrong)
+  document.getElementById('results-review').innerHTML = renderReview(detail)
+
+  showScreen('results')
+}
+
+function renderReview(detail) {
+  if (!detail || !detail.length) return ''
+  const gradable = detail.filter(d => d.is_correct !== null)
+  const correctCount = gradable.filter(d => d.is_correct).length
+  return `
+    <div class="review-section">
+      <div class="review-heading">Review your answers
+        ${gradable.length ? `<span class="review-tally">${correctCount}/${gradable.length} correct</span>` : ''}
+      </div>
+      ${detail.map((d, i) => `
+        <div class="review-item ${d.is_correct === true ? 'is-correct' : d.is_correct === false ? 'is-wrong' : ''}">
+          <div class="review-item-head">
+            <span class="review-q-num">Question ${i + 1}</span>
+            ${d.is_correct === true ? '<span class="review-badge badge-correct">✓ Correct</span>' : ''}
+            ${d.is_correct === false ? '<span class="review-badge badge-wrong">✗ Incorrect</span>' : ''}
+          </div>
+          <div class="review-q-text">${esc(d.question)}</div>
+          ${(d.is_correct === false || d.type === 'short') ? `<div class="review-answer-row"><span>Your answer:</span> ${esc(formatAnswerDisplay(d, d.student_answer))}</div>` : ''}
+          ${d.correct_answer !== null && d.correct_answer !== undefined ? `<div class="review-answer-row correct-row"><span>Correct answer:</span> ${esc(formatAnswerDisplay(d, d.correct_answer))}</div>` : ''}
+          ${d.explanation ? `<div class="explanation show">${esc(d.explanation)}</div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `
+}
+
+// Turns a raw stored answer (letter, boolean, text) into something readable,
+// e.g. "B — Lisboa" for a multiple-choice pick instead of just "B".
+function formatAnswerDisplay(d, val) {
+  if (val === null || val === undefined || val === '' || (Array.isArray(val) && !val.length)) return '—'
+  if ((d.type === 'multiple_choice' || d.type === 'matching') && d.options) {
+    const idx = typeof val === 'string' ? val.toUpperCase().charCodeAt(0) - 65 : -1
+    const text = d.options[idx]
+    return text ? `${val} — ${text}` : String(val)
+  }
+  if (d.type === 'multi_select' && d.options) {
+    const letters = Array.isArray(val) ? val : [val]
+    return letters.map(l => {
+      const idx = typeof l === 'string' ? l.toUpperCase().charCodeAt(0) - 65 : -1
+      const text = d.options[idx]
+      return text ? `${l} — ${text}` : String(l)
+    }).join(', ')
+  }
+  if (d.type === 'true_false') return (val === true || val === 'true') ? 'True' : 'False'
+  return String(val)
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Load voices early (Chrome requires this)
+window.speechSynthesis?.getVoices()
+window.speechSynthesis?.addEventListener?.('voiceschanged', () => window.speechSynthesis.getVoices())
+
+updateTestInfo()
+init()
+</script>
+</body>
+</html>
