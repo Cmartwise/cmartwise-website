@@ -134,19 +134,64 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 /* SHARED ADMIN STUDENT FILTER (sits above both tabs) */
 .shared-student-filter{max-width:1100px;margin:0 auto;padding:1rem 1.5rem 0;display:none}
 
-/* VOCABULARY TAB */
-.vocab-wrap{max-width:1100px;margin:0 auto;padding:1.5rem;display:none}
+/* VOCABULARY TAB — reuses the Language Tools translator's word-card visual
+   language (forest/gold palette, italic serif terms, colour-coded chips),
+   scoped under #vocab-wrap so it can't collide with the rest of the page. */
+.vocab-wrap{
+  max-width:1100px;margin:0 auto;padding:1.5rem;display:none;
+  --voc-card:#faf7f0;--voc-forest:#1c3d28;--voc-forest2:#2e6644;--voc-leaf:#4db86a;
+  --voc-leaf-bg:rgba(77,184,106,0.12);
+  --voc-gold:#c8881a;--voc-gold2:#e8a820;--voc-gold-bg:#fdf5df;--voc-gold-border:rgba(200,136,26,0.3);
+  --voc-earth:#7a4e2a;--voc-earth-bg:rgba(122,78,42,0.08);
+  --voc-blue:#3a7abf;--voc-blue-bg:rgba(58,122,191,0.1);
+  --voc-purple:#7a5ca0;--voc-purple-bg:rgba(122,92,160,0.1);
+  --voc-teal:#3a8a8a;--voc-teal-bg:rgba(58,138,138,0.1);
+  --voc-muted:#5a7055;--voc-faint:#a0b89a;--voc-border:rgba(28,61,40,0.1);--voc-shadow:0 2px 8px rgba(28,61,40,0.08);
+}
 .vocab-intro{margin-bottom:1.5rem}
-.vocab-cat{margin-bottom:2rem}
-.vocab-cat-title{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
-  font-family:monospace;margin-bottom:.75rem}
-.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.85rem}
-.vocab-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:1rem 1.1rem;box-shadow:var(--shadow)}
-.vocab-term{font-size:1rem;color:var(--ocean);font-weight:600;margin-bottom:.3rem}
-.vocab-translation{font-size:.88rem;color:#2a3a3a;margin-bottom:.5rem;line-height:1.5}
-.vocab-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.4rem}
+.vocab-cat{margin-bottom:1.75rem}
+.vocab-cat-title{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--voc-muted);
+  font-family:monospace;margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+.vocab-cat-title::after{content:'';flex:1;height:1px;background:var(--voc-border)}
+
+/* one entry per line — not a multi-column grid */
+.vocab-grid{display:flex;flex-direction:column;gap:.6rem}
+.vocab-card{background:var(--voc-card);border-radius:10px;padding:.9rem 1.1rem;
+  box-shadow:var(--voc-shadow);border-left:3px solid var(--voc-leaf)}
+.vocab-card.cat-grammar{border-left-color:var(--voc-gold2)}
+.vocab-card.cat-verb-reference{border-left-color:var(--voc-blue)}
+.vocab-card.cat-finance{border-left-color:var(--voc-teal)}
+.vocab-card.cat-home{border-left-color:var(--voc-purple)}
+.vocab-card.cat-general{border-left-color:var(--voc-faint)}
+
+.vocab-term-row{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin-bottom:.2rem}
+.vocab-term{font-family:Georgia,'Times New Roman',serif;font-size:1.05rem;font-style:italic;color:#1a2e1a}
+.vocab-phonetic{font-size:11px;font-family:monospace;color:var(--voc-gold);background:var(--voc-gold-bg);padding:2px 7px;border-radius:4px}
+.vocab-translation{font-size:.85rem;color:var(--voc-muted);font-style:italic}
+
+.vocab-chips{display:flex;gap:4px;flex-wrap:wrap;margin:.35rem 0}
+.vocab-chip{display:inline-block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;font-family:monospace;white-space:nowrap;
+  background:var(--voc-earth-bg);color:var(--voc-earth)}
+.vocab-chip.type-verb{background:var(--voc-gold-bg);color:var(--voc-gold)}
+.vocab-chip.type-noun{background:var(--voc-leaf-bg);color:var(--voc-forest2)}
+.vocab-chip.type-adjective{background:var(--voc-blue-bg);color:var(--voc-blue)}
+.vocab-chip.type-adverb{background:var(--voc-purple-bg);color:var(--voc-purple)}
+.vocab-chip.gender-m{background:var(--voc-blue-bg);color:var(--voc-blue)}
+.vocab-chip.gender-f{background:var(--voc-purple-bg);color:var(--voc-purple)}
+.vocab-chip.tense{background:rgba(200,136,26,.08);color:var(--voc-gold)}
+.vocab-chip.person{background:rgba(122,78,42,.08);color:var(--voc-earth)}
+
+.vocab-detail{font-size:11px;color:var(--voc-muted);line-height:1.5;margin-top:.2rem}
+.vocab-detail strong{color:var(--voc-forest2);font-style:normal}
+.vocab-note{margin-top:.4rem;padding:5px 8px;background:var(--voc-gold-bg);
+  border-left:2px solid var(--voc-gold-border);border-radius:0 4px 4px 0;font-size:11px;color:var(--voc-earth);
+  line-height:1.5;font-style:italic}
+
+.vocab-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin:.4rem 0 .3rem}
 .vocab-tag{font-size:.65rem;background:var(--ivory);color:var(--muted);border-radius:10px;padding:.1rem .45rem}
-.vocab-meta{font-size:.72rem;color:var(--muted);font-family:monospace}
+.vocab-meta{font-size:11px;color:var(--voc-muted);font-family:monospace;margin-top:.3rem}
+.vocab-pending{font-size:10px;color:var(--voc-faint);font-family:monospace;font-style:italic;margin-top:.3rem}
 
 /* == Brand font alignment == */
 body{font-family:'DM Sans',sans-serif}
@@ -330,17 +375,51 @@ async function loadVocab() {
     <div class="vocab-cat">
       <div class="vocab-cat-title">${esc(VOCAB_CATEGORY_LABELS[cat] || cat)} · ${groups[cat].length}</div>
       <div class="vocab-grid">
-        ${groups[cat].map(v => `
-          <div class="vocab-card">
-            <div class="vocab-term">${esc(v.term)}</div>
-            ${v.translation ? `<div class="vocab-translation">${esc(v.translation)}</div>` : ''}
-            ${v.tags?.length ? `<div class="vocab-tags">${v.tags.map(t => `<span class="vocab-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-            <div class="vocab-meta">Seen ${v.times_reinforced || 1}× · last ${formatDate(v.last_seen_date)}</div>
-          </div>
-        `).join('')}
+        ${groups[cat].map(v => renderVocabCard(v, cat)).join('')}
       </div>
     </div>
   `).join('')
+}
+
+function vocabCatClass(cat) {
+  return 'cat-' + String(cat || 'general').toLowerCase().replace(/[^a-z0-9-]/g, '-')
+}
+
+function vocabTypeClass(type) {
+  const t = (type || '').toLowerCase()
+  if (['verb','noun','adjective','adverb'].includes(t)) return 'type-' + t
+  return ''
+}
+
+function renderVocabCard(v, cat) {
+  // Grammar detail (phonetic, word_type, tense, person, infinitive, gender, article,
+  // usage_note) comes from the admin's "Enrich vocabulary" tool — same schema and
+  // visual treatment as the Language Tools translator's word breakdown. Older/not-yet-
+  // enriched terms just render without those extras until that runs.
+  const enriched = !!(v.phonetic || v.word_type)
+  return `
+    <div class="vocab-card ${vocabCatClass(cat)}">
+      <div class="vocab-term-row">
+        <span class="vocab-term">${esc(v.term)}</span>
+        ${v.phonetic ? `<span class="vocab-phonetic">${esc(v.phonetic)}</span>` : ''}
+        ${v.translation ? `<span class="vocab-translation">${esc(v.translation)}</span>` : ''}
+      </div>
+      ${enriched ? `
+        <div class="vocab-chips">
+          ${v.word_type ? `<span class="vocab-chip ${vocabTypeClass(v.word_type)}">${esc(v.word_type)}</span>` : ''}
+          ${v.tense ? `<span class="vocab-chip tense">${esc(v.tense)}</span>` : ''}
+          ${v.person ? `<span class="vocab-chip person">${esc(v.person)}</span>` : ''}
+          ${v.gender ? `<span class="vocab-chip gender-${v.gender.toLowerCase().startsWith('f') ? 'f' : 'm'}">${esc(v.gender)}</span>` : ''}
+        </div>
+        ${v.infinitive ? `<div class="vocab-detail"><strong>Infinitive:</strong> ${esc(v.infinitive)}</div>` : ''}
+        ${v.article ? `<div class="vocab-detail"><strong>Article:</strong> ${esc(v.article)}</div>` : ''}
+        ${v.usage_note ? `<div class="vocab-note">${esc(v.usage_note)}</div>` : ''}
+      ` : ''}
+      ${v.tags?.length ? `<div class="vocab-tags">${v.tags.map(t => `<span class="vocab-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="vocab-meta">Seen ${v.times_reinforced || 1}× · last ${formatDate(v.last_seen_date)}</div>
+      ${!enriched ? `<div class="vocab-pending">Grammar detail not generated yet</div>` : ''}
+    </div>
+  `
 }
 
 async function loadNotes() {

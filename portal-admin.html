@@ -217,6 +217,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
     <button class="tab-btn" onclick="switchTab('notes')">Notes</button>
     <button class="tab-btn" onclick="switchTab('resources')">Resources</button>
     <button class="tab-btn" onclick="switchTab('tests')">Test Results</button>
+    <button class="tab-btn" onclick="switchTab('vocab')">Vocabulary</button>
   </div>
 
   <!-- ── STUDENTS ── -->
@@ -328,6 +329,24 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       </select>
     </div>
     <div id="tests-list"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- ── VOCABULARY (grammar-detail enrichment) ── -->
+  <div class="tab-panel" id="tab-vocab">
+    <p class="page-sub" style="margin-bottom:1.25rem">"My Vocabulary" shows each term with the same grammar breakdown as the Language Tools translator (phonetic, type, tense, gender, etc.). That detail isn't in the original notes — it's generated here, in batches, via Claude. Run this after adding new vocab, or any time the count below isn't zero.</p>
+    <div id="student-select-vocab" style="margin-bottom:1rem">
+      <label style="font-size:.8rem;color:var(--muted);display:block;margin-bottom:.35rem">Student</label>
+      <select id="vocab-student-filter" onchange="loadVocabAdminTab()" style="padding:.5rem .75rem;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;background:var(--sand);color:var(--ocean);outline:none">
+        <option value="">All students</option>
+      </select>
+    </div>
+    <div style="background:var(--ivory);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">
+      <div style="font-size:.85rem;color:var(--ocean);margin-bottom:.75rem">
+        <span id="vocab-remaining-count">—</span> term(s) still need grammar detail.
+      </div>
+      <button class="btn primary" id="vocab-enrich-btn" onclick="runEnrichVocab()">Enrich vocabulary grammar</button>
+      <div id="vocab-enrich-progress" style="margin-top:.75rem;font-size:.85rem;color:var(--muted);display:none"></div>
+    </div>
   </div>
 
 </div>
@@ -512,6 +531,7 @@ function populateStudentSelects() {
   const filterOpts = '<option value="">All students</option>' + opts
   document.getElementById('note-student-filter').innerHTML = filterOpts
   document.getElementById('test-student-filter').innerHTML = filterOpts
+  document.getElementById('vocab-student-filter').innerHTML = filterOpts
   document.getElementById('student-select-note').style.display = 'block'
 }
 
@@ -987,7 +1007,7 @@ function formatAnswerDisplay(d, val) {
 // ── UTILS ──────────────────────────────────────────────────────
 function switchTab(name) {
   document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    const tabs = ['students', 'process', 'notes', 'resources', 'tests']
+    const tabs = ['students', 'process', 'notes', 'resources', 'tests', 'vocab']
     b.classList.toggle('active', tabs[i] === name)
   })
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'))
@@ -997,6 +1017,55 @@ function switchTab(name) {
       document.getElementById('proc-date').value = new Date().toISOString().split('T')[0]
     }
     loadPendingDrafts()
+  }
+  if (name === 'vocab') loadVocabAdminTab()
+}
+
+// ── VOCABULARY (grammar-detail enrichment) ──────────────────────
+async function loadVocabAdminTab() {
+  const el = document.getElementById('vocab-remaining-count')
+  const studentId = document.getElementById('vocab-student-filter')?.value || ''
+  let q = sb.from('vocab_master').select('id', { count: 'exact', head: true }).is('phonetic', null)
+  if (studentId) q = q.eq('student_id', studentId)
+  const { count } = await q
+  el.textContent = count ?? '—'
+}
+
+async function runEnrichVocab() {
+  const btn = document.getElementById('vocab-enrich-btn')
+  const progress = document.getElementById('vocab-enrich-progress')
+  const studentId = document.getElementById('vocab-student-filter')?.value || ''
+  const { data: { session } } = await sb.auth.getSession()
+
+  btn.disabled = true
+  progress.style.display = 'block'
+  let totalProcessed = 0
+
+  try {
+    while (true) {
+      progress.textContent = `Enriching… ${totalProcessed} done so far.`
+      const res = await fetch(SUPABASE_URL + '/functions/v1/enrich-vocab', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session?.access_token
+        },
+        body: JSON.stringify({ studentId: studentId || undefined, batchSize: 12 })
+      })
+      const d = await res.json()
+      if (d.error) throw new Error(d.error)
+      totalProcessed += d.processed || 0
+      document.getElementById('vocab-remaining-count').textContent = d.remaining ?? '—'
+      if (d.done || !d.processed) break
+    }
+    progress.textContent = `Done — enriched ${totalProcessed} term(s).`
+    showToast(`Enriched ${totalProcessed} vocabulary term(s)`)
+  } catch (e) {
+    progress.textContent = 'Error: ' + e.message
+    showToast('Enrichment failed: ' + e.message, true)
+  } finally {
+    btn.disabled = false
+    loadVocabAdminTab()
   }
 }
 
