@@ -64,62 +64,131 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .empty{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;
   background:var(--ivory);border-radius:var(--radius);border:1px dashed var(--border)}
 
-/* TRANSLATOR EMBED */
-#translator-tab{display:none}
-.translator-wrap{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
-  overflow:hidden;box-shadow:var(--shadow)}
+/* TRANSLATOR EMBED — faithful port of cmartwise.github.io/pt-translator,
+   scoped entirely under #translator-tab so its --custom-properties and
+   generic class names (.sec, .chip, .word-card, etc.) never leak onto the
+   rest of this page. */
+#translator-tab{
+  display:none;
+  --pt-bg:#f2ede0;--pt-surface:#ece6d4;--pt-card:#faf7f0;
+  --pt-forest:#1c3d28;--pt-forest2:#2e6644;--pt-leaf:#4db86a;
+  --pt-leaf-bg:rgba(77,184,106,0.12);--pt-leaf-border:rgba(77,184,106,0.35);
+  --pt-gold:#c8881a;--pt-gold2:#e8a820;--pt-gold-bg:#fdf5df;--pt-gold-border:rgba(200,136,26,0.3);
+  --pt-earth:#7a4e2a;--pt-earth-bg:rgba(122,78,42,0.08);
+  --pt-urgent:#c04030;--pt-urgent-bg:#fdf0ee;
+  --pt-blue:#3a7abf;--pt-blue-bg:rgba(58,122,191,0.1);
+  --pt-purple:#7a5ca0;--pt-purple-bg:rgba(122,92,160,0.1);
+  --pt-text:#1a2e1a;--pt-muted:#5a7055;--pt-faint:#a0b89a;
+  --pt-border:rgba(28,61,40,0.1);--pt-shadow:0 2px 8px rgba(28,61,40,0.08);
+  --pt-radius:14px;--pt-radius-sm:9px;
+  font-family:Georgia,'Times New Roman',serif;color:var(--pt-text);
+  background:var(--pt-bg);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+}
+#translator-tab .pttr-header{height:56px;background:var(--pt-forest);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;
+  position:relative;overflow:hidden}
+#translator-tab .pttr-header::after{content:'🌿';position:absolute;right:-4px;top:-8px;font-size:52px;opacity:.06;transform:rotate(15deg)}
+#translator-tab .pttr-title{font-size:1rem;font-style:italic;color:var(--pt-gold2);letter-spacing:.5px}
+#translator-tab .pttr-sub{font-size:.6rem;color:rgba(232,240,226,.4);font-family:monospace;letter-spacing:1px}
+#translator-tab .pttr-body{padding:1.25rem 1.25rem 1.75rem}
 
-/* Mini translator UI */
-.tr-header{background:#1c3d28;padding:1rem 1.5rem;display:flex;align-items:center;gap:.75rem}
-.tr-title{color:#e8a820;font-style:italic;font-size:1.1rem}
-.tr-sub{color:rgba(232,240,226,.4);font-family:monospace;font-size:.75rem}
-.tr-body{padding:1.5rem}
+#translator-tab .input-card{background:var(--pt-card);border-radius:var(--pt-radius);padding:14px;box-shadow:var(--pt-shadow);margin-bottom:12px}
+#translator-tab .lang-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+#translator-tab .lang-select{flex:1;padding:6px 10px;border-radius:20px;border:1.5px solid var(--pt-border);
+  background:var(--pt-surface);color:var(--pt-forest);font-size:11px;font-family:monospace;
+  cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7055'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:26px;transition:border-color .2s}
+#translator-tab .lang-select:focus{border-color:var(--pt-leaf)}
+#translator-tab .pttr-swap-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--pt-border);
+  background:var(--pt-surface);color:var(--pt-muted);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+#translator-tab .pttr-swap-btn:hover{background:var(--pt-forest);color:var(--pt-gold2);border-color:var(--pt-forest)}
+#translator-tab .pttr-swap-btn:active{transform:rotate(180deg)}
 
-.tr-lang-row{display:flex;gap:.75rem;margin-bottom:1rem;flex-wrap:wrap}
-.lang-pair{display:flex;align-items:center;gap:.5rem;flex:1}
-.lang-sel{flex:1;padding:.5rem .75rem;border-radius:8px;border:1.5px solid var(--border);
-  font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ocean);background:var(--sand)}
-.tr-arrow{color:var(--muted);font-size:1.1rem;flex-shrink:0}
-.swap-btn{padding:.5rem .9rem;border-radius:8px;border:1px solid var(--border);
-  background:none;cursor:pointer;font-size:.9rem;transition:.15s;color:var(--muted)}
-.swap-btn:hover{border-color:var(--ocean);color:var(--ocean)}
+#translator-tab .input-wrap{display:flex;gap:8px;align-items:flex-end}
+#translator-tab .input-wrap textarea{flex:1;min-height:72px;border-radius:var(--pt-radius-sm);
+  border:1.5px solid var(--pt-border);background:var(--pt-surface);color:var(--pt-text);
+  font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:none;outline:none;
+  line-height:1.5;transition:border-color .2s}
+#translator-tab .input-wrap textarea:focus{border-color:var(--pt-leaf)}
+#translator-tab .input-wrap textarea::placeholder{color:var(--pt-faint);font-style:italic}
+#translator-tab .pttr-translate-btn{height:46px;padding:0 18px;border-radius:var(--pt-radius-sm);border:none;
+  background:var(--pt-forest);color:#e8f0e2;font-family:Georgia,serif;font-size:13px;cursor:pointer;
+  transition:background .2s;white-space:nowrap;flex-shrink:0}
+#translator-tab .pttr-translate-btn:active{background:var(--pt-forest2)}
+#translator-tab .pttr-translate-btn:disabled{opacity:.5;cursor:not-allowed}
 
-.tr-input-wrap{display:flex;gap:.75rem;align-items:flex-end;margin-bottom:1rem}
-.tr-textarea{flex:1;min-height:80px;border-radius:8px;border:1.5px solid var(--border);
-  background:var(--sand);color:var(--ocean);font-family:'DM Sans',sans-serif;font-size:.95rem;
-  padding:.75rem 1rem;resize:vertical;outline:none;transition:.15s}
-.tr-textarea:focus{border-color:var(--leaf)}
-.tr-btn{height:44px;padding:0 1.25rem;border-radius:8px;border:none;background:#1c3d28;
-  color:#e8f0e2;font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;
-  transition:.2s;white-space:nowrap;flex-shrink:0}
-.tr-btn:hover{background:#2e6644}
-.tr-btn:disabled{opacity:.5;cursor:not-allowed}
+#translator-tab .history-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+#translator-tab .history-pill{padding:5px 10px;border-radius:20px;font-size:11px;font-family:monospace;
+  background:var(--pt-surface);color:var(--pt-muted);border:1px solid var(--pt-border);cursor:pointer;transition:all .2s}
+#translator-tab .history-pill:hover{background:var(--pt-card);color:var(--pt-forest);border-color:var(--pt-forest2);transform:translateY(-1px)}
 
-.tr-result{display:none;background:#1c3d28;border-radius:10px;padding:1.25rem;color:#e8f0e2;margin-top:1rem}
-.tr-result-label{font-size:.7rem;letter-spacing:2px;opacity:.4;font-family:monospace;margin-bottom:.3rem}
-.tr-result-main{font-size:1.4rem;font-style:italic;line-height:1.4;margin-bottom:.4rem}
-.tr-phonetic{font-size:.85rem;font-family:monospace;color:#e8a820;margin-bottom:.5rem}
-.tr-original{font-size:.8rem;opacity:.45;font-style:italic}
-.tr-colloquial-note{margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.1);font-size:.82rem;opacity:.55;line-height:1.5}
+#translator-tab .sec{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pt-muted);
+  font-family:monospace;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+#translator-tab .sec::after{content:'';flex:1;height:1px;background:var(--pt-border)}
 
-.tr-phrases-label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;font-family:monospace;margin:1.25rem 0 .6rem}
-.tr-phrase-card{background:rgba(255,255,255,.06);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem;border-left:3px solid #e8a820}
-.tr-phrase-pt{font-size:.95rem;font-style:italic;color:#e8f0e2;margin-bottom:.15rem}
-.tr-phrase-phonetic{font-size:.75rem;font-family:monospace;color:#e8a820;margin-bottom:.25rem}
-.tr-phrase-en{font-size:.8rem;color:rgba(232,240,226,.6);font-style:italic;margin-bottom:.4rem}
-.tr-phrase-context{font-size:.68rem;color:#e8f0e2;background:rgba(255,255,255,.1);padding:.15rem .55rem;border-radius:10px;display:inline-block;font-family:monospace}
+#translator-tab .result-card{background:var(--pt-forest);border-radius:var(--pt-radius);padding:16px;
+  margin-bottom:10px;color:#e8f0e2;position:relative;overflow:hidden}
+#translator-tab .result-card::after{content:'🌿';position:absolute;right:8px;bottom:-8px;font-size:56px;opacity:.07}
+#translator-tab .result-label{font-size:9px;letter-spacing:2px;opacity:.4;font-family:monospace;margin-bottom:4px}
+#translator-tab .result-pt{font-size:22px;font-style:italic;line-height:1.4;margin-bottom:6px;color:#e8f0e2}
+#translator-tab .result-phonetic{font-size:13px;font-family:monospace;color:var(--pt-gold2);letter-spacing:.5px;margin-bottom:8px}
+#translator-tab .result-en{font-size:11px;opacity:.5;font-style:italic}
+#translator-tab .colloquial-note{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;opacity:.55;line-height:1.5}
 
-.tr-words{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1.25rem}
-.tr-word{background:#fff;border-radius:8px;padding:.85rem 1rem;border-left:3px solid #4db86a}
-.tr-word.verb{border-left-color:#e8a820}
-.tr-word.adjective{border-left-color:#3a7abf}
-.tr-word-main{font-size:.95rem;color:#1A3A4A;margin-bottom:.2rem}
-.tr-word-en{font-size:.78rem;color:var(--muted)}
-.tr-word-ph{font-size:.72rem;font-family:monospace;color:#7a5ca0;margin-top:.2rem}
-.tr-word-note{font-size:.72rem;color:var(--muted);margin-top:.3rem;font-style:italic}
+#translator-tab .cultural-card{background:var(--pt-leaf-bg);border:1px solid var(--pt-leaf-border);
+  border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-forest2);line-height:1.6}
 
-.tr-error{color:var(--terra);font-size:.85rem;margin-top:.75rem;display:none}
-.tr-loading{color:var(--muted);font-size:.85rem;margin-top:.75rem;display:none}
+#translator-tab .phrase-card{background:var(--pt-card);border-radius:var(--pt-radius-sm);padding:11px 12px;box-shadow:var(--pt-shadow);margin-bottom:6px}
+#translator-tab .phrase-pt{font-size:14px;font-style:italic;margin-bottom:2px}
+#translator-tab .phrase-phonetic{font-size:10px;font-family:monospace;color:var(--pt-gold);margin-bottom:3px}
+#translator-tab .phrase-en{font-size:11px;color:var(--pt-muted);font-style:italic;margin-bottom:4px}
+#translator-tab .phrase-context{font-size:10px;color:var(--pt-forest2);background:var(--pt-leaf-bg);
+  padding:3px 8px;border-radius:4px;display:inline-block;font-family:monospace}
+
+#translator-tab .word-grid{display:flex;flex-direction:column;gap:8px}
+#translator-tab .word-card{background:var(--pt-card);border-radius:var(--pt-radius-sm);padding:12px;box-shadow:var(--pt-shadow);border-left:3px solid var(--pt-leaf)}
+#translator-tab .word-card.verb{border-left-color:var(--pt-gold2)}
+#translator-tab .word-card.noun{border-left-color:var(--pt-leaf)}
+#translator-tab .word-card.adjective{border-left-color:var(--pt-blue)}
+#translator-tab .word-card.adverb{border-left-color:var(--pt-purple)}
+#translator-tab .word-card.preposition,#translator-tab .word-card.conjunction,#translator-tab .word-card.article{border-left-color:var(--pt-faint)}
+#translator-tab .word-header{display:flex;align-items:baseline;gap:8px;margin-bottom:5px;flex-wrap:wrap}
+#translator-tab .word-pt{font-size:17px;font-style:italic;color:var(--pt-text)}
+#translator-tab .word-phonetic{font-size:11px;font-family:monospace;color:var(--pt-gold);background:var(--pt-gold-bg);padding:2px 7px;border-radius:4px}
+#translator-tab .word-en{font-size:12px;color:var(--pt-muted);font-style:italic}
+#translator-tab .word-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px}
+#translator-tab .chip{display:inline-block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;
+  padding:2px 7px;border-radius:4px;font-family:monospace;white-space:nowrap}
+#translator-tab .chip.verb{background:var(--pt-gold-bg);color:var(--pt-gold)}
+#translator-tab .chip.noun{background:var(--pt-leaf-bg);color:var(--pt-forest2)}
+#translator-tab .chip.adjective{background:var(--pt-blue-bg);color:var(--pt-blue)}
+#translator-tab .chip.adverb{background:var(--pt-purple-bg);color:var(--pt-purple)}
+#translator-tab .chip.pronoun,#translator-tab .chip.preposition,#translator-tab .chip.conjunction,#translator-tab .chip.article{background:var(--pt-earth-bg);color:var(--pt-earth)}
+#translator-tab .chip.tense{background:rgba(200,136,26,.08);color:var(--pt-gold)}
+#translator-tab .chip.person{background:rgba(122,78,42,.08);color:var(--pt-earth)}
+#translator-tab .chip.gender-m{background:var(--pt-blue-bg);color:var(--pt-blue)}
+#translator-tab .chip.gender-f{background:var(--pt-purple-bg);color:var(--pt-purple)}
+#translator-tab .word-detail{font-size:11px;color:var(--pt-muted);line-height:1.5;margin-top:4px}
+#translator-tab .word-detail strong{color:var(--pt-forest2);font-style:normal}
+#translator-tab .word-note{margin-top:6px;padding:5px 8px;background:var(--pt-gold-bg);
+  border-left:2px solid var(--pt-gold-border);border-radius:0 4px 4px 0;font-size:11px;color:var(--pt-earth);
+  line-height:1.5;font-style:italic}
+
+#translator-tab .pttr-loading{text-align:center;padding:32px 16px;color:var(--pt-muted);font-style:italic;font-size:13px}
+#translator-tab .pttr-empty{text-align:center;padding:40px 20px}
+#translator-tab .pttr-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
+#translator-tab .pttr-empty-title{font-size:16px;font-style:italic;color:var(--pt-muted);margin-bottom:6px}
+#translator-tab .pttr-empty-sub{font-size:12px;color:var(--pt-faint)}
+#translator-tab .pttr-error{background:var(--pt-urgent-bg);border:1px solid rgba(192,64,48,.2);
+  border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-urgent)}
+
+#translator-tab .speak-btn{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(232,240,226,.7);
+  font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+#translator-tab .speak-btn:hover{background:rgba(255,255,255,.18);color:#e8f0e2}
+#translator-tab .speak-btn.speaking{background:rgba(200,136,26,.3);color:var(--pt-gold2);border-color:var(--pt-gold)}
 
 /* Admin add resource */
 .add-resource-btn{padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:8px;
@@ -171,39 +240,41 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 
   <!-- TRANSLATOR TAB -->
   <div id="translator-tab" style="display:none">
-    <div class="translator-wrap">
-      <div class="tr-header">
-        <div>
-          <div class="tr-title">Language Tools — Translate & Listen</div>
-          <div class="tr-sub">Colloquial · Phonetic · Word-by-word</div>
+    <div class="pttr-header">
+      <div>
+        <div class="pttr-title">Language Tools</div>
+        <div class="pttr-sub">EN · PT · ES · FR — colloquial, phonetic, word-by-word</div>
+      </div>
+    </div>
+    <div class="pttr-body">
+      <div class="input-card">
+        <div class="lang-row">
+          <select class="lang-select" id="lang-from" onchange="onLangChange()">
+            <option value="en">🇬🇧 English</option>
+            <option value="pt">🇵🇹 Portuguese</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="es">🇪🇸 Spanish</option>
+          </select>
+          <button class="pttr-swap-btn" onclick="swapLangs()" title="Swap languages">⇄</button>
+          <select class="lang-select" id="lang-to" onchange="onLangChange()">
+            <option value="pt" selected>🇵🇹 Portuguese</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="fr">🇫🇷 French</option>
+            <option value="es">🇪🇸 Spanish</option>
+          </select>
+        </div>
+        <div class="input-wrap">
+          <textarea id="input-text" placeholder="Type something to translate…" onkeydown="handleKey(event)"></textarea>
+          <button class="pttr-translate-btn" id="translate-btn" onclick="doTranslate()">Translate</button>
         </div>
       </div>
-      <div class="tr-body">
-        <div class="tr-lang-row">
-          <div class="lang-pair">
-            <select class="lang-sel" id="from-lang">
-              <option value="en">🇬🇧 English</option>
-              <option value="pt">🇵🇹 Portuguese</option>
-              <option value="fr">🇫🇷 French</option>
-              <option value="es">🇪🇸 Spanish</option>
-            </select>
-            <span class="tr-arrow">→</span>
-            <select class="lang-sel" id="to-lang">
-              <option value="pt" selected>🇵🇹 Portuguese</option>
-              <option value="en">🇬🇧 English</option>
-              <option value="fr">🇫🇷 French</option>
-              <option value="es">🇪🇸 Spanish</option>
-            </select>
-          </div>
-          <button class="swap-btn" onclick="swapLangs()" title="Swap languages">⇄</button>
+      <div class="history-row" id="history-row"></div>
+      <div id="output">
+        <div class="pttr-empty">
+          <div class="pttr-empty-icon">🌿</div>
+          <div class="pttr-empty-title">Ready when you are</div>
+          <div class="pttr-empty-sub">Type a word or phrase above to translate it.</div>
         </div>
-        <div class="tr-input-wrap">
-          <textarea class="tr-textarea" id="tr-input" placeholder="Type something to translate…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))runTranslate()"></textarea>
-          <button class="tr-btn" id="tr-btn" onclick="runTranslate()">Translate</button>
-        </div>
-        <div class="tr-error" id="tr-error"></div>
-        <div class="tr-loading" id="tr-loading">Translating…</div>
-        <div class="tr-result" id="tr-result"></div>
       </div>
     </div>
   </div>
@@ -306,75 +377,179 @@ function showTab(tab) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='resources'&&i===0)||(tab==='translator'&&i===1)))
 }
 
-// ── TRANSLATOR ────────────────────────────────────────────────
-function swapLangs() {
-  const f = document.getElementById('from-lang'), t = document.getElementById('to-lang')
-  const tmp = f.value; f.value = t.value; t.value = tmp
+// ── TRANSLATOR — ported from cmartwise.github.io/pt-translator ─
+const TR_STORAGE_KEY = 'pt_translator_v3'
+const TR_LANG_NAMES = { en:'English', pt:'Portuguese', fr:'French', es:'Spanish' }
+const TR_LANG_BCP47 = { en:'en-GB', pt:'pt-PT', fr:'fr-FR', es:'es-ES' }
+let trLangFrom = 'en', trLangTo = 'pt', trHistory = [], trLastTranslation = null, trSpeaking = false
+
+function loadTranslatorSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(TR_STORAGE_KEY) || '{}')
+    if (saved.langFrom) trLangFrom = saved.langFrom
+    if (saved.langTo) trLangTo = saved.langTo
+    if (Array.isArray(saved.history)) trHistory = saved.history
+  } catch (e) {}
+  syncLangSelects()
+  renderTranslatorHistory()
 }
 
-async function runTranslate() {
-  const text = document.getElementById('tr-input').value.trim()
-  if (!text) return
-  const fromLang = document.getElementById('from-lang').value
-  const toLang   = document.getElementById('to-lang').value
-  if (fromLang === toLang) { showError('Select different languages.'); return }
+function saveTranslatorSettings() {
+  localStorage.setItem(TR_STORAGE_KEY, JSON.stringify({ langFrom: trLangFrom, langTo: trLangTo, history: trHistory }))
+}
 
-  const btn = document.getElementById('tr-btn')
+function syncLangSelects() {
+  const f = document.getElementById('lang-from'), t = document.getElementById('lang-to')
+  if (f) f.value = trLangFrom
+  if (t) t.value = trLangTo
+}
+
+function onLangChange() {
+  trLangFrom = document.getElementById('lang-from').value
+  trLangTo = document.getElementById('lang-to').value
+  saveTranslatorSettings()
+}
+
+function swapLangs() {
+  const tmp = trLangFrom; trLangFrom = trLangTo; trLangTo = tmp
+  syncLangSelects()
+  saveTranslatorSettings()
+}
+
+function clearTranslatorOutput() {
+  document.getElementById('output').innerHTML = `
+    <div class="pttr-empty">
+      <div class="pttr-empty-icon">🌿</div>
+      <div class="pttr-empty-title">Ready when you are</div>
+      <div class="pttr-empty-sub">Type a word or phrase above to translate it.</div>
+    </div>`
+}
+
+function speakTranslation() {
+  if (!trLastTranslation) return
+  const btn = document.getElementById('speak-btn')
+  if (!('speechSynthesis' in window)) return
+  if (trSpeaking) { window.speechSynthesis.cancel(); trSpeaking = false; btn?.classList.remove('speaking'); return }
+  const text = trLastTranslation.colloquial || trLastTranslation.translation
+  const utter = new SpeechSynthesisUtterance(text)
+  utter.lang = TR_LANG_BCP47[trLangTo] || 'en-GB'
+  utter.rate = 0.92
+  utter.onend = () => { trSpeaking = false; btn?.classList.remove('speaking') }
+  utter.onerror = () => { trSpeaking = false; btn?.classList.remove('speaking') }
+  trSpeaking = true
+  btn?.classList.add('speaking')
+  window.speechSynthesis.speak(utter)
+}
+
+function renderTranslatorHistory() {
+  const row = document.getElementById('history-row')
+  if (!row) return
+  row.innerHTML = trHistory.slice(0, 5).map((h, i) => `
+    <button class="history-pill" onclick="replayHistory(${i})">${esc(h.original.length > 24 ? h.original.slice(0, 24) + '…' : h.original)}</button>
+  `).join('')
+}
+
+function replayHistory(idx) {
+  const h = trHistory[idx]
+  if (!h) return
+  document.getElementById('input-text').value = h.original
+  trLangFrom = h.langFrom; trLangTo = h.langTo
+  syncLangSelects()
+  renderTranslatorResult(h.result)
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) doTranslate()
+}
+
+async function doTranslate() {
+  const text = document.getElementById('input-text').value.trim()
+  if (!text) return
+  onLangChange()
+  if (trLangFrom === trLangTo) { renderTranslatorError('Select two different languages.'); return }
+
+  const btn = document.getElementById('translate-btn')
   btn.disabled = true; btn.textContent = '…'
-  document.getElementById('tr-error').style.display = 'none'
-  document.getElementById('tr-result').style.display = 'none'
-  document.getElementById('tr-loading').style.display = 'block'
+  document.getElementById('output').innerHTML = `<div class="pttr-loading">Translating…</div>`
 
   try {
-    const res = await fetch(TRANSLATE_FN, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + sbSession?.access_token
-      },
-      body: JSON.stringify({ text, fromLang, toLang })
-    })
-    if (!res.ok) throw new Error('Translation service unavailable')
-    const d = await res.json()
-    if (d.error) throw new Error(d.error)
-    renderTranslation(d)
-  } catch(e) {
-    showError(e.message || 'Translation failed. Try again.')
+    const d = await translateText(text)
+    trLastTranslation = d
+    trHistory.unshift({ original: text, langFrom: trLangFrom, langTo: trLangTo, result: d })
+    trHistory = trHistory.slice(0, 10)
+    saveTranslatorSettings()
+    renderTranslatorHistory()
+    renderTranslatorResult(d)
+  } catch (e) {
+    renderTranslatorError(e.message || 'Translation failed. Try again.')
   } finally {
     btn.disabled = false; btn.textContent = 'Translate'
-    document.getElementById('tr-loading').style.display = 'none'
   }
 }
 
-function renderTranslation(d) {
-  const r = document.getElementById('tr-result')
-  r.style.display = 'block'
-  r.innerHTML = `
-    <div class="tr-result-label">TRANSLATION</div>
-    <div class="tr-result-main">${esc(d.colloquial || d.translation)}</div>
-    ${d.full_phonetic ? `<div class="tr-phonetic">[${esc(d.full_phonetic)}]</div>` : ''}
-    <div class="tr-original">"${esc(d.original)}"</div>
-    ${d.colloquial !== d.translation ? `<div class="tr-colloquial-note">Formal: ${esc(d.translation)}</div>` : ''}
-    ${d.cultural_note ? `<div class="tr-colloquial-note">💡 ${esc(d.cultural_note)}</div>` : ''}
+async function translateText(text) {
+  const res = await fetch(TRANSLATE_FN, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + sbSession?.access_token
+    },
+    body: JSON.stringify({ text, fromLang: trLangFrom, toLang: trLangTo })
+  })
+  if (!res.ok) throw new Error('Translation service unavailable')
+  const d = await res.json()
+  if (d.error) throw new Error(d.error)
+  return d
+}
+
+function renderTranslatorResult(d) {
+  const out = document.getElementById('output')
+  out.innerHTML = `
+    <div class="result-card">
+      <button class="speak-btn" id="speak-btn" onclick="speakTranslation()" title="Listen">🔊</button>
+      <div class="result-label">TRANSLATION</div>
+      <div class="result-pt">${esc(d.colloquial || d.translation)}</div>
+      ${d.full_phonetic ? `<div class="result-phonetic">[${esc(d.full_phonetic)}]</div>` : ''}
+      <div class="result-en">"${esc(d.original)}"</div>
+      ${d.colloquial && d.colloquial !== d.translation ? `<div class="colloquial-note">Formal alternative: ${esc(d.translation)}</div>` : ''}
+    </div>
+
+    ${d.cultural_note ? `
+      <div class="sec">Cultural context</div>
+      <div class="cultural-card">💡 ${esc(d.cultural_note)}</div>
+    ` : ''}
+
     ${d.similar_phrases?.length ? `
-      <div class="tr-phrases-label">SIMILAR PHRASES</div>
+      <div class="sec">Similar phrases</div>
       ${d.similar_phrases.map(p => `
-        <div class="tr-phrase-card">
-          <div class="tr-phrase-pt">${esc(p.pt)}</div>
-          ${p.phonetic ? `<div class="tr-phrase-phonetic">${esc(p.phonetic)}</div>` : ''}
-          <div class="tr-phrase-en">${esc(p.en)}</div>
-          ${p.context ? `<span class="tr-phrase-context">${esc(p.context)}</span>` : ''}
+        <div class="phrase-card">
+          <div class="phrase-pt">${esc(p.pt)}</div>
+          ${p.phonetic ? `<div class="phrase-phonetic">[${esc(p.phonetic)}]</div>` : ''}
+          <div class="phrase-en">${esc(p.en)}</div>
+          ${p.context ? `<span class="phrase-context">${esc(p.context)}</span>` : ''}
         </div>
       `).join('')}
     ` : ''}
+
     ${d.words?.length ? `
-      <div class="tr-words">
+      <div class="sec">Word breakdown</div>
+      <div class="word-grid">
         ${d.words.map(w => `
-          <div class="tr-word ${esc(w.type||'')}">
-            <div class="tr-word-main"><strong>${esc(w.pt)}</strong> <span style="font-size:.7rem;opacity:.5">${esc(w.type||'')}</span></div>
-            <div class="tr-word-en">${esc(w.en)}</div>
-            ${w.phonetic ? `<div class="tr-word-ph">[${esc(w.phonetic)}]</div>` : ''}
-            ${w.note ? `<div class="tr-word-note">${esc(w.note)}</div>` : ''}
+          <div class="word-card ${esc(w.type || '')}">
+            <div class="word-header">
+              <span class="word-pt">${esc(w.pt)}</span>
+              ${w.phonetic ? `<span class="word-phonetic">${esc(w.phonetic)}</span>` : ''}
+              <span class="word-en">${esc(w.en)}</span>
+            </div>
+            <div class="word-chips">
+              ${w.type ? `<span class="chip ${esc(w.type)}">${esc(w.type)}</span>` : ''}
+              ${w.tense ? `<span class="chip tense">${esc(w.tense)}</span>` : ''}
+              ${w.person ? `<span class="chip person">${esc(w.person)}</span>` : ''}
+              ${w.gender ? `<span class="chip gender-${w.gender.startsWith('f') ? 'f' : 'm'}">${esc(w.gender)}</span>` : ''}
+            </div>
+            ${w.infinitive ? `<div class="word-detail"><strong>Infinitive:</strong> ${esc(w.infinitive)}</div>` : ''}
+            ${w.article ? `<div class="word-detail"><strong>Article:</strong> ${esc(w.article)}</div>` : ''}
+            ${w.note ? `<div class="word-note">${esc(w.note)}</div>` : ''}
           </div>
         `).join('')}
       </div>
@@ -382,9 +557,8 @@ function renderTranslation(d) {
   `
 }
 
-function showError(msg) {
-  const e = document.getElementById('tr-error')
-  e.textContent = msg; e.style.display = 'block'
+function renderTranslatorError(msg) {
+  document.getElementById('output').innerHTML = `<div class="pttr-error">${esc(msg)}</div>`
 }
 
 // ── ADMIN RESOURCE MANAGEMENT ────────────────────────────────
@@ -416,6 +590,7 @@ async function deleteResource(id) {
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 
 init()
+loadTranslatorSettings()
 
 // Auto-open tab from URL hash (#translator)
 if (window.location.hash === '#translator') {
