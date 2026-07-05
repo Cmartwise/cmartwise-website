@@ -162,21 +162,9 @@ Deno.serve(async (req) => {
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 4000,
+      system: 'You are generating a language exam practice test as strict JSON. Two hard rules, no exceptions: (1) Every question — especially true/false and matching items — must be answerable strictly from the given passage/script/text. Never introduce a fact, name, place, or detail that is not stated or directly implied in that text. (2) For every multiple_choice and matching question, the "correct" field MUST be exactly one of the option letters ("A", "B", "C", or "D") — never the option\'s full text. Follow the schema in the user message exactly.',
       messages: [{ role: 'user', content: PROMPTS[promptKey][section] }]
     })
 
     const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
-    if (!textBlock) throw new Error('Model response had no text content block.')
-    const raw = textBlock.text.trim()
-    const clean = raw.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim()
-    const parsed = JSON.parse(clean)
-
-    return new Response(JSON.stringify(parsed), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    })
-  } catch(e) {
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
-      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    })
-  }
-})
+    if (!

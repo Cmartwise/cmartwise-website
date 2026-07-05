@@ -888,6 +888,26 @@ function isAnswerCorrect(q, studentAnswer) {
     const norm = arr => [...arr].map(s => String(s).toUpperCase()).sort()
     return JSON.stringify(norm(picked)) === JSON.stringify(norm(correct))
   }
+  if (q.type === 'multiple_choice' || q.type === 'matching') {
+    // studentAnswer is always a single option letter (set by selectAnswer()).
+    // q.correct is SUPPOSED to be a letter too (per the generate-test prompt),
+    // but the model sometimes ignores that and returns the option's full text
+    // instead — comparing letter-vs-text then fails every time even when the
+    // student picked the right option. Normalize both sides before comparing.
+    if (studentAnswer === null || studentAnswer === undefined) return false
+    const options = q.options || []
+    const correctRaw = String(q.correct ?? '').trim()
+    const studentIdx = String(studentAnswer).toUpperCase().charCodeAt(0) - 65
+    const studentText = options[studentIdx]
+
+    // Case 1: q.correct is a single letter — compare letters directly.
+    if (/^[A-Za-z]$/.test(correctRaw)) {
+      return String(studentAnswer).trim().toUpperCase() === correctRaw.toUpperCase()
+    }
+    // Case 2: q.correct is the option's full text — compare against the
+    // option text the student's letter points to.
+    return String(studentText || '').trim().toLowerCase() === correctRaw.toLowerCase()
+  }
   return String(studentAnswer).trim().toLowerCase() === String(q.correct).trim().toLowerCase()
 }
 
@@ -1050,34 +1070,4 @@ function renderReview(detail) {
 }
 
 // Turns a raw stored answer (letter, boolean, text) into something readable,
-// e.g. "B — Lisboa" for a multiple-choice pick instead of just "B".
-function formatAnswerDisplay(d, val) {
-  if (val === null || val === undefined || val === '' || (Array.isArray(val) && !val.length)) return '—'
-  if ((d.type === 'multiple_choice' || d.type === 'matching') && d.options) {
-    const idx = typeof val === 'string' ? val.toUpperCase().charCodeAt(0) - 65 : -1
-    const text = d.options[idx]
-    return text ? `${val} — ${text}` : String(val)
-  }
-  if (d.type === 'multi_select' && d.options) {
-    const letters = Array.isArray(val) ? val : [val]
-    return letters.map(l => {
-      const idx = typeof l === 'string' ? l.toUpperCase().charCodeAt(0) - 65 : -1
-      const text = d.options[idx]
-      return text ? `${l} — ${text}` : String(l)
-    }).join(', ')
-  }
-  if (d.type === 'true_false') return (val === true || val === 'true') ? 'True' : 'False'
-  return String(val)
-}
-
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
-
-// Load voices early (Chrome requires this)
-window.speechSynthesis?.getVoices()
-window.speechSynthesis?.addEventListener?.('voiceschanged', () => window.speechSynthesis.getVoices())
-
-updateTestInfo()
-init()
-</script>
-</body>
-</html>
+// e.g. "B — Lisboa" for a multiple-choice pick instead of just "B"

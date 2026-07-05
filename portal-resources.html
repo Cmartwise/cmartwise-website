@@ -191,8 +191,8 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
           <button class="swap-btn" onclick="swapLangs()" title="Swap languages">⇄</button>
         </div>
         <div class="tr-input-wrap">
-          <textarea class="tr-textarea" id="tr-input" placeholder="Type something to translate…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))translate()"></textarea>
-          <button class="tr-btn" id="tr-btn" onclick="translate()">Translate</button>
+          <textarea class="tr-textarea" id="tr-input" placeholder="Type something to translate…" onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey))runTranslate()"></textarea>
+          <button class="tr-btn" id="tr-btn" onclick="runTranslate()">Translate</button>
         </div>
         <div class="tr-error" id="tr-error"></div>
         <div class="tr-loading" id="tr-loading">Translating…</div>
@@ -305,7 +305,7 @@ function swapLangs() {
   const tmp = f.value; f.value = t.value; t.value = tmp
 }
 
-async function translate() {
+async function runTranslate() {
   const text = document.getElementById('tr-input').value.trim()
   if (!text) return
   const fromLang = document.getElementById('from-lang').value
@@ -408,4 +408,3 @@ if (window.location.hash === '#translator') {
 
 </script>
 </body>
-</html>

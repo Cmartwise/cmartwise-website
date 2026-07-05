@@ -123,6 +123,31 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   cursor:pointer;transition:.15s;margin-bottom:1rem}
 .add-note-btn:hover{border-color:var(--ocean);color:var(--ocean)}
 .tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
+
+/* PAGE TABS (Coaching Notes / My Vocabulary) */
+.page-tabs{display:none;gap:0;max-width:1100px;margin:0 auto;padding:0 1.5rem;border-bottom:2px solid var(--cream)}
+.page-tab{padding:.65rem 1.25rem;font-size:.9rem;cursor:pointer;color:var(--muted);
+  border:none;border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:.15s;background:none;font-family:'DM Sans',sans-serif}
+.page-tab.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
+
+/* SHARED ADMIN STUDENT FILTER (sits above both tabs) */
+.shared-student-filter{max-width:1100px;margin:0 auto;padding:1rem 1.5rem 0;display:none}
+
+/* VOCABULARY TAB */
+.vocab-wrap{max-width:1100px;margin:0 auto;padding:1.5rem;display:none}
+.vocab-intro{margin-bottom:1.5rem}
+.vocab-cat{margin-bottom:2rem}
+.vocab-cat-title{font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  font-family:monospace;margin-bottom:.75rem}
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.85rem}
+.vocab-card{background:#fff;border-radius:10px;border:1px solid var(--border);padding:1rem 1.1rem;box-shadow:var(--shadow)}
+.vocab-term{font-size:1rem;color:var(--ocean);font-weight:600;margin-bottom:.3rem}
+.vocab-translation{font-size:.88rem;color:#2a3a3a;margin-bottom:.5rem;line-height:1.5}
+.vocab-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.4rem}
+.vocab-tag{font-size:.65rem;background:var(--ivory);color:var(--muted);border-radius:10px;padding:.1rem .45rem}
+.vocab-meta{font-size:.72rem;color:var(--muted);font-family:monospace}
+
 /* == Brand font alignment == */
 body{font-family:'DM Sans',sans-serif}
 h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
@@ -145,6 +170,19 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 
 <div id="loading" style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--muted)">Loading notes…</div>
 
+<div class="page-tabs" id="page-tabs">
+  <button class="page-tab active" onclick="showPageTab('notes')">📋 Coaching Notes</button>
+  <button class="page-tab" onclick="showPageTab('vocab')">📚 My Vocabulary</button>
+</div>
+
+<!-- Admin: student selector — shared across both tabs -->
+<div class="shared-student-filter filter-group" id="student-filter">
+  <span class="filter-label">Student</span>
+  <select id="student-select" style="width:260px;padding:.5rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ocean)" onchange="loadNotes(); loadVocab()">
+    <option value="">All students</option>
+  </select>
+</div>
+
 <div class="layout" id="main-layout" style="display:none">
 
   <div class="sidebar">
@@ -162,14 +200,6 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <div class="tag-filter" id="tag-filter-btns"></div>
     </div>
 
-    <!-- Admin: student selector -->
-    <div class="filter-group" id="student-filter" style="display:none">
-      <span class="filter-label">Student</span>
-      <select id="student-select" style="width:100%;padding:.5rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.85rem;color:var(--ocean)" onchange="loadNotes()">
-        <option value="">All students</option>
-      </select>
-    </div>
-
     <div class="note-list" id="note-list">
       <div style="color:var(--muted);font-size:.85rem;padding:.5rem">Loading…</div>
     </div>
@@ -180,6 +210,16 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <div class="icon">📋</div>
       <p>Select a note from the left to read it.</p>
     </div>
+  </div>
+</div>
+
+<div class="vocab-wrap" id="vocab-wrap">
+  <div class="vocab-intro">
+    <h2 class="sidebar-title">My Vocabulary</h2>
+    <p class="sidebar-sub">Every word, expression and rule flagged during your sessions — grouped by topic, most recently practised words included.</p>
+  </div>
+  <div id="vocab-content">
+    <div style="color:var(--muted);font-size:.85rem;padding:.5rem">Loading…</div>
   </div>
 </div>
 
@@ -248,7 +288,59 @@ async function init() {
 
   await loadNotes()
   document.getElementById('loading').style.display = 'none'
+  document.getElementById('page-tabs').style.display = 'flex'
   document.getElementById('main-layout').style.display = 'grid'
+}
+
+function showPageTab(tab) {
+  document.getElementById('main-layout').style.display = tab === 'notes' ? 'grid' : 'none'
+  document.getElementById('vocab-wrap').style.display = tab === 'vocab' ? 'block' : 'none'
+  document.querySelectorAll('.page-tab').forEach((t, i) => t.classList.toggle('active', (tab === 'notes' && i === 0) || (tab === 'vocab' && i === 1)))
+  if (tab === 'vocab') loadVocab()
+}
+
+const VOCAB_CATEGORY_LABELS = { vocabulary: 'Vocabulary', grammar: 'Grammar', 'verb-reference': 'Verb reference', finance: 'Finance', home: 'Home', general: 'General' }
+
+async function loadVocab() {
+  const wrap = document.getElementById('vocab-content')
+  if (!wrap) return
+
+  let studentId = currentUser.id
+  if (isAdmin) {
+    studentId = document.getElementById('student-select')?.value || ''
+    if (!studentId) {
+      wrap.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">Select a student above to see their vocabulary.</div>`
+      return
+    }
+  }
+
+  const { data, error } = await sb.from('vocab_master').select('*').eq('student_id', studentId).order('category').order('term')
+  if (error) { wrap.innerHTML = `<div style="color:var(--terra);font-size:.85rem;padding:.5rem">Error loading vocabulary: ${esc(error.message)}</div>`; return }
+  if (!data?.length) { wrap.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">No vocabulary logged yet — it builds up automatically as Cédric adds session notes.</div>`; return }
+
+  const groups = {}
+  data.forEach(v => {
+    const cat = v.category || 'general'
+    if (!groups[cat]) groups[cat] = []
+    groups[cat].push(v)
+  })
+  const catOrder = Object.keys(groups).sort((a, b) => a.localeCompare(b))
+
+  wrap.innerHTML = catOrder.map(cat => `
+    <div class="vocab-cat">
+      <div class="vocab-cat-title">${esc(VOCAB_CATEGORY_LABELS[cat] || cat)} · ${groups[cat].length}</div>
+      <div class="vocab-grid">
+        ${groups[cat].map(v => `
+          <div class="vocab-card">
+            <div class="vocab-term">${esc(v.term)}</div>
+            ${v.translation ? `<div class="vocab-translation">${esc(v.translation)}</div>` : ''}
+            ${v.tags?.length ? `<div class="vocab-tags">${v.tags.map(t => `<span class="vocab-tag">${esc(t)}</span>`).join('')}</div>` : ''}
+            <div class="vocab-meta">Seen ${v.times_reinforced || 1}× · last ${formatDate(v.last_seen_date)}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('')
 }
 
 async function loadNotes() {
@@ -329,122 +421,4 @@ async function loadExercisesForNote(noteId) {
   const block = document.getElementById('practice-block')
   const list = document.getElementById('practice-list')
   if (!currentExercises.length) { block.style.display = 'none'; return }
-  block.style.display = 'block'
-  list.innerHTML = currentExercises.map((ex, i) => renderExercise(ex, i)).join('')
-}
-
-function renderExercise(ex, i) {
-  const labels = { flashcard: 'Flashcard', fill_blank: 'Fill in the blank', open_prompt: 'Try it yourself' }
-  if (ex.type === 'flashcard') {
-    return `
-      <div class="ex-card ex-flip" onclick="document.getElementById('ex-ans-${i}').classList.toggle('shown')">
-        <span class="ex-type">${labels.flashcard}</span>
-        <div class="ex-prompt">${esc(ex.prompt)} <span style="color:var(--muted);font-size:.78rem">(tap to reveal)</span></div>
-        <div class="ex-answer" id="ex-ans-${i}">${esc(ex.answer || '')}${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}</div>
-      </div>`
-  }
-  if (ex.type === 'fill_blank') {
-    return `
-      <div class="ex-card">
-        <span class="ex-type">${labels.fill_blank}</span>
-        <div class="ex-prompt">${esc(ex.prompt)}</div>
-        <div class="ex-input-row">
-          <input type="text" id="ex-input-${i}" placeholder="Your answer…" onkeydown="if(event.key==='Enter')checkFillBlank(${i})">
-          <button onclick="checkFillBlank(${i})">Check</button>
-        </div>
-        <div class="ex-feedback" id="ex-feedback-${i}"></div>
-      </div>`
-  }
-  // open_prompt
-  return `
-    <div class="ex-card">
-      <span class="ex-type">${labels.open_prompt}</span>
-      <div class="ex-prompt">${esc(ex.prompt)}</div>
-      ${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}
-    </div>`
-}
-
-function checkFillBlank(i) {
-  const ex = currentExercises[i]
-  const val = (document.getElementById(`ex-input-${i}`).value || '').trim().toLowerCase()
-  const correct = (ex.answer || '').trim().toLowerCase()
-  const fb = document.getElementById(`ex-feedback-${i}`)
-  if (val && correct && val === correct) {
-    fb.textContent = 'Right ✓' + (ex.explanation ? ' — ' + ex.explanation : '')
-    fb.className = 'ex-feedback correct'
-  } else {
-    fb.textContent = `Close — it's "${ex.answer}"` + (ex.explanation ? ' — ' + ex.explanation : '')
-    fb.className = 'ex-feedback incorrect'
-  }
-}
-
-// Simple markdown renderer
-function renderMarkdown(md) {
-  return md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/^---$/gm, '<hr>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[h|u|o|l|b|h|p])/gm, '')
-    // Wrap remaining text in paragraphs
-    .split('\n').map(line => {
-      if (!line.trim() || line.startsWith('<')) return line
-      return `<p>${line}</p>`
-    }).join('\n')
-}
-
-function openAddNote() {
-  document.getElementById('modal-date').value = new Date().toISOString().split('T')[0]
-  document.getElementById('note-modal').style.display = 'flex'
-}
-function closeModal() {
-  document.getElementById('note-modal').style.display = 'none'
-  document.getElementById('modal-content').value = ''
-  document.getElementById('modal-title').value = ''
-  document.getElementById('modal-tags').value = ''
-  document.getElementById('modal-msg').style.display = 'none'
-}
-
-async function saveNote() {
-  const studentId = document.getElementById('modal-student').value
-  const title     = document.getElementById('modal-title').value.trim()
-  const content   = document.getElementById('modal-content').value.trim()
-  const tags      = document.getElementById('modal-tags').value.split(',').map(t => t.trim()).filter(Boolean)
-  const date      = document.getElementById('modal-date').value
-  const msg       = document.getElementById('modal-msg')
-
-  if (!studentId || !title) { msg.textContent = 'Student and title are required.'; msg.style.display = 'block'; return }
-
-  const { error } = await sb.from('coaching_notes').insert({
-    student_id: studentId, title, content, tags,
-    session_date: date || new Date().toISOString().split('T')[0],
-    created_by: currentUser.id
-  })
-
-  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
-
-  closeModal()
-  await loadNotes()
-}
-
-function formatDate(d) {
-  if (!d) return ''
-  return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
-}
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-}
-
-init()
-</script>
-</body>
-</html>
+  bloc
