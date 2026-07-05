@@ -24,3 +24,8 @@ allison-benn-notes.html
 # (same publish-whole-root risk: netlify.toml publishes the repo root)
 marketing/
 planning/
+
+# Student documentation/records management — private per-student content
+# (Canva backfills, draft notes, publish scripts). Same publish-whole-root
+# risk as everything else above — never publish.
+student-notes/
