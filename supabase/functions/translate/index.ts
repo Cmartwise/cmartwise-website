@@ -39,12 +39,15 @@ Return ONLY valid JSON, no markdown fences, in this exact schema:
   "colloquial": "<how a native speaker would actually say it day-to-day — can equal translation if there's no real difference>",
   "full_phonetic": "<simple phonetic pronunciation guide for the colloquial translation, readable by an English speaker with no IPA training>",
   "cultural_note": "<1 short sentence on register, regional usage, or a false-friend trap — omit as empty string if nothing noteworthy>",
+  "similar_phrases": [
+    {"pt": "<a related/alternative way to say something close to the original, in ${toName}>", "phonetic": "<simple pronunciation guide>", "en": "<its meaning in English>", "context": "<short label for when you'd use this instead, e.g. 'more formal', 'asking a stranger', 'among friends'>"}
+  ],
   "words": [
     {"pt": "<word or short phrase from the source text>", "en": "<its translation>", "type": "<noun/verb/adj/etc>", "phonetic": "<simple pronunciation guide>", "note": "<short usage note, or empty string>"}
   ]
 }
 
-Break "words" into the meaningful words/short phrases of the source text (skip trivial function words like "the"/"a" unless genuinely useful to a learner). Keep it concise — this is for a language-coaching tool, not a linguistics paper.`
+Break "words" into the meaningful words/short phrases of the source text (skip trivial function words like "the"/"a" unless genuinely useful to a learner). "similar_phrases" MUST contain exactly 3 genuinely distinct alternative expressions a learner would find useful (different register, different situation, or a common variant) — never leave it empty. Keep it concise — this is for a language-coaching tool, not a linguistics paper.`
 
     const client = new Anthropic({ apiKey })
     const message = await client.messages.create({

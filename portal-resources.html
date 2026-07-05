@@ -102,6 +102,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .tr-original{font-size:.8rem;opacity:.45;font-style:italic}
 .tr-colloquial-note{margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(255,255,255,.1);font-size:.82rem;opacity:.55;line-height:1.5}
 
+.tr-phrases-label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;opacity:.4;font-family:monospace;margin:1.25rem 0 .6rem}
+.tr-phrase-card{background:rgba(255,255,255,.06);border-radius:8px;padding:.75rem 1rem;margin-bottom:.5rem;border-left:3px solid #e8a820}
+.tr-phrase-pt{font-size:.95rem;font-style:italic;color:#e8f0e2;margin-bottom:.15rem}
+.tr-phrase-phonetic{font-size:.75rem;font-family:monospace;color:#e8a820;margin-bottom:.25rem}
+.tr-phrase-en{font-size:.8rem;color:rgba(232,240,226,.6);font-style:italic;margin-bottom:.4rem}
+.tr-phrase-context{font-size:.68rem;color:#e8f0e2;background:rgba(255,255,255,.1);padding:.15rem .55rem;border-radius:10px;display:inline-block;font-family:monospace}
+
 .tr-words{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem;margin-top:1.25rem}
 .tr-word{background:#fff;border-radius:8px;padding:.85rem 1rem;border-left:3px solid #4db86a}
 .tr-word.verb{border-left-color:#e8a820}
@@ -349,6 +356,17 @@ function renderTranslation(d) {
     <div class="tr-original">"${esc(d.original)}"</div>
     ${d.colloquial !== d.translation ? `<div class="tr-colloquial-note">Formal: ${esc(d.translation)}</div>` : ''}
     ${d.cultural_note ? `<div class="tr-colloquial-note">💡 ${esc(d.cultural_note)}</div>` : ''}
+    ${d.similar_phrases?.length ? `
+      <div class="tr-phrases-label">SIMILAR PHRASES</div>
+      ${d.similar_phrases.map(p => `
+        <div class="tr-phrase-card">
+          <div class="tr-phrase-pt">${esc(p.pt)}</div>
+          ${p.phonetic ? `<div class="tr-phrase-phonetic">${esc(p.phonetic)}</div>` : ''}
+          <div class="tr-phrase-en">${esc(p.en)}</div>
+          ${p.context ? `<span class="tr-phrase-context">${esc(p.context)}</span>` : ''}
+        </div>
+      `).join('')}
+    ` : ''}
     ${d.words?.length ? `
       <div class="tr-words">
         ${d.words.map(w => `
