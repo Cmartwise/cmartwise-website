@@ -1091,4 +1091,12 @@ async function saveStudentEdit() {
     programme, sessions_total: sessionsTotal, next_session: nextSession
   }).eq('id', id)
 
-  if (error) { msg.textContent = 'Error: ' + err
+  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
+  closeStudentEdit()
+  showToast('Student updated')
+  loadStudents()
+}
+</script>
+
+</body>
+</html>

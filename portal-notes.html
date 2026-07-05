@@ -421,4 +421,122 @@ async function loadExercisesForNote(noteId) {
   const block = document.getElementById('practice-block')
   const list = document.getElementById('practice-list')
   if (!currentExercises.length) { block.style.display = 'none'; return }
-  bloc
+  block.style.display = 'block'
+  list.innerHTML = currentExercises.map((ex, i) => renderExercise(ex, i)).join('')
+}
+
+function renderExercise(ex, i) {
+  const labels = { flashcard: 'Flashcard', fill_blank: 'Fill in the blank', open_prompt: 'Try it yourself' }
+  if (ex.type === 'flashcard') {
+    return `
+      <div class="ex-card ex-flip" onclick="document.getElementById('ex-ans-${i}').classList.toggle('shown')">
+        <span class="ex-type">${labels.flashcard}</span>
+        <div class="ex-prompt">${esc(ex.prompt)} <span style="color:var(--muted);font-size:.78rem">(tap to reveal)</span></div>
+        <div class="ex-answer" id="ex-ans-${i}">${esc(ex.answer || '')}${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}</div>
+      </div>`
+  }
+  if (ex.type === 'fill_blank') {
+    return `
+      <div class="ex-card">
+        <span class="ex-type">${labels.fill_blank}</span>
+        <div class="ex-prompt">${esc(ex.prompt)}</div>
+        <div class="ex-input-row">
+          <input type="text" id="ex-input-${i}" placeholder="Your answer…" onkeydown="if(event.key==='Enter')checkFillBlank(${i})">
+          <button onclick="checkFillBlank(${i})">Check</button>
+        </div>
+        <div class="ex-feedback" id="ex-feedback-${i}"></div>
+      </div>`
+  }
+  // open_prompt
+  return `
+    <div class="ex-card">
+      <span class="ex-type">${labels.open_prompt}</span>
+      <div class="ex-prompt">${esc(ex.prompt)}</div>
+      ${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}
+    </div>`
+}
+
+function checkFillBlank(i) {
+  const ex = currentExercises[i]
+  const val = (document.getElementById(`ex-input-${i}`).value || '').trim().toLowerCase()
+  const correct = (ex.answer || '').trim().toLowerCase()
+  const fb = document.getElementById(`ex-feedback-${i}`)
+  if (val && correct && val === correct) {
+    fb.textContent = 'Right ✓' + (ex.explanation ? ' — ' + ex.explanation : '')
+    fb.className = 'ex-feedback correct'
+  } else {
+    fb.textContent = `Close — it's "${ex.answer}"` + (ex.explanation ? ' — ' + ex.explanation : '')
+    fb.className = 'ex-feedback incorrect'
+  }
+}
+
+// Simple markdown renderer
+function renderMarkdown(md) {
+  return md
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code>$1</code>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[h|u|o|l|b|h|p])/gm, '')
+    // Wrap remaining text in paragraphs
+    .split('\n').map(line => {
+      if (!line.trim() || line.startsWith('<')) return line
+      return `<p>${line}</p>`
+    }).join('\n')
+}
+
+function openAddNote() {
+  document.getElementById('modal-date').value = new Date().toISOString().split('T')[0]
+  document.getElementById('note-modal').style.display = 'flex'
+}
+function closeModal() {
+  document.getElementById('note-modal').style.display = 'none'
+  document.getElementById('modal-content').value = ''
+  document.getElementById('modal-title').value = ''
+  document.getElementById('modal-tags').value = ''
+  document.getElementById('modal-msg').style.display = 'none'
+}
+
+async function saveNote() {
+  const studentId = document.getElementById('modal-student').value
+  const title     = document.getElementById('modal-title').value.trim()
+  const content   = document.getElementById('modal-content').value.trim()
+  const tags      = document.getElementById('modal-tags').value.split(',').map(t => t.trim()).filter(Boolean)
+  const date      = document.getElementById('modal-date').value
+  const msg       = document.getElementById('modal-msg')
+
+  if (!studentId || !title) { msg.textContent = 'Student and title are required.'; msg.style.display = 'block'; return }
+
+  const { error } = await sb.from('coaching_notes').insert({
+    student_id: studentId, title, content, tags,
+    session_date: date || new Date().toISOString().split('T')[0],
+    created_by: currentUser.id
+  })
+
+  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
+
+  closeModal()
+  await loadNotes()
+}
+
+function formatDate(d) {
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+}
+
+init()
+</script>
+</body>
+</html>

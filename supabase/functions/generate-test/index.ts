@@ -167,4 +167,17 @@ Deno.serve(async (req) => {
     })
 
     const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
-    if (!
+    if (!textBlock) throw new Error('Model response had no text content block.')
+    const raw = textBlock.text.trim()
+    const clean = raw.replace(/^```(?:json)?\n?/,'').replace(/\n?```$/,'').trim()
+    const parsed = JSON.parse(clean)
+
+    return new Response(JSON.stringify(parsed), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  } catch(e) {
+    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    })
+  }
+})

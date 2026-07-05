@@ -1070,4 +1070,42 @@ function renderReview(detail) {
 }
 
 // Turns a raw stored answer (letter, boolean, text) into something readable,
-// e.g. "B — Lisboa" for a multiple-choice pick instead of just "B"
+// e.g. "B — Lisboa" for a multiple-choice pick instead of just "B".
+function formatAnswerDisplay(d, val) {
+  if (val === null || val === undefined || val === '' || (Array.isArray(val) && !val.length)) return '—'
+  if ((d.type === 'multiple_choice' || d.type === 'matching') && d.options) {
+    // val may be a single option letter, OR (when the model didn't follow the
+    // "return a letter" instruction for q.correct) the option's full text —
+    // handle both so "Correct answer" always renders as "Letter — text".
+    let idx = typeof val === 'string' && /^[A-Za-z]$/.test(val.trim()) ? val.trim().toUpperCase().charCodeAt(0) - 65 : -1
+    let text = idx >= 0 ? d.options[idx] : null
+    if (!text) {
+      idx = d.options.findIndex(o => String(o).trim().toLowerCase() === String(val).trim().toLowerCase())
+      text = idx >= 0 ? d.options[idx] : null
+    }
+    if (text) return `${String.fromCharCode(65 + idx)} — ${text}`
+    return String(val)
+  }
+  if (d.type === 'multi_select' && d.options) {
+    const letters = Array.isArray(val) ? val : [val]
+    return letters.map(l => {
+      const idx = typeof l === 'string' ? l.toUpperCase().charCodeAt(0) - 65 : -1
+      const text = d.options[idx]
+      return text ? `${l} — ${text}` : String(l)
+    }).join(', ')
+  }
+  if (d.type === 'true_false') return (val === true || val === 'true') ? 'True' : 'False'
+  return String(val)
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
+
+// Load voices early (Chrome requires this)
+window.speechSynthesis?.getVoices()
+window.speechSynthesis?.addEventListener?.('voiceschanged', () => window.speechSynthesis.getVoices())
+
+updateTestInfo()
+init()
+</script>
+</body>
+</html>
