@@ -33,7 +33,11 @@ echo  Step 6: Deploying translate function...
 call npx supabase functions deploy translate --project-ref zsgnggtwfxyqzvrnlaqg
 
 echo.
-echo  Done! All four functions deployed.
+echo  Step 7: Deploying enrich-vocab function...
+call npx supabase functions deploy enrich-vocab --project-ref zsgnggtwfxyqzvrnlaqg
+
+echo.
+echo  Done! All five functions deployed.
 echo.
 echo  IMPORTANT: Set your Anthropic API key in Supabase:
 echo  Dashboard ^> Edge Functions ^> Manage secrets ^> Add ANTHROPIC_API_KEY
