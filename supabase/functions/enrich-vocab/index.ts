@@ -13,6 +13,46 @@ function json(body: unknown, status = 200) {
   })
 }
 
+// Claude occasionally emits a raw, unescaped newline (or tab) inside a JSON
+// string value — usually a long example sentence or usage note that got
+// line-wrapped instead of kept on one line. That produces a technically
+// invalid JSON payload ("Unterminated string...") that JSON.parse rejects
+// outright even though the content itself is fine. This walks the raw text
+// tracking whether we're inside a string (respecting \" escapes) and
+// re-escapes any literal newline/tab found there, so a single stray line
+// break doesn't blow up the whole response.
+function sanitizeJsonStrings(text: string): string {
+  let out = ''
+  let inString = false
+  let escaped = false
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    if (inString) {
+      if (escaped) { out += ch; escaped = false; continue }
+      if (ch === '\\') { out += ch; escaped = true; continue }
+      if (ch === '"') { inString = false; out += ch; continue }
+      if (ch === '\n') { out += '\\n'; continue }
+      if (ch === '\r') { continue }
+      if (ch === '\t') { out += '\\t'; continue }
+      out += ch
+    } else {
+      if (ch === '"') inString = true
+      out += ch
+    }
+  }
+  return out
+}
+
+function parseJsonLoose(raw: string): any {
+  const clean = raw.trim().replace(/^```(?:json)?\n?/, '').replace(/\n?```$/, '').trim()
+  try {
+    return JSON.parse(clean)
+  } catch {
+    // Fall back to the sanitized version rather than failing outright.
+    return JSON.parse(sanitizeJsonStrings(clean))
+  }
+}
+
 // Two enrichment passes over vocab_master, both admin-only (runs under the
 // caller's own session so RLS/is_admin() gates it, no service-role key needed):
 //
@@ -85,30 +125,17 @@ Deno.serve(async (req) => {
         return json({ done: true, processed: 0, remaining: 0 })
       }
 
-      const verbList = rows.map((r, i) =>
-        `${i}. "${r.infinitive || r.term}" (English: "${r.translation || ''}")`
-      ).join('\n')
+      // One Claude call PER VERB (not one call for the whole batch). A verb
+      // whose response comes back malformed only costs that one verb — it
+      // doesn't take the other 2-5 verbs in the batch down with it.
+      let updated = 0
+      const failures: string[] = []
 
-      const prompt = `You are a European Portuguese grammar reference assistant building a detailed per-verb reference for a language-coaching student portal. Note: "Portuguese" always means European Portuguese, not Brazilian — conjugations, vocabulary and pronunciation must reflect European Portuguese specifically (e.g. "tu" forms, "comprámos" not "compramos" for the simple past, etc).
+      for (const r of rows) {
+        const verbLabel = r.infinitive || r.term
+        try {
+          const prompt = `You are a European Portuguese grammar reference assistant building a detailed reference entry for a language-coaching student portal. Note: "Portuguese" always means European Portuguese, not Brazilian — conjugations, vocabulary and pronunciation must reflect European Portuguese specifically (e.g. "tu" forms, "comprámos" not "compramos" for the simple past, etc).
 
-Verbs (given as their infinitive):
-${verbList}
+Verb (infinitive): "${verbLabel}" (English: "${r.translation || ''}")
 
-For EACH verb, in the SAME order, return full reference detail. Return ONLY valid JSON, no markdown fences, in this exact schema:
-{
-  "verbs": [
-    {
-      "regularity": "<one of: 'AR regular', 'ER regular', 'IR regular', 'Irregular' — if irregular only in specific tenses, still say 'Irregular' and note it in usage_note fields>",
-      "frequency": "<one of: 'Extremely common', 'Very common', 'Common', 'Less common'>",
-      "contexts": [
-        {"label": "<short label for this usage, e.g. 'Literal' or 'Figurative' or 'Formal' or 'Colloquial'>", "note": "<one sentence explaining this usage>", "example_pt": "<a natural European Portuguese example sentence>", "example_en": "<its English translation>"}
-      ],
-      "fixed_expressions": [
-        {"phrase": "<a real fixed expression or collocation using this verb>", "meaning": "<its English meaning>"}
-      ],
-      "conjugations": [
-        {"tense": "Present", "tense_pt": "Presente do Indicativo", "usage_note": "<when this tense is used>", "forms": {"eu": "<form>", "tu": "<form>", "ele_ela_voce": "<form>", "nos": "<form>", "eles_elas_voces": "<form>"}},
-        {"tense": "Simple Past", "tense_pt": "Pretérito Perfeito do Indicativo", "usage_note": "<when this tense is used>", "forms": {"eu": "<form>", "tu": "<form>", "ele_ela_voce": "<form>", "nos": "<form>", "eles_elas_voces": "<form>"}},
-        {"tense": "Imperfect", "tense_pt": "Pretérito Imperfeito do Indicativo", "usage_note": "<when this tense is used>", "forms": {"eu": "<form>", "tu": "<form>", "ele_ela_voce": "<form>", "nos": "<form>", "eles_elas_voces": "<form>"}},
-        {"tense": "Future", "tense_pt": "Futuro do Presente", "usage_note": "<when this tense is used>", "forms": {"eu": "<form>", "tu": "<form>", "ele_ela_voce": "<form>", "nos": "<form>", "eles_elas_voces": "<form>"}},
-        {"tense": "Conditional", "ten
+Return full reference detail for this one verb. Return ONLY valid JSON, no markdown fences, in this ex

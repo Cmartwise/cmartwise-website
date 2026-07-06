@@ -1094,10 +1094,13 @@ async function runEnrichVerbDetail() {
   btn.disabled = true
   progress.style.display = 'block'
   let totalProcessed = 0
+  let totalFailed = 0
+  const allFailures = []
 
   try {
     while (true) {
-      progress.textContent = `Enriching verb details… ${totalProcessed} done so far (this is slower, ~3 verbs at a time).`
+      progress.textContent = `Enriching verb details… ${totalProcessed} done so far` +
+        (totalFailed ? `, ${totalFailed} skipped after errors` : '') + ' (this is slower, one verb at a time).'
       const res = await fetch(SUPABASE_URL + '/functions/v1/enrich-vocab', {
         method: 'POST',
         headers: {
@@ -1107,13 +1110,23 @@ async function runEnrichVerbDetail() {
         body: JSON.stringify({ studentId: studentId || undefined, mode: 'verb-detail', batchSize: 3 })
       })
       const d = await res.json()
+      // A top-level d.error means the whole request failed (auth/DB issue) —
+      // genuinely fatal, stop. Per-verb failures come back in d.failures and
+      // are already handled server-side (that row is marked so it won't loop
+      // forever); just tally them and keep going.
       if (d.error) throw new Error(d.error)
       totalProcessed += d.processed || 0
+      totalFailed += d.failed || 0
+      if (d.failures?.length) allFailures.push(...d.failures)
       document.getElementById('verb-detail-remaining-count').textContent = d.remaining ?? '—'
-      if (d.done || !d.processed) break
+      if (d.done) break
     }
-    progress.textContent = `Done — added full detail to ${totalProcessed} verb(s).`
-    showToast(`Enriched ${totalProcessed} verb(s) with full detail`)
+    progress.textContent = `Done — added full detail to ${totalProcessed} verb(s).` +
+      (totalFailed ? ` ${totalFailed} verb(s) had generation errors and were skipped (see below) — you can retry those later.` : '')
+    if (allFailures.length) {
+      progress.innerHTML += `<div style="margin-top:.5rem;color:var(--terra);font-size:.78rem">${allFailures.map(f => esc(f)).join('<br>')}</div>`
+    }
+    showToast(totalFailed ? `Enriched ${totalProcessed} verb(s), ${totalFailed} skipped` : `Enriched ${totalProcessed} verb(s) with full detail`)
   } catch (e) {
     progress.textContent = 'Error: ' + e.message
     showToast('Verb-detail enrichment failed: ' + e.message, true)
@@ -1156,17 +1169,4 @@ init()
     <input type="hidden" id="edit-student-id">
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Programme</label>
-      <select id="edit-programme" style="width:100%;padding:.65rem;border-radius:6px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ocean)">
-        <option value="Full Fluency Programme">Full Fluency Programme</option>
-        <option value="CIPLE Prep">CIPLE Prep (A2)</option>
-        <option value="DIPLE Prep">DIPLE Prep (B2)</option>
-      </select>
-    </div>
-    <div style="margin-bottom:1rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Total sessions in programme</label>
-      <input type="number" id="edit-sessions-total" min="1" max="50"
-        style="width:100%;padding:.65rem;border-radius:6px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ocean)">
-    </div>
-    <div style="margin-bottom:1.5rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Next session date</label>
-      <input type="datetime-local" i
+      <select id="edit-programme" style="width:100%;padding:.65rem;border-radius:6px;border:1.5px solid var(--border);font-f
