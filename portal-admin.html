@@ -347,6 +347,14 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <button class="btn primary" id="vocab-enrich-btn" onclick="runEnrichVocab()">Enrich vocabulary grammar</button>
       <div id="vocab-enrich-progress" style="margin-top:.75rem;font-size:.85rem;color:var(--muted);display:none"></div>
     </div>
+    <div style="background:var(--ivory);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">
+      <div style="font-size:.85rem;color:var(--ocean);margin-bottom:.75rem">
+        <span id="verb-detail-remaining-count">—</span> verb(s) still need full detail (conjugations, contexts, fixed expressions).
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem">Run "Enrich vocabulary grammar" above first — this only picks up terms already identified as verbs. Slower and pricier per term (heavier output), so it runs in smaller batches.</p>
+      <button class="btn primary" id="verb-detail-enrich-btn" onclick="runEnrichVerbDetail()">Enrich verb details</button>
+      <div id="verb-detail-enrich-progress" style="margin-top:.75rem;font-size:.85rem;color:var(--muted);display:none"></div>
+    </div>
   </div>
 
 </div>
@@ -1023,12 +1031,20 @@ function switchTab(name) {
 
 // ── VOCABULARY (grammar-detail enrichment) ──────────────────────
 async function loadVocabAdminTab() {
-  const el = document.getElementById('vocab-remaining-count')
   const studentId = document.getElementById('vocab-student-filter')?.value || ''
+
+  const el = document.getElementById('vocab-remaining-count')
   let q = sb.from('vocab_master').select('id', { count: 'exact', head: true }).is('phonetic', null)
   if (studentId) q = q.eq('student_id', studentId)
   const { count } = await q
   el.textContent = count ?? '—'
+
+  const vEl = document.getElementById('verb-detail-remaining-count')
+  let vq = sb.from('vocab_master').select('id', { count: 'exact', head: true })
+    .is('conjugations', null).or('word_type.eq.verb,infinitive.not.is.null')
+  if (studentId) vq = vq.eq('student_id', studentId)
+  const { count: vCount } = await vq
+  vEl.textContent = vCount ?? '—'
 }
 
 async function runEnrichVocab() {
@@ -1063,6 +1079,44 @@ async function runEnrichVocab() {
   } catch (e) {
     progress.textContent = 'Error: ' + e.message
     showToast('Enrichment failed: ' + e.message, true)
+  } finally {
+    btn.disabled = false
+    loadVocabAdminTab()
+  }
+}
+
+async function runEnrichVerbDetail() {
+  const btn = document.getElementById('verb-detail-enrich-btn')
+  const progress = document.getElementById('verb-detail-enrich-progress')
+  const studentId = document.getElementById('vocab-student-filter')?.value || ''
+  const { data: { session } } = await sb.auth.getSession()
+
+  btn.disabled = true
+  progress.style.display = 'block'
+  let totalProcessed = 0
+
+  try {
+    while (true) {
+      progress.textContent = `Enriching verb details… ${totalProcessed} done so far (this is slower, ~3 verbs at a time).`
+      const res = await fetch(SUPABASE_URL + '/functions/v1/enrich-vocab', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session?.access_token
+        },
+        body: JSON.stringify({ studentId: studentId || undefined, mode: 'verb-detail', batchSize: 3 })
+      })
+      const d = await res.json()
+      if (d.error) throw new Error(d.error)
+      totalProcessed += d.processed || 0
+      document.getElementById('verb-detail-remaining-count').textContent = d.remaining ?? '—'
+      if (d.done || !d.processed) break
+    }
+    progress.textContent = `Done — added full detail to ${totalProcessed} verb(s).`
+    showToast(`Enriched ${totalProcessed} verb(s) with full detail`)
+  } catch (e) {
+    progress.textContent = 'Error: ' + e.message
+    showToast('Verb-detail enrichment failed: ' + e.message, true)
   } finally {
     btn.disabled = false
     loadVocabAdminTab()
@@ -1115,57 +1169,4 @@ init()
     </div>
     <div style="margin-bottom:1.5rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Next session date</label>
-      <input type="datetime-local" id="edit-next-session"
-        style="width:100%;padding:.65rem;border-radius:6px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--ocean)">
-      <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Leave blank to clear</div>
-    </div>
-    <div style="display:flex;gap:.75rem">
-      <button onclick="saveStudentEdit()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;cursor:pointer">Save</button>
-      <button onclick="closeStudentEdit()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--muted)">Cancel</button>
-    </div>
-    <div id="edit-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--terra);display:none"></div>
-  </div>
-</div>
-
-<script>
-function openEditStudent(id, name, programme, sessionsTotal, nextSession) {
-  document.getElementById('edit-student-id').value = id
-  document.getElementById('edit-student-name').textContent = name
-  document.getElementById('edit-programme').value = programme || 'Full Fluency Programme'
-  document.getElementById('edit-sessions-total').value = sessionsTotal || 12
-  // Convert date to datetime-local format
-  if (nextSession) {
-    const d = new Date(nextSession)
-    const pad = n => String(n).padStart(2,'0')
-    document.getElementById('edit-next-session').value =
-      d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes())
-  } else {
-    document.getElementById('edit-next-session').value = ''
-  }
-  document.getElementById('edit-msg').style.display = 'none'
-  document.getElementById('student-edit-modal').style.display = 'flex'
-}
-function closeStudentEdit() {
-  document.getElementById('student-edit-modal').style.display = 'none'
-}
-async function saveStudentEdit() {
-  const id = document.getElementById('edit-student-id').value
-  const programme = document.getElementById('edit-programme').value
-  const sessionsTotal = parseInt(document.getElementById('edit-sessions-total').value) || 12
-  const nextSessionRaw = document.getElementById('edit-next-session').value
-  const nextSession = nextSessionRaw ? new Date(nextSessionRaw).toISOString() : null
-  const msg = document.getElementById('edit-msg')
-
-  const { error } = await sb.from('profiles').update({
-    programme, sessions_total: sessionsTotal, next_session: nextSession
-  }).eq('id', id)
-
-  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
-  closeStudentEdit()
-  showToast('Student updated')
-  loadStudents()
-}
-</script>
-
-</body>
-</html>
+      <input type="datetime-local" i

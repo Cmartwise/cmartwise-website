@@ -149,16 +149,28 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   --voc-muted:#5a7055;--voc-faint:#a0b89a;--voc-border:rgba(28,61,40,0.1);--voc-shadow:0 2px 8px rgba(28,61,40,0.08);
 }
 .vocab-intro{margin-bottom:1.5rem}
+.vocab-search{width:100%;max-width:360px;padding:.55rem .8rem;border-radius:8px;
+  border:1px solid var(--voc-border);font-family:'DM Sans',sans-serif;font-size:.85rem;
+  color:var(--voc-forest);background:#fff;margin-top:.85rem}
+.vocab-search:focus{outline:none;border-color:var(--voc-leaf)}
+.vocab-empty-search{color:var(--voc-muted);font-size:.85rem;padding:1rem .1rem}
 .vocab-cat{margin-bottom:1.75rem}
 .vocab-cat-title{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--voc-muted);
   font-family:monospace;margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
 .vocab-cat-title::after{content:'';flex:1;height:1px;background:var(--voc-border)}
+.vocab-cat-header{cursor:pointer;user-select:none;list-style:none}
+.vocab-cat-header::-webkit-details-marker{display:none}
+.vocab-cat-header::marker{content:''}
+.vocab-cat-arrow{display:inline-block;font-size:8px;color:var(--voc-muted);transition:transform .15s}
+details.vocab-cat[open]>.vocab-cat-header .vocab-cat-arrow{transform:rotate(90deg)}
+details.vocab-cat .vocab-grid{margin-top:.75rem}
 
 /* one entry per line — not a multi-column grid */
 .vocab-grid{display:flex;flex-direction:column;gap:.6rem}
 .vocab-card{background:var(--voc-card);border-radius:10px;padding:.9rem 1.1rem;
   box-shadow:var(--voc-shadow);border-left:3px solid var(--voc-leaf)}
 .vocab-card.cat-grammar{border-left-color:var(--voc-gold2)}
+.vocab-card.cat-verb{border-left-color:var(--voc-blue)}
 .vocab-card.cat-verb-reference{border-left-color:var(--voc-blue)}
 .vocab-card.cat-finance{border-left-color:var(--voc-teal)}
 .vocab-card.cat-home{border-left-color:var(--voc-purple)}
@@ -192,6 +204,36 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .vocab-tag{font-size:.65rem;background:var(--ivory);color:var(--muted);border-radius:10px;padding:.1rem .45rem}
 .vocab-meta{font-size:11px;color:var(--voc-muted);font-family:monospace;margin-top:.3rem}
 .vocab-pending{font-size:10px;color:var(--voc-faint);font-family:monospace;font-style:italic;margin-top:.3rem}
+.vocab-chip.regularity{background:var(--voc-teal-bg);color:var(--voc-teal)}
+.vocab-freq{font-size:11px;color:var(--voc-faint);font-style:italic}
+
+/* Verb deep-detail (conjugations, contexts, fixed expressions) — shown on demand */
+.vocab-expand-toggle{display:inline-block;margin-top:.5rem;font-size:.78rem;color:var(--voc-forest2);
+  cursor:pointer;font-family:'DM Sans',sans-serif;background:none;border:none;padding:0;text-decoration:underline;
+  text-underline-offset:2px}
+.vocab-expand-toggle:hover{color:var(--voc-gold)}
+.vocab-deep-detail{margin-top:.85rem;padding-top:.85rem;border-top:1px dashed var(--voc-border)}
+.vocab-deep-section-title{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--voc-muted);
+  font-family:monospace;margin-bottom:.5rem}
+.vocab-context-block{margin-bottom:.65rem;padding:.6rem .7rem;background:rgba(255,255,255,.55);border-radius:6px}
+.vocab-context-label{display:inline-block;font-size:8px;letter-spacing:.6px;text-transform:uppercase;
+  font-family:monospace;color:var(--voc-gold);background:var(--voc-gold-bg);border-radius:3px;padding:1px 6px;margin-bottom:.3rem}
+.vocab-context-note{font-size:.82rem;color:var(--voc-muted);margin-bottom:.35rem}
+.vocab-example-pt{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:.9rem;color:#1a2e1a}
+.vocab-example-en{font-size:.78rem;color:var(--voc-muted);margin-top:.1rem}
+.vocab-expr-list{margin-bottom:.5rem}
+.vocab-expr-item{font-size:.85rem;color:#1a2e1a;margin-bottom:.3rem}
+.vocab-expr-item .vocab-expr-phrase{font-style:italic;font-family:Georgia,'Times New Roman',serif}
+.vocab-expr-item .vocab-expr-meaning{color:var(--voc-muted);font-size:.8rem}
+.vocab-conj-block{margin-bottom:.85rem}
+.vocab-conj-tense{font-size:.85rem;color:var(--voc-forest2);margin-bottom:.15rem}
+.vocab-conj-tense .pt{color:var(--voc-muted);font-size:.75rem;font-style:italic;font-weight:normal}
+.vocab-conj-note{font-size:.75rem;color:var(--voc-muted);margin-bottom:.4rem}
+.vocab-conj-table{display:grid;grid-template-columns:repeat(5,1fr);gap:.3rem;text-align:center}
+.vocab-conj-person{font-size:8px;letter-spacing:.3px;text-transform:uppercase;color:var(--voc-faint);
+  font-family:monospace;margin-bottom:.15rem}
+.vocab-conj-form{font-size:.82rem;color:#1a2e1a}
+@media(max-width:700px){.vocab-conj-table{grid-template-columns:repeat(3,1fr);row-gap:.5rem}}
 
 /* == Brand font alignment == */
 body{font-family:'DM Sans',sans-serif}
@@ -262,6 +304,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
   <div class="vocab-intro">
     <h2 class="sidebar-title">My Vocabulary</h2>
     <p class="sidebar-sub">Every word, expression and rule flagged during your sessions — grouped by topic, most recently practised words included.</p>
+    <input type="text" id="vocab-search" class="vocab-search" placeholder="Search your vocabulary…" oninput="renderVocab()">
   </div>
   <div id="vocab-content">
     <div style="color:var(--muted);font-size:.85rem;padding:.5rem">Loading…</div>
@@ -344,7 +387,21 @@ function showPageTab(tab) {
   if (tab === 'vocab') loadVocab()
 }
 
-const VOCAB_CATEGORY_LABELS = { vocabulary: 'Vocabulary', grammar: 'Grammar', 'verb-reference': 'Verb reference', finance: 'Finance', home: 'Home', general: 'General' }
+const VOCAB_CATEGORY_LABELS = { vocabulary: 'Vocabulary', grammar: 'Grammar', verb: 'Verbs', 'verb-reference': 'Verbs', finance: 'Finance', home: 'Home', general: 'General' }
+
+let vocabData = []
+
+// A row belongs in the Verbs section if it's a single verb (word_type) OR has a
+// populated infinitive field — that covers verb-cluster entries like "olhar /
+// assistir / ver" that were enriched but never intended to sit under Grammar.
+// This overrides whatever raw `category` was stored, so it self-corrects for
+// every student as soon as a term is enriched — no data migration needed.
+function vocabSection(v) {
+  const hasInfinitive = !!(v.infinitive && String(v.infinitive).trim())
+  if (v.word_type === 'verb' || hasInfinitive) return 'verb'
+  if (v.category === 'verb-reference') return 'verb'
+  return v.category || 'general'
+}
 
 async function loadVocab() {
   const wrap = document.getElementById('vocab-content')
@@ -354,6 +411,7 @@ async function loadVocab() {
   if (isAdmin) {
     studentId = document.getElementById('student-select')?.value || ''
     if (!studentId) {
+      vocabData = []
       wrap.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">Select a student above to see their vocabulary.</div>`
       return
     }
@@ -361,23 +419,48 @@ async function loadVocab() {
 
   const { data, error } = await sb.from('vocab_master').select('*').eq('student_id', studentId).order('category').order('term')
   if (error) { wrap.innerHTML = `<div style="color:var(--terra);font-size:.85rem;padding:.5rem">Error loading vocabulary: ${esc(error.message)}</div>`; return }
-  if (!data?.length) { wrap.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">No vocabulary logged yet — it builds up automatically as Cédric adds session notes.</div>`; return }
+  vocabData = data || []
+  const search = document.getElementById('vocab-search')
+  if (search) search.value = ''
+  renderVocab()
+}
+
+function renderVocab() {
+  const wrap = document.getElementById('vocab-content')
+  if (!wrap) return
+  if (!vocabData.length) {
+    wrap.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">No vocabulary logged yet — it builds up automatically as Cédric adds session notes.</div>`
+    return
+  }
+
+  const q = (document.getElementById('vocab-search')?.value || '').trim().toLowerCase()
+  const filtered = q ? vocabData.filter(v => {
+    const haystack = [v.term, v.translation, v.usage_note, v.infinitive, v.word_type, ...(v.tags || [])].join(' ').toLowerCase()
+    return haystack.includes(q)
+  }) : vocabData
+
+  if (!filtered.length) {
+    wrap.innerHTML = `<div class="vocab-empty-search">No matches for "${esc(q)}".</div>`
+    return
+  }
 
   const groups = {}
-  data.forEach(v => {
-    const cat = v.category || 'general'
-    if (!groups[cat]) groups[cat] = []
-    groups[cat].push(v)
+  filtered.forEach(v => {
+    const sec = vocabSection(v)
+    if (!groups[sec]) groups[sec] = []
+    groups[sec].push(v)
   })
   const catOrder = Object.keys(groups).sort((a, b) => a.localeCompare(b))
 
+  // Collapsed by default so the tab isn't a wall of cards; auto-expanded
+  // while a search is active so matches are actually visible.
   wrap.innerHTML = catOrder.map(cat => `
-    <div class="vocab-cat">
-      <div class="vocab-cat-title">${esc(VOCAB_CATEGORY_LABELS[cat] || cat)} · ${groups[cat].length}</div>
+    <details class="vocab-cat"${q ? ' open' : ''}>
+      <summary class="vocab-cat-title vocab-cat-header"><span class="vocab-cat-arrow">▸</span>${esc(VOCAB_CATEGORY_LABELS[cat] || cat)} · ${groups[cat].length}</summary>
       <div class="vocab-grid">
         ${groups[cat].map(v => renderVocabCard(v, cat)).join('')}
       </div>
-    </div>
+    </details>
   `).join('')
 }
 
@@ -397,16 +480,23 @@ function renderVocabCard(v, cat) {
   // visual treatment as the Language Tools translator's word breakdown. Older/not-yet-
   // enriched terms just render without those extras until that runs.
   const enriched = !!(v.phonetic || v.word_type)
+  // Deep verb detail (regularity, frequency, contexts, fixed expressions, full
+  // conjugation tables) comes from the separate, heavier "Enrich verb details"
+  // admin pass — only ever present on verb entries. Shown collapsed by default;
+  // the toggle link expands it in place.
+  const hasDeepDetail = !!(v.conjugations && v.conjugations.length)
   return `
     <div class="vocab-card ${vocabCatClass(cat)}">
       <div class="vocab-term-row">
         <span class="vocab-term">${esc(v.term)}</span>
         ${v.phonetic ? `<span class="vocab-phonetic">${esc(v.phonetic)}</span>` : ''}
         ${v.translation ? `<span class="vocab-translation">${esc(v.translation)}</span>` : ''}
+        ${v.frequency ? `<span class="vocab-freq">${esc(v.frequency)}</span>` : ''}
       </div>
       ${enriched ? `
         <div class="vocab-chips">
           ${v.word_type ? `<span class="vocab-chip ${vocabTypeClass(v.word_type)}">${esc(v.word_type)}</span>` : ''}
+          ${v.regularity ? `<span class="vocab-chip regularity">${esc(v.regularity)}</span>` : ''}
           ${v.tense ? `<span class="vocab-chip tense">${esc(v.tense)}</span>` : ''}
           ${v.person ? `<span class="vocab-chip person">${esc(v.person)}</span>` : ''}
           ${v.gender ? `<span class="vocab-chip gender-${v.gender.toLowerCase().startsWith('f') ? 'f' : 'm'}">${esc(v.gender)}</span>` : ''}
@@ -418,204 +508,72 @@ function renderVocabCard(v, cat) {
       ${v.tags?.length ? `<div class="vocab-tags">${v.tags.map(t => `<span class="vocab-tag">${esc(t)}</span>`).join('')}</div>` : ''}
       <div class="vocab-meta">Seen ${v.times_reinforced || 1}× · last ${formatDate(v.last_seen_date)}</div>
       ${!enriched ? `<div class="vocab-pending">Grammar detail not generated yet</div>` : ''}
-    </div>
-  `
-}
-
-async function loadNotes() {
-  // Load ASC to assign session numbers, then reverse for display
-  let query = sb.from('coaching_notes').select('*').order('session_date', { ascending: true })
-  if (!isAdmin) query = query.eq('student_id', currentUser.id)
-  else {
-    const studentId = document.getElementById('student-select')?.value
-    if (studentId) query = query.eq('student_id', studentId)
-  }
-
-  const { data: notes } = await query
-  // Tag each note with its session number (1-indexed from oldest)
-  const numbered = (notes || []).map((n, i) => ({ ...n, sessionNumber: i + 1 }))
-  allNotes = numbered.reverse() // newest first for display
-  renderNoteList()
-}
-
-function renderNoteList() {
-  const notes = activeTag ? allNotes.filter(n => n.tags?.includes(activeTag)) : allNotes
-
-  // Collect all tags
-  const allTags = [...new Set(allNotes.flatMap(n => n.tags || []))]
-  if (allTags.length) {
-    document.getElementById('tag-filters').style.display = 'block'
-    document.getElementById('tag-filter-btns').innerHTML =
-      `<button class="tag-btn ${!activeTag ? 'active' : ''}" onclick="filterTag(null)">All</button>` +
-      allTags.map(t => `<button class="tag-btn ${activeTag === t ? 'active' : ''}" onclick="filterTag('${esc(t)}')">${esc(t)}</button>`).join('')
-  }
-
-  const list = document.getElementById('note-list')
-  if (!notes.length) {
-    list.innerHTML = `<div style="color:var(--muted);font-size:.85rem;padding:.5rem">No notes yet.</div>`
-    return
-  }
-  list.innerHTML = notes.map(n => `
-    <div class="note-item" onclick="showNote('${n.id}')">
-      ${n.pinned ? `<span class="note-pin">📌</span>` : ''}
-      <div class="note-item-date">Session ${n.sessionNumber} · ${formatDate(n.session_date)}</div>
-      <div class="note-item-title">${esc(n.title)}</div>
-      ${n.tags?.length ? `<div class="note-item-tags">${n.tags.map(t => `<span class="note-item-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-    </div>
-  `).join('')
-}
-
-function filterTag(tag) {
-  activeTag = tag
-  renderNoteList()
-}
-
-function showNote(id) {
-  const note = allNotes.find(n => n.id === id)
-  if (!note) return
-  document.querySelectorAll('.note-item').forEach(el => el.classList.remove('active'))
-  document.querySelector(`[onclick="showNote('${id}')"]`)?.classList.add('active')
-
-  document.getElementById('note-view').innerHTML = `
-    <div class="note-view-header">
-      <div class="note-view-date">Session ${note.sessionNumber} · ${formatDate(note.session_date)}</div>
-      <h2 class="note-view-title">${esc(note.title)}</h2>
-      ${note.tags?.length ? `<div class="note-view-tags">${note.tags.map(t => `<span class="note-view-tag">${esc(t)}</span>`).join('')}</div>` : ''}
-    </div>
-    <div class="note-content">${renderMarkdown(note.content || '')}</div>
-    <div class="practice-block" id="practice-block" style="display:none">
-      <h3 class="practice-title">Practice this session</h3>
-      <p class="practice-sub">A few quick ones built from what we actually talked about.</p>
-      <div id="practice-list"></div>
-    </div>
-  `
-  loadExercisesForNote(id)
-}
-
-let currentExercises = []
-
-async function loadExercisesForNote(noteId) {
-  const { data } = await sb.from('exercises').select('*').eq('coaching_note_id', noteId)
-  currentExercises = data || []
-  const block = document.getElementById('practice-block')
-  const list = document.getElementById('practice-list')
-  if (!currentExercises.length) { block.style.display = 'none'; return }
-  block.style.display = 'block'
-  list.innerHTML = currentExercises.map((ex, i) => renderExercise(ex, i)).join('')
-}
-
-function renderExercise(ex, i) {
-  const labels = { flashcard: 'Flashcard', fill_blank: 'Fill in the blank', open_prompt: 'Try it yourself' }
-  if (ex.type === 'flashcard') {
-    return `
-      <div class="ex-card ex-flip" onclick="document.getElementById('ex-ans-${i}').classList.toggle('shown')">
-        <span class="ex-type">${labels.flashcard}</span>
-        <div class="ex-prompt">${esc(ex.prompt)} <span style="color:var(--muted);font-size:.78rem">(tap to reveal)</span></div>
-        <div class="ex-answer" id="ex-ans-${i}">${esc(ex.answer || '')}${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}</div>
-      </div>`
-  }
-  if (ex.type === 'fill_blank') {
-    return `
-      <div class="ex-card">
-        <span class="ex-type">${labels.fill_blank}</span>
-        <div class="ex-prompt">${esc(ex.prompt)}</div>
-        <div class="ex-input-row">
-          <input type="text" id="ex-input-${i}" placeholder="Your answer…" onkeydown="if(event.key==='Enter')checkFillBlank(${i})">
-          <button onclick="checkFillBlank(${i})">Check</button>
+      ${hasDeepDetail ? `
+        <button type="button" class="vocab-expand-toggle" onclick="toggleVocabDetail('${v.id}', this)">▸ Show conjugations, contexts &amp; expressions</button>
+        <div class="vocab-deep-detail" id="vocab-detail-${v.id}" style="display:none">
+          ${renderVocabContexts(v)}
+          ${renderVocabExpressions(v)}
+          ${renderVocabConjugations(v)}
         </div>
-        <div class="ex-feedback" id="ex-feedback-${i}"></div>
-      </div>`
-  }
-  // open_prompt
+      ` : ''}
+    </div>
+  `
+}
+
+function toggleVocabDetail(id, btn) {
+  const panel = document.getElementById('vocab-detail-' + id)
+  if (!panel) return
+  const opening = panel.style.display !== 'block'
+  panel.style.display = opening ? 'block' : 'none'
+  if (btn) btn.textContent = opening ? '▾ Hide details' : '▸ Show conjugations, contexts & expressions'
+}
+
+function renderVocabContexts(v) {
+  if (!v.contexts?.length) return ''
   return `
-    <div class="ex-card">
-      <span class="ex-type">${labels.open_prompt}</span>
-      <div class="ex-prompt">${esc(ex.prompt)}</div>
-      ${ex.explanation ? `<div class="ex-hint">${esc(ex.explanation)}</div>` : ''}
-    </div>`
+    <div class="vocab-deep-section-title">Contexts &amp; usage</div>
+    ${v.contexts.map(c => `
+      <div class="vocab-context-block">
+        ${c.label ? `<span class="vocab-context-label">${esc(c.label)}</span>` : ''}
+        ${c.note ? `<div class="vocab-context-note">${esc(c.note)}</div>` : ''}
+        ${c.example_pt ? `<div class="vocab-example-pt">${esc(c.example_pt)}</div>` : ''}
+        ${c.example_en ? `<div class="vocab-example-en">${esc(c.example_en)}</div>` : ''}
+      </div>
+    `).join('')}
+  `
 }
 
-function checkFillBlank(i) {
-  const ex = currentExercises[i]
-  const val = (document.getElementById(`ex-input-${i}`).value || '').trim().toLowerCase()
-  const correct = (ex.answer || '').trim().toLowerCase()
-  const fb = document.getElementById(`ex-feedback-${i}`)
-  if (val && correct && val === correct) {
-    fb.textContent = 'Right ✓' + (ex.explanation ? ' — ' + ex.explanation : '')
-    fb.className = 'ex-feedback correct'
-  } else {
-    fb.textContent = `Close — it's "${ex.answer}"` + (ex.explanation ? ' — ' + ex.explanation : '')
-    fb.className = 'ex-feedback incorrect'
-  }
+function renderVocabExpressions(v) {
+  if (!v.fixed_expressions?.length) return ''
+  return `
+    <div class="vocab-deep-section-title">Fixed expressions &amp; collocations</div>
+    <div class="vocab-expr-list">
+      ${v.fixed_expressions.map(e => `
+        <div class="vocab-expr-item">
+          <span class="vocab-expr-phrase">${esc(e.phrase)}</span>
+          ${e.meaning ? ` <span class="vocab-expr-meaning">— ${esc(e.meaning)}</span>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `
 }
 
-// Simple markdown renderer
-function renderMarkdown(md) {
-  return md
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/^---$/gm, '<hr>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-    .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[h|u|o|l|b|h|p])/gm, '')
-    // Wrap remaining text in paragraphs
-    .split('\n').map(line => {
-      if (!line.trim() || line.startsWith('<')) return line
-      return `<p>${line}</p>`
-    }).join('\n')
-}
+const CONJ_PERSON_LABELS = { eu: 'Eu', tu: 'Tu', ele_ela_voce: 'Ele/Ela/Você', nos: 'Nós', eles_elas_voces: 'Eles/Elas/Vocês' }
 
-function openAddNote() {
-  document.getElementById('modal-date').value = new Date().toISOString().split('T')[0]
-  document.getElementById('note-modal').style.display = 'flex'
-}
-function closeModal() {
-  document.getElementById('note-modal').style.display = 'none'
-  document.getElementById('modal-content').value = ''
-  document.getElementById('modal-title').value = ''
-  document.getElementById('modal-tags').value = ''
-  document.getElementById('modal-msg').style.display = 'none'
-}
-
-async function saveNote() {
-  const studentId = document.getElementById('modal-student').value
-  const title     = document.getElementById('modal-title').value.trim()
-  const content   = document.getElementById('modal-content').value.trim()
-  const tags      = document.getElementById('modal-tags').value.split(',').map(t => t.trim()).filter(Boolean)
-  const date      = document.getElementById('modal-date').value
-  const msg       = document.getElementById('modal-msg')
-
-  if (!studentId || !title) { msg.textContent = 'Student and title are required.'; msg.style.display = 'block'; return }
-
-  const { error } = await sb.from('coaching_notes').insert({
-    student_id: studentId, title, content, tags,
-    session_date: date || new Date().toISOString().split('T')[0],
-    created_by: currentUser.id
-  })
-
-  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
-
-  closeModal()
-  await loadNotes()
-}
-
-function formatDate(d) {
-  if (!d) return ''
-  return new Date(d).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
-}
-function esc(s) {
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-}
-
-init()
-</script>
-</body>
-</html>
+function renderVocabConjugations(v) {
+  if (!v.conjugations?.length) return ''
+  return `
+    <div class="vocab-deep-section-title">Conjugation tables</div>
+    ${v.conjugations.map(c => `
+      <div class="vocab-conj-block">
+        <div class="vocab-conj-tense">${esc(c.tense)}${c.tense_pt ? ` <span class="pt">(${esc(c.tense_pt)})</span>` : ''}</div>
+        ${c.usage_note ? `<div class="vocab-conj-note">${esc(c.usage_note)}</div>` : ''}
+        <div class="vocab-conj-table">
+          ${Object.keys(CONJ_PERSON_LABELS).map(p => `
+            <div>
+              <div class="vocab-conj-person">${esc(CONJ_PERSON_LABELS[p])}</div>
+              <div class="vocab-conj-form">${esc(c.forms?.[p] || '—')}</div>
+            </div>
+          `).join('')}
+        </div>
+  
