@@ -194,7 +194,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
         <div class="dash-card-title">Language Tools</div>
         <div class="dash-card-desc">Translate between English, Portuguese, French, Spanish and more instantly.</div>
       </a>
-      <a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank" class="dash-card">
+      <a href="https://tidycal.com/cmartwise/student-session" target="_blank" class="dash-card">
         <div class="dash-card-icon">📅</div>
         <div class="dash-card-title">Book a Session</div>
         <div class="dash-card-desc">Schedule your next coaching session with Cédric directly.</div>
@@ -275,7 +275,7 @@ async function init() {
     const formatted = d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' })
     document.getElementById('sp-next').innerHTML = 'Next session: <strong>' + formatted + '</strong>'
   } else {
-    document.getElementById('sp-next').innerHTML = '<a href="https://calendar.app.google/zJkZwucZN9feZk6K6" target="_blank">Book your next session →</a>'
+    document.getElementById('sp-next').innerHTML = '<a href="https://tidycal.com/cmartwise/student-session" target="_blank">Book your next session →</a>'
   }
   document.getElementById('session-progress').style.display = 'block'
 
