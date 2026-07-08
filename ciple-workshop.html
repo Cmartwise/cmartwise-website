@@ -141,8 +141,8 @@ html.js .reveal.in-view{opacity:1;transform:translateY(0)}
   <div class="eyebrow"><div class="eyebrow-line"></div><span class="eyebrow-text">Live Workshop · Citizenship Exam Prep</span></div>
   <h1>Your CIPLE exam isn't a Portuguese problem.<br>It's a <em>nerves</em> problem.</h1>
   <p class="hero-sub">A live 90-minute workshop for the 17 October CIPLE citizenship exam — the real exam format, the 3 grammar traps that quietly fail most candidates, and the anxiety-reset technique that gets you through exam-day freeze-ups.</p>
-  <a href="#STRIPE_PAYMENT_LINK_HERE" class="cta-btn" id="reserve-top">Reserve your seat — €29 <span>→</span></a>
-  <div class="hero-price">Live via Zoom · recording included for 48h · <strong>only if it reaches minimum sign-ups</strong></div>
+  <a href="mailto:cmartwise@gmail.com?subject=CIPLE%20Workshop%20%E2%80%93%20Reserve%20my%20seat&body=Hi%20C%C3%A9dric%2C%0A%0AI%27d%20like%20to%20reserve%20a%20seat%20for%20the%20CIPLE%20Prep%20Workshop%20(%E2%82%AC29).%0A%0AMy%20name%3A%0AMy%20WhatsApp%20(optional)%3A%0A" class="cta-btn" id="reserve-top">Reserve your seat — €29 <span>→</span></a>
+  <div class="hero-price">Live via Zoom · reserve by email, pay by bank transfer · <strong>only if it reaches minimum sign-ups</strong></div>
 </div>
 
 <!-- TRUST BAR -->
@@ -238,8 +238,8 @@ html.js .reveal.in-view{opacity:1;transform:translateY(0)}
       ✓ Recording available for 48 hours<br>
       ✓ First option on the 8-week Cohort at a locked-in price
     </div>
-    <a href="#STRIPE_PAYMENT_LINK_HERE" class="cta-btn" style="margin-top:1.75rem;width:100%;justify-content:center" id="reserve-price">Reserve my seat →</a>
-    <p class="price-note">Runs once minimum sign-ups are reached — full refund otherwise.</p>
+    <a href="mailto:cmartwise@gmail.com?subject=CIPLE%20Workshop%20%E2%80%93%20Reserve%20my%20seat&body=Hi%20C%C3%A9dric%2C%0A%0AI%27d%20like%20to%20reserve%20a%20seat%20for%20the%20CIPLE%20Prep%20Workshop%20(%E2%82%AC29).%0A%0AMy%20name%3A%0AMy%20WhatsApp%20(optional)%3A%0A" class="cta-btn" style="margin-top:1.75rem;width:100%;justify-content:center" id="reserve-price">Reserve my seat →</a>
+    <p class="price-note">Reserve by email — I'll send simple bank transfer details and confirm your seat. Runs once minimum sign-ups are reached, full refund otherwise.</p>
   </div>
 
   <div class="cohort-teaser">
@@ -259,6 +259,7 @@ html.js .reveal.in-view{opacity:1;transform:translateY(0)}
     <div class="faq-item"><div class="faq-q">I can't make it live — is it recorded?</div><div class="faq-a">Yes. Everyone who reserves a seat gets the recording for 48 hours afterward, plus the checklist and reading section either way.</div></div>
     <div class="faq-item"><div class="faq-q">Do I need any prior Portuguese?</div><div class="faq-a">No — this workshop is useful whether you're just starting out or already deep into CIPLE prep. The grammar traps and anxiety-reset technique apply either way.</div></div>
     <div class="faq-item"><div class="faq-q">Is this the same as the 1:1 CIPLE programme?</div><div class="faq-a">No — this is a one-off workshop. The <a href="/ciple.html" style="color:var(--terra)">1:1 8-week programme</a> is a separate, more comprehensive option, and there's also a lower-cost group Cohort forming after this workshop.</div></div>
+    <div class="faq-item"><div class="faq-q">How do I pay?</div><div class="faq-a">Click reserve to send me a quick email — I'll reply with simple bank transfer details and confirm your seat once it's in. Card checkout is coming soon.</div></div>
   </div>
 </section>
 
@@ -269,36 +270,11 @@ html.js .reveal.in-view{opacity:1;transform:translateY(0)}
   <p class="s-label">€29 · No commitment beyond the workshop · Full refund if it doesn't run</p>
   <h2 class="cta-h">Ready to walk into your CIPLE exam calm?</h2>
   <p class="cta-sub">Reserve your seat now — or email me first if you have questions about your specific timeline.</p>
-  <a href="#STRIPE_PAYMENT_LINK_HERE" class="cta-ocean" id="reserve-bottom">Reserve my seat — €29 <span>→</span></a>
+  <a href="mailto:cmartwise@gmail.com?subject=CIPLE%20Workshop%20%E2%80%93%20Reserve%20my%20seat&body=Hi%20C%C3%A9dric%2C%0A%0AI%27d%20like%20to%20reserve%20a%20seat%20for%20the%20CIPLE%20Prep%20Workshop%20(%E2%82%AC29).%0A%0AMy%20name%3A%0AMy%20WhatsApp%20(optional)%3A%0A" class="cta-ocean" id="reserve-bottom">Reserve my seat — €29 <span>→</span></a>
   <p class="reassurance">Live via Zoom · cmartwise@gmail.com</p>
 </section>
 
 <div class="tile-mosaic"></div>
 
 <!-- CONTACT STRIP -->
-<div class="contact-strip">
-  <a href="mailto:cmartwise@gmail.com" class="contact-item">✉️ cmartwise@gmail.com</a>
-  <a href="https://instagram.com/learnwithcmartwise" target="_blank" class="contact-item">📸 @learnwithcmartwise</a>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <span class="footer-brand">CmartWise Language Coaching</span>
-  <span>© 2026 Cédric Martin · Algarve, Portugal · <a href="mailto:cmartwise@gmail.com">cmartwise@gmail.com</a></span>
-</footer>
-
-<script>
-(function(){
-  document.documentElement.classList.add('js');
-  var els=document.querySelectorAll('.s-title,.cta-h');
-  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('reveal','in-view')});return;}
-  var io=new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting){entry.target.classList.add('in-view');io.unobserve(entry.target);}
-    });
-  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
-  els.forEach(function(e){e.classList.add('reveal');io.observe(e);});
-})();
-</script>
-</body>
-</html>
+<div 
