@@ -48,13 +48,8 @@ function parseJsonLoose(raw: string): any {
   try {
     return JSON.parse(clean)
   } catch {
-    try {
-      return JSON.parse(sanitizeJsonStrings(clean))
-    } catch {
-      const match = clean.match(/\{[\s\S]*\}/)
-      if (!match) throw new Error(`Model didn't return valid JSON. First 300 chars: ${clean.slice(0, 300)}`)
-      return JSON.parse(sanitizeJsonStrings(match[0]))
-    }
+    // Fall back to the sanitized version rather than failing outright.
+    return JSON.parse(sanitizeJsonStrings(clean))
   }
 }
 
@@ -141,6 +136,7 @@ Deno.serve(async (req) => {
       // doesn't take the other 2-5 verbs in the batch down with it.
       let updated = 0
       const failures: string[] = []
+      const skipped: string[] = []
 
       for (const r of rows) {
         const verbLabel = r.infinitive || r.term
@@ -168,7 +164,9 @@ Return full reference detail for this one verb. Return ONLY valid JSON, no markd
   ]
 }
 
-Include 2-3 contexts (a mix of literal/figurative or formal/colloquial where the verb genuinely has that range — don't force a distinction that doesn't exist). Include 2-5 fixed_expressions where genuinely common ones exist; an empty array is fine otherwise. All 5 conjugation tenses are required, fully conjugated for all 5 persons, even if irregular. IMPORTANT: every string value must stay on a single line — never insert a literal line break inside a string, use a plain space instead — and escape any double-quote character that appears inside a string value as \\".`
+Include 2-3 contexts (a mix of literal/figurative or formal/colloquial where the verb genuinely has that range — don't force a distinction that doesn't exist). Include 2-5 fixed_expressions where genuinely common ones exist; an empty array is fine otherwise. All 5 conjugation tenses are required, fully conjugated for all 5 persons, even if irregular. IMPORTANT: every string value must stay on a single line — never insert a literal line break inside a string, use a plain space instead — and escape any double-quote character that appears inside a string value as \\".
+
+If "${verbLabel}" is NOT actually a verb (e.g. it's really a noun, adjective, place name, or a multi-word phrase with no true infinitive) — this can happen because it was miscategorized by an earlier automated pass — do not attempt to force conjugations onto it. Instead return ONLY this JSON: {"not_a_verb": true}`
 
           const message = await client.messages.create({
             model: 'claude-sonnet-5',
@@ -179,6 +177,20 @@ Include 2-3 contexts (a mix of literal/figurative or formal/colloquial where the
           const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
           if (!textBlock) throw new Error('Model response had no text content block.')
           const v = parseJsonLoose(textBlock.text)
+
+          if (v?.not_a_verb) {
+            // Genuinely not a verb (miscategorized by an earlier pass) —
+            // mark it "handled" with an empty (non-null) conjugations array
+            // so it stops matching this query forever instead of failing
+            // and being re-picked-up every single run.
+            const { error: skipErr } = await supabase
+              .from('vocab_master')
+              .update({ conjugations: [] })
+              .eq('id', r.id)
+            if (skipErr) throw new Error(skipErr.message)
+            skipped.push(verbLabel)
+            continue
+          }
 
           const { error: updErr } = await supabase
             .from('vocab_master')
@@ -206,7 +218,7 @@ Include 2-3 contexts (a mix of literal/figurative or formal/colloquial where the
       }
 
       const remaining = await countRemaining()
-      return json({ done: remaining === 0, processed: updated, remaining, failed: failures.length, failures })
+      return json({ done: remaining === 0, processed: updated, remaining, failed: failures.length, failures, skipped: skipped.length, skippedTerms: skipped })
     }
 
     if (mode === 'accents') {

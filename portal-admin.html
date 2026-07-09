@@ -1156,7 +1156,9 @@ async function runEnrichVerbDetail() {
   progress.style.display = 'block'
   let totalProcessed = 0
   let totalFailed = 0
+  let totalSkipped = 0
   const allFailures = []
+  const allSkipped = []
 
   try {
     while (true) {
@@ -1174,20 +1176,28 @@ async function runEnrichVerbDetail() {
       // A top-level d.error means the whole request failed (auth/DB issue) —
       // genuinely fatal, stop. Per-verb failures come back in d.failures and
       // are already handled server-side (that row is marked so it won't loop
-      // forever); just tally them and keep going.
+      // forever); just tally them and keep going. d.skippedTerms are a
+      // different case entirely — the model said the item isn't actually a
+      // verb (miscategorized by an earlier pass), not an error.
       if (d.error) throw new Error(d.error)
       totalProcessed += d.processed || 0
       totalFailed += d.failed || 0
+      totalSkipped += d.skipped || 0
       if (d.failures?.length) allFailures.push(...d.failures)
+      if (d.skippedTerms?.length) allSkipped.push(...d.skippedTerms)
       document.getElementById('verb-detail-remaining-count').textContent = d.remaining ?? '—'
       if (d.done) break
     }
     progress.textContent = `Done — added full detail to ${totalProcessed} verb(s).` +
-      (totalFailed ? ` ${totalFailed} verb(s) had generation errors and were skipped (see below) — you can retry those later.` : '')
+      (totalFailed ? ` ${totalFailed} verb(s) had generation errors and were skipped (see below) — you can retry those later.` : '') +
+      (totalSkipped ? ` ${totalSkipped} item(s) turned out not to actually be verbs and were excluded from now on (see below).` : '')
     if (allFailures.length) {
-      progress.innerHTML += `<div style="margin-top:.5rem;color:var(--terra);font-size:.78rem">${allFailures.map(f => esc(f)).join('<br>')}</div>`
+      progress.innerHTML += `<div style="margin-top:.5rem;color:var(--terra);font-size:.78rem"><strong>Errors (retry later):</strong><br>${allFailures.map(f => esc(f)).join('<br>')}</div>`
     }
-    showToast(totalFailed ? `Enriched ${totalProcessed} verb(s), ${totalFailed} skipped` : `Enriched ${totalProcessed} verb(s) with full detail`)
+    if (allSkipped.length) {
+      progress.innerHTML += `<div style="margin-top:.5rem;color:var(--muted);font-size:.78rem"><strong>Not actually verbs (excluded):</strong> ${allSkipped.map(f => esc(f)).join(', ')}</div>`
+    }
+    showToast(totalFailed || totalSkipped ? `Enriched ${totalProcessed} verb(s), ${totalFailed} failed, ${totalSkipped} not verbs` : `Enriched ${totalProcessed} verb(s) with full detail`)
   } catch (e) {
     progress.textContent = 'Error: ' + e.message
     showToast('Verb-detail enrichment failed: ' + e.message, true)
