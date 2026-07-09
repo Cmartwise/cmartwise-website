@@ -277,4 +277,29 @@ html.js .reveal.in-view{opacity:1;transform:translateY(0)}
 <div class="tile-mosaic"></div>
 
 <!-- CONTACT STRIP -->
-<div 
+<div class="contact-strip">
+  <a href="mailto:cmartwise@gmail.com" class="contact-item">✉️ cmartwise@gmail.com</a>
+  <a href="https://instagram.com/learnwithcmartwise" target="_blank" class="contact-item">📸 @learnwithcmartwise</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">CmartWise Language Coaching</span>
+  <span>© 2026 Cédric Martin · Algarve, Portugal · <a href="mailto:cmartwise@gmail.com">cmartwise@gmail.com</a></span>
+</footer>
+
+<script>
+(function(){
+  document.documentElement.classList.add('js');
+  var els=document.querySelectorAll('.s-title,.cta-h');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('reveal','in-view')});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){entry.target.classList.add('in-view');io.unobserve(entry.target);}
+    });
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+  els.forEach(function(e){e.classList.add('reveal');io.observe(e);});
+})();
+</script>
+</body>
+</html>
