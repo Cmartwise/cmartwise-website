@@ -48,8 +48,13 @@ function parseJsonLoose(raw: string): any {
   try {
     return JSON.parse(clean)
   } catch {
-    // Fall back to the sanitized version rather than failing outright.
-    return JSON.parse(sanitizeJsonStrings(clean))
+    try {
+      return JSON.parse(sanitizeJsonStrings(clean))
+    } catch {
+      const match = clean.match(/\{[\s\S]*\}/)
+      if (!match) throw new Error(`Model didn't return valid JSON. First 300 chars: ${clean.slice(0, 300)}`)
+      return JSON.parse(sanitizeJsonStrings(match[0]))
+    }
   }
 }
 
@@ -67,6 +72,12 @@ function parseJsonLoose(raw: string): any {
 // infinitive from the basic pass). Heavier output per item, so smaller
 // batches. Content structure is modelled on Ika's "Verbos do Dia a Dia"
 // reference PDF — same information, rendered in the site's own card style.
+//
+// mode 'accents' — proofreads term/infinitive for missing/wrong Portuguese
+// diacritics (fixes data-migration damage like "alcancar" -> "alcançar").
+// Gated by accents_checked (schema-vocab-accents-checked.sql) rather than
+// a null grammar field, so it sweeps the WHOLE table over repeated runs —
+// old rows and anything added later — not just unenriched ones.
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
@@ -88,9 +99,9 @@ Deno.serve(async (req) => {
 
     const body = await req.json().catch(() => ({}))
     const studentId: string | undefined = body.studentId || undefined
-    const mode: string = body.mode === 'verb-detail' ? 'verb-detail' : 'basic'
-    const defaultBatch = mode === 'verb-detail' ? 3 : 12
-    const maxBatch = mode === 'verb-detail' ? 6 : 20
+    const mode: string = body.mode === 'verb-detail' ? 'verb-detail' : body.mode === 'accents' ? 'accents' : 'basic'
+    const defaultBatch = mode === 'verb-detail' ? 3 : mode === 'accents' ? 20 : 12
+    const maxBatch = mode === 'verb-detail' ? 6 : mode === 'accents' ? 40 : 20
     const batchSize = Math.min(Math.max(Number(body.batchSize) || defaultBatch, 1), maxBatch)
 
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY')
@@ -196,6 +207,89 @@ Include 2-3 contexts (a mix of literal/figurative or formal/colloquial where the
 
       const remaining = await countRemaining()
       return json({ done: remaining === 0, processed: updated, remaining, failed: failures.length, failures })
+    }
+
+    if (mode === 'accents') {
+      // Some rows lost their Portuguese diacritics during the original
+      // Canva-backfill SQL generation (e.g. "alcancar"/"armacao" instead of
+      // "alcançar"/"armação") — sometimes on term only, sometimes on both
+      // term and infinitive. This pass runs over EVERY row (old and new,
+      // gated by accents_checked so it's resumable and self-maintaining as
+      // fresh vocab comes in), asks Claude to correct diacritics only —
+      // never to change the actual word, translation, or anything else —
+      // and marks each row checked whether or not a correction was needed.
+      let selectQuery = supabase
+        .from('vocab_master')
+        .select('id, term, translation, infinitive, category')
+        .eq('accents_checked', false)
+        .order('created_at', { ascending: true })
+        .limit(batchSize)
+      if (studentId) selectQuery = selectQuery.eq('student_id', studentId)
+
+      const { data: rows, error: selErr } = await selectQuery
+      if (selErr) throw new Error(selErr.message)
+
+      const countRemaining = async () => {
+        let q = supabase.from('vocab_master').select('id', { count: 'exact', head: true }).eq('accents_checked', false)
+        if (studentId) q = q.eq('student_id', studentId)
+        const { count } = await q
+        return count || 0
+      }
+
+      if (!rows || rows.length === 0) {
+        return json({ done: true, processed: 0, remaining: 0 })
+      }
+
+      const wordList = rows.map((r, i) =>
+        `${i}. term="${r.term}"${r.infinitive ? `, infinitive="${r.infinitive}"` : ''} (English: "${r.translation || ''}")`
+      ).join('\n')
+
+      const prompt = `You are proofreading European Portuguese vocabulary entries for missing or wrong diacritics/accents (ã, õ, ç, á, é, í, ó, ú, â, ê, ô, à) — these were lost for some entries during an earlier data-migration bug (e.g. "alcancar" should be "alcançar", "armacao" should be "armação").
+
+Items:
+${wordList}
+
+For EACH item, in the SAME order, return the correctly-accented European Portuguese spelling. Return ONLY valid JSON, no markdown fences, in this exact schema:
+{
+  "words": [
+    {"term": "<the term with correct accents — IDENTICAL to the input if it was already correct>", "infinitive": "<the infinitive with correct accents, or empty string if the input had no infinitive>"}
+  ]
+}
+
+Critical rules:
+- Fix ONLY diacritics/accents. Never change spelling otherwise, never change the actual word, never "improve" or translate anything.
+- If an entry is already correctly accented, return it completely unchanged.
+- The "words" array MUST have exactly ${rows.length} entries, in the same order as the numbered list above.`
+
+      const message = await client.messages.create({
+        model: 'claude-sonnet-5',
+        max_tokens: 3000,
+        messages: [{ role: 'user', content: prompt }],
+      })
+
+      const textBlock = message.content.find((b): b is { type: 'text'; text: string } => b.type === 'text')
+      if (!textBlock) throw new Error('Model response had no text content block.')
+      const parsed = parseJsonLoose(textBlock.text)
+      const words = Array.isArray(parsed.words) ? parsed.words : []
+
+      let updated = 0
+      let corrected = 0
+      for (let i = 0; i < rows.length; i++) {
+        const r = rows[i]
+        const w = words[i] || {}
+        const newTerm = (w.term || r.term || '').trim()
+        const newInfinitive = r.infinitive ? (w.infinitive || r.infinitive || '').trim() : r.infinitive
+        if (newTerm !== r.term || newInfinitive !== r.infinitive) corrected++
+
+        const { error: updErr } = await supabase
+          .from('vocab_master')
+          .update({ term: newTerm, infinitive: newInfinitive, accents_checked: true })
+          .eq('id', r.id)
+        if (!updErr) updated++
+      }
+
+      const remaining = await countRemaining()
+      return json({ done: remaining === 0, processed: updated, corrected, remaining })
     }
 
     // ── mode === 'basic' ──

@@ -76,7 +76,8 @@ Guidelines:
 - vocab_additions should be genuinely new/reinforced terms from THIS session only (roughly 8-16 items), not a generic list.
 - exercises: produce 5-8 total across the three types, mixing topics that came up (don't just do one theme).
 - The student_notes_markdown must sound like Cédric, not like a report about Cédric. No "the student demonstrated..." language anywhere in it.
-- Keep coach_focus_suggestions specific and actionable, not generic ("keep practising vocabulary" is not acceptable).`
+- Keep coach_focus_suggestions specific and actionable, not generic ("keep practising vocabulary" is not acceptable).
+- Every Portuguese word/phrase (vocab_additions terms, exercise prompts/answers, anything in student_notes_markdown) MUST keep its correct diacritics (ã, õ, ç, á, é, í, ó, ú, â, ê, ô, à) — never strip accents.`
 
     const client = new Anthropic({ apiKey })
     const message = await client.messages.create({
