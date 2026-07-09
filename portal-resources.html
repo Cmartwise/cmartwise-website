@@ -4,149 +4,111 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Documents & Links — CmartWise Portal</title>
+<title>Documents & Links — Cmartwise Portal</title>
 <style>
 :root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
-  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
-  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
+  --ink:#3A332C;--primary:#D9724C;--primary-dark:#C15B37;--blue:#2F8FA6;
+  --cream:#FBF3E7;--sand:#F5E3CB;--border:#F0E4CE;--muted:#5A5147;
+  --shadow:0 4px 16px rgba(58,51,44,.08);--radius:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);min-height:100vh;color:var(--ink)}
+a{color:var(--primary);text-decoration:none}
+a:hover{color:var(--primary-dark)}
+.cw-blob{border-radius:58% 42% 61% 39% / 47% 45% 55% 53%}
 
-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
-  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border)}
-.logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
-.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;color:#fff;
-  font-style:italic;font-size:.95rem;font-weight:700}
-.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
-.logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;padding:.15rem .45rem;margin-left:.25rem}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:20px;padding:18px 40px;background:rgba(251,243,231,.94);backdrop-filter:blur(10px);flex-wrap:wrap}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-mark{position:relative;width:36px;height:31px}
+.logo-col{display:flex;flex-direction:column}
+.logo-name{font-family:'Quicksand';font-weight:700;font-size:15px;color:var(--ink);line-height:1.2}
+.logo-sub{font:600 9px 'DM Sans';letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
 .nav-spacer{flex:1}
-.nav-back{font-size:.82rem;color:var(--muted);text-decoration:none}
-.nav-back:hover{color:var(--ocean)}
-.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
-.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
+.nav-links{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.nav-links a{font:600 13px 'DM Sans';color:var(--ink)}
+.nav-links a.active{font-weight:700;color:var(--primary)}
+.nav-logout{font:600 13px 'DM Sans';color:var(--muted);background:var(--sand);padding:9px 16px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.nav-logout:hover{background:var(--border)}
 
-.container{max-width:1000px;margin:0 auto;padding:2.5rem 1.5rem}
+.container{max-width:1200px;margin:0 auto;padding:16px 40px 60px}
+.page-title{font-family:'Quicksand';font-weight:700;font-size:26px;color:var(--ink);margin-bottom:.35rem}
+.page-sub{font-size:.9rem;color:var(--muted);margin-bottom:1.5rem}
 
-.page-header{margin-bottom:2rem}
-.page-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace;margin-bottom:.4rem}
-.page-title{font-size:1.8rem;color:var(--ocean);margin-bottom:.35rem}
-.page-sub{font-size:.9rem;color:var(--muted);line-height:1.5}
+.tabs{display:flex;gap:8px;margin-bottom:1.75rem}
+.tab{padding:10px 18px;font:700 13px 'Quicksand';cursor:pointer;color:var(--ink);border:none;border-radius:100px;background:var(--sand);transition:.15s}
+.tab.active{background:var(--primary);color:#fff}
 
-/* TABS */
-.tabs{display:flex;gap:0;margin-bottom:2rem;border-bottom:2px solid var(--cream)}
-.tab{padding:.65rem 1.25rem;font-size:.9rem;cursor:pointer;color:var(--muted);
-  border:none;border-bottom:2px solid transparent;margin-bottom:-2px;
-  transition:.15s;background:none;font-family:'DM Sans',sans-serif}
-.tab.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
-
-/* RESOURCE GRID */
-.resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.resource-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
-  padding:1.5rem;box-shadow:var(--shadow);transition:.2s}
-.resource-card:hover{border-color:var(--ocean);transform:translateY(-2px)}
-.resource-icon{font-size:1.5rem;margin-bottom:.6rem}
-.resource-type{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;
-  color:var(--muted);font-family:monospace;margin-bottom:.3rem}
-.resource-title{font-size:.95rem;color:var(--ocean);font-weight:600;margin-bottom:.35rem}
+.resource-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.1rem}
+.resource-card{background:#fff;border-radius:var(--radius);padding:1.4rem;box-shadow:var(--shadow);transition:.2s}
+.resource-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(58,51,44,.12)}
+.resource-icon{font-size:1.4rem;margin-bottom:.5rem}
+.resource-type{font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);font-family:ui-monospace,monospace;margin-bottom:.3rem}
+.resource-title{font-size:.95rem;color:var(--ink);font-weight:700;margin-bottom:.35rem}
 .resource-desc{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:.85rem}
-.resource-link{display:inline-block;font-size:.82rem;color:var(--ocean);text-decoration:none;
-  border:1px solid var(--border);border-radius:6px;padding:.3rem .75rem;transition:.15s}
-.resource-link:hover{background:var(--ocean);color:#fff;border-color:var(--ocean)}
+.resource-link{display:inline-block;font-size:.8rem;color:var(--ink);font-weight:600;text-decoration:none;background:var(--sand);border-radius:100px;padding:.4rem .9rem;transition:.15s}
+.resource-link:hover{background:var(--primary);color:#fff}
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;background:#fff;border-radius:var(--radius);border:1px dashed var(--border)}
 
-.empty{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;
-  background:var(--ivory);border-radius:var(--radius);border:1px dashed var(--border)}
+.add-resource-btn{padding:.65rem 1.1rem;border:1.5px dashed var(--border);border-radius:100px;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer;transition:.15s;margin-bottom:1.5rem}
+.add-resource-btn:hover{border-color:var(--primary);color:var(--primary)}
 
-/* TRANSLATOR EMBED — faithful port of cmartwise.github.io/pt-translator,
-   scoped entirely under #translator-tab so its --custom-properties and
-   generic class names (.sec, .chip, .word-card, etc.) never leak onto the
-   rest of this page. */
+/* TRANSLATOR — portal-only sub-theme (deep green) */
 #translator-tab{
   display:none;
-  --pt-bg:#f2ede0;--pt-surface:#ece6d4;--pt-card:#faf7f0;
-  --pt-forest:#1c3d28;--pt-forest2:#2e6644;--pt-leaf:#4db86a;
-  --pt-leaf-bg:rgba(77,184,106,0.12);--pt-leaf-border:rgba(77,184,106,0.35);
-  --pt-gold:#c8881a;--pt-gold2:#e8a820;--pt-gold-bg:#fdf5df;--pt-gold-border:rgba(200,136,26,0.3);
-  --pt-earth:#7a4e2a;--pt-earth-bg:rgba(122,78,42,0.08);
-  --pt-urgent:#c04030;--pt-urgent-bg:#fdf0ee;
-  --pt-blue:#3a7abf;--pt-blue-bg:rgba(58,122,191,0.1);
-  --pt-purple:#7a5ca0;--pt-purple-bg:rgba(122,92,160,0.1);
-  --pt-text:#1a2e1a;--pt-muted:#5a7055;--pt-faint:#a0b89a;
-  --pt-border:rgba(28,61,40,0.1);--pt-shadow:0 2px 8px rgba(28,61,40,0.08);
-  --pt-radius:14px;--pt-radius-sm:9px;
-  font-family:Georgia,'Times New Roman',serif;color:var(--pt-text);
+  --pt-bg:#EAF3F0;--pt-surface:#DCEAE5;--pt-card:#F5F9F7;
+  --pt-forest:#1F6B57;--pt-forest2:#175040;--pt-leaf:#3A9A7E;
+  --pt-leaf-bg:rgba(31,107,87,0.10);--pt-leaf-border:rgba(31,107,87,0.3);
+  --pt-gold:#B5851A;--pt-gold2:#E6B84F;--pt-gold-bg:#FDF3DD;--pt-gold-border:rgba(181,133,26,.3);
+  --pt-earth:#7A5A10;--pt-earth-bg:rgba(122,90,16,.08);
+  --pt-urgent:#C0392B;--pt-urgent-bg:#FBEAE7;
+  --pt-blue:#2F8FA6;--pt-blue-bg:rgba(47,143,166,.1);
+  --pt-purple:#9C6BB5;--pt-purple-bg:rgba(156,107,181,.1);
+  --pt-text:#20342c;--pt-muted:#4f6a5f;--pt-faint:#9fb8ac;
+  --pt-border:rgba(31,107,87,.12);--pt-shadow:0 2px 8px rgba(31,107,87,.08);
+  --pt-radius:16px;--pt-radius-sm:10px;
+  font-family:'Quicksand',sans-serif;color:var(--pt-text);
   background:var(--pt-bg);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
 }
-#translator-tab .pttr-header{height:56px;background:var(--pt-forest);
-  display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;
-  position:relative;overflow:hidden}
-#translator-tab .pttr-header::after{content:'🌿';position:absolute;right:-4px;top:-8px;font-size:52px;opacity:.06;transform:rotate(15deg)}
-#translator-tab .pttr-title{font-size:1rem;font-style:italic;color:var(--pt-gold2);letter-spacing:.5px}
-#translator-tab .pttr-sub{font-size:.6rem;color:rgba(232,240,226,.4);font-family:monospace;letter-spacing:1px}
+#translator-tab .pttr-header{height:56px;background:var(--pt-forest);display:flex;align-items:center;justify-content:space-between;padding:0 1.25rem;position:relative;overflow:hidden}
+#translator-tab .pttr-header::after{content:'🌿';position:absolute;right:-4px;top:-8px;font-size:52px;opacity:.1;transform:rotate(15deg)}
+#translator-tab .pttr-title{font-size:1rem;font-weight:700;color:var(--pt-gold2);letter-spacing:.5px}
+#translator-tab .pttr-sub{font-size:.6rem;color:rgba(234,243,240,.55);font-family:ui-monospace,monospace;letter-spacing:1px}
 #translator-tab .pttr-body{padding:1.25rem 1.25rem 1.75rem}
-
 #translator-tab .input-card{background:var(--pt-card);border-radius:var(--pt-radius);padding:14px;box-shadow:var(--pt-shadow);margin-bottom:12px}
 #translator-tab .lang-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-#translator-tab .lang-select{flex:1;padding:6px 10px;border-radius:20px;border:1.5px solid var(--pt-border);
-  background:var(--pt-surface);color:var(--pt-forest);font-size:11px;font-family:monospace;
-  cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7055'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 10px center;padding-right:26px;transition:border-color .2s}
+#translator-tab .lang-select{flex:1;padding:6px 10px;border-radius:20px;border:1.5px solid var(--pt-border);background:var(--pt-surface);color:var(--pt-forest);font-size:11px;font-family:ui-monospace,monospace;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234f6a5f'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:26px;transition:border-color .2s}
 #translator-tab .lang-select:focus{border-color:var(--pt-leaf)}
-#translator-tab .pttr-swap-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--pt-border);
-  background:var(--pt-surface);color:var(--pt-muted);font-size:15px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+#translator-tab .pttr-swap-btn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--pt-border);background:var(--pt-surface);color:var(--pt-muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
 #translator-tab .pttr-swap-btn:hover{background:var(--pt-forest);color:var(--pt-gold2);border-color:var(--pt-forest)}
 #translator-tab .pttr-swap-btn:active{transform:rotate(180deg)}
-
 #translator-tab .input-wrap{display:flex;gap:8px;align-items:flex-end}
-#translator-tab .input-wrap textarea{flex:1;min-height:72px;border-radius:var(--pt-radius-sm);
-  border:1.5px solid var(--pt-border);background:var(--pt-surface);color:var(--pt-text);
-  font-family:Georgia,serif;font-size:14px;padding:10px 12px;resize:none;outline:none;
-  line-height:1.5;transition:border-color .2s}
+#translator-tab .input-wrap textarea{flex:1;min-height:72px;border-radius:var(--pt-radius-sm);border:1.5px solid var(--pt-border);background:var(--pt-surface);color:var(--pt-text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 12px;resize:none;outline:none;line-height:1.5;transition:border-color .2s}
 #translator-tab .input-wrap textarea:focus{border-color:var(--pt-leaf)}
 #translator-tab .input-wrap textarea::placeholder{color:var(--pt-faint);font-style:italic}
-#translator-tab .pttr-translate-btn{height:46px;padding:0 18px;border-radius:var(--pt-radius-sm);border:none;
-  background:var(--pt-forest);color:#e8f0e2;font-family:Georgia,serif;font-size:13px;cursor:pointer;
-  transition:background .2s;white-space:nowrap;flex-shrink:0}
+#translator-tab .pttr-translate-btn{height:46px;padding:0 18px;border-radius:100px;border:none;background:var(--pt-forest);color:#eaf3f0;font-family:'Quicksand',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background .2s;white-space:nowrap;flex-shrink:0}
 #translator-tab .pttr-translate-btn:active{background:var(--pt-forest2)}
 #translator-tab .pttr-translate-btn:disabled{opacity:.5;cursor:not-allowed}
-
 #translator-tab .history-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-#translator-tab .history-pill{padding:5px 10px;border-radius:20px;font-size:11px;font-family:monospace;
-  background:var(--pt-surface);color:var(--pt-muted);border:1px solid var(--pt-border);cursor:pointer;transition:all .2s}
+#translator-tab .history-pill{padding:5px 10px;border-radius:100px;font-size:11px;font-family:ui-monospace,monospace;background:var(--pt-surface);color:var(--pt-muted);border:1px solid var(--pt-border);cursor:pointer;transition:all .2s}
 #translator-tab .history-pill:hover{background:var(--pt-card);color:var(--pt-forest);border-color:var(--pt-forest2);transform:translateY(-1px)}
-
-#translator-tab .sec{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pt-muted);
-  font-family:monospace;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+#translator-tab .sec{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--pt-muted);font-family:ui-monospace,monospace;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
 #translator-tab .sec::after{content:'';flex:1;height:1px;background:var(--pt-border)}
-
-#translator-tab .result-card{background:var(--pt-forest);border-radius:var(--pt-radius);padding:16px;
-  margin-bottom:10px;color:#e8f0e2;position:relative;overflow:hidden}
-#translator-tab .result-card::after{content:'🌿';position:absolute;right:8px;bottom:-8px;font-size:56px;opacity:.07}
-#translator-tab .result-label{font-size:9px;letter-spacing:2px;opacity:.4;font-family:monospace;margin-bottom:4px}
-#translator-tab .result-pt{font-size:22px;font-style:italic;line-height:1.4;margin-bottom:6px;color:#e8f0e2}
-#translator-tab .result-phonetic{font-size:13px;font-family:monospace;color:var(--pt-gold2);letter-spacing:.5px;margin-bottom:8px}
-#translator-tab .result-en{font-size:11px;opacity:.5;font-style:italic}
-#translator-tab .colloquial-note{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08);font-size:11px;opacity:.55;line-height:1.5}
-
-#translator-tab .cultural-card{background:var(--pt-leaf-bg);border:1px solid var(--pt-leaf-border);
-  border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-forest2);line-height:1.6}
-
+#translator-tab .result-card{background:var(--pt-forest);border-radius:var(--pt-radius);padding:16px;margin-bottom:10px;color:#eaf3f0;position:relative;overflow:hidden}
+#translator-tab .result-card::after{content:'🌿';position:absolute;right:8px;bottom:-8px;font-size:56px;opacity:.09}
+#translator-tab .result-label{font-size:9px;letter-spacing:2px;opacity:.5;font-family:ui-monospace,monospace;margin-bottom:4px}
+#translator-tab .result-pt{font-size:22px;font-weight:700;line-height:1.4;margin-bottom:6px;color:#eaf3f0}
+#translator-tab .result-phonetic{font-size:13px;font-family:ui-monospace,monospace;color:var(--pt-gold2);letter-spacing:.5px;margin-bottom:8px}
+#translator-tab .result-en{font-size:11px;opacity:.6;font-style:italic}
+#translator-tab .colloquial-note{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1);font-size:11px;opacity:.6;line-height:1.5}
+#translator-tab .cultural-card{background:var(--pt-leaf-bg);border:1px solid var(--pt-leaf-border);border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-forest2);line-height:1.6}
 #translator-tab .phrase-card{background:var(--pt-card);border-radius:var(--pt-radius-sm);padding:11px 12px;box-shadow:var(--pt-shadow);margin-bottom:6px}
-#translator-tab .phrase-pt{font-size:14px;font-style:italic;margin-bottom:2px}
-#translator-tab .phrase-phonetic{font-size:10px;font-family:monospace;color:var(--pt-gold);margin-bottom:3px}
+#translator-tab .phrase-pt{font-size:14px;font-weight:700;margin-bottom:2px}
+#translator-tab .phrase-phonetic{font-size:10px;font-family:ui-monospace,monospace;color:var(--pt-gold);margin-bottom:3px}
 #translator-tab .phrase-en{font-size:11px;color:var(--pt-muted);font-style:italic;margin-bottom:4px}
-#translator-tab .phrase-context{font-size:10px;color:var(--pt-forest2);background:var(--pt-leaf-bg);
-  padding:3px 8px;border-radius:4px;display:inline-block;font-family:monospace}
-
+#translator-tab .phrase-context{font-size:10px;color:var(--pt-forest2);background:var(--pt-leaf-bg);padding:3px 8px;border-radius:4px;display:inline-block;font-family:ui-monospace,monospace}
 #translator-tab .word-grid{display:flex;flex-direction:column;gap:8px}
 #translator-tab .word-card{background:var(--pt-card);border-radius:var(--pt-radius-sm);padding:12px;box-shadow:var(--pt-shadow);border-left:3px solid var(--pt-leaf)}
 #translator-tab .word-card.verb{border-left-color:var(--pt-gold2)}
@@ -155,82 +117,66 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 #translator-tab .word-card.adverb{border-left-color:var(--pt-purple)}
 #translator-tab .word-card.preposition,#translator-tab .word-card.conjunction,#translator-tab .word-card.article{border-left-color:var(--pt-faint)}
 #translator-tab .word-header{display:flex;align-items:baseline;gap:8px;margin-bottom:5px;flex-wrap:wrap}
-#translator-tab .word-pt{font-size:17px;font-style:italic;color:var(--pt-text)}
-#translator-tab .word-phonetic{font-size:11px;font-family:monospace;color:var(--pt-gold);background:var(--pt-gold-bg);padding:2px 7px;border-radius:4px}
+#translator-tab .word-pt{font-size:17px;font-weight:700;color:var(--pt-text)}
+#translator-tab .word-phonetic{font-size:11px;font-family:ui-monospace,monospace;color:var(--pt-gold);background:var(--pt-gold-bg);padding:2px 7px;border-radius:4px}
 #translator-tab .word-en{font-size:12px;color:var(--pt-muted);font-style:italic}
 #translator-tab .word-chips{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px}
-#translator-tab .chip{display:inline-block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;
-  padding:2px 7px;border-radius:4px;font-family:monospace;white-space:nowrap}
+#translator-tab .chip{display:inline-block;font-size:8px;letter-spacing:.8px;text-transform:uppercase;padding:2px 7px;border-radius:4px;font-family:ui-monospace,monospace;white-space:nowrap}
 #translator-tab .chip.verb{background:var(--pt-gold-bg);color:var(--pt-gold)}
 #translator-tab .chip.noun{background:var(--pt-leaf-bg);color:var(--pt-forest2)}
 #translator-tab .chip.adjective{background:var(--pt-blue-bg);color:var(--pt-blue)}
 #translator-tab .chip.adverb{background:var(--pt-purple-bg);color:var(--pt-purple)}
 #translator-tab .chip.pronoun,#translator-tab .chip.preposition,#translator-tab .chip.conjunction,#translator-tab .chip.article{background:var(--pt-earth-bg);color:var(--pt-earth)}
-#translator-tab .chip.tense{background:rgba(200,136,26,.08);color:var(--pt-gold)}
-#translator-tab .chip.person{background:rgba(122,78,42,.08);color:var(--pt-earth)}
+#translator-tab .chip.tense{background:var(--pt-gold-bg);color:var(--pt-gold)}
+#translator-tab .chip.person{background:var(--pt-earth-bg);color:var(--pt-earth)}
 #translator-tab .chip.gender-m{background:var(--pt-blue-bg);color:var(--pt-blue)}
 #translator-tab .chip.gender-f{background:var(--pt-purple-bg);color:var(--pt-purple)}
 #translator-tab .word-detail{font-size:11px;color:var(--pt-muted);line-height:1.5;margin-top:4px}
 #translator-tab .word-detail strong{color:var(--pt-forest2);font-style:normal}
-#translator-tab .word-note{margin-top:6px;padding:5px 8px;background:var(--pt-gold-bg);
-  border-left:2px solid var(--pt-gold-border);border-radius:0 4px 4px 0;font-size:11px;color:var(--pt-earth);
-  line-height:1.5;font-style:italic}
-
+#translator-tab .word-note{margin-top:6px;padding:5px 8px;background:var(--pt-gold-bg);border-left:2px solid var(--pt-gold-border);border-radius:0 4px 4px 0;font-size:11px;color:var(--pt-earth);line-height:1.5;font-style:italic}
 #translator-tab .pttr-loading{text-align:center;padding:32px 16px;color:var(--pt-muted);font-style:italic;font-size:13px}
 #translator-tab .pttr-empty{text-align:center;padding:40px 20px}
-#translator-tab .pttr-empty-icon{font-size:48px;margin-bottom:12px;opacity:.4}
-#translator-tab .pttr-empty-title{font-size:16px;font-style:italic;color:var(--pt-muted);margin-bottom:6px}
+#translator-tab .pttr-empty-icon{font-size:48px;margin-bottom:12px;opacity:.5}
+#translator-tab .pttr-empty-title{font-size:16px;font-weight:700;color:var(--pt-muted);margin-bottom:6px}
 #translator-tab .pttr-empty-sub{font-size:12px;color:var(--pt-faint)}
-#translator-tab .pttr-error{background:var(--pt-urgent-bg);border:1px solid rgba(192,64,48,.2);
-  border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-urgent)}
-
-#translator-tab .speak-btn{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:rgba(232,240,226,.7);
-  font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
-#translator-tab .speak-btn:hover{background:rgba(255,255,255,.18);color:#e8f0e2}
-#translator-tab .speak-btn.speaking{background:rgba(200,136,26,.3);color:var(--pt-gold2);border-color:var(--pt-gold)}
-
-/* Admin add resource */
-.add-resource-btn{padding:.6rem 1rem;border:1.5px dashed var(--border);border-radius:8px;
-  background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.85rem;
-  cursor:pointer;transition:.15s;margin-bottom:1.5rem}
-.add-resource-btn:hover{border-color:var(--ocean);color:var(--ocean)}
-.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
-/* == Brand font alignment == */
-body{font-family:'DM Sans',sans-serif}
-h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
-.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
-.logo-name em{font-style:normal;color:#C4683A}
-.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
+#translator-tab .pttr-error{background:var(--pt-urgent-bg);border:1px solid rgba(192,57,43,.2);border-radius:var(--pt-radius-sm);padding:12px;font-size:12px;color:var(--pt-urgent)}
+#translator-tab .speak-btn{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(234,243,240,.8);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+#translator-tab .speak-btn:hover{background:rgba(255,255,255,.18);color:#eaf3f0}
+#translator-tab .speak-btn.speaking{background:rgba(230,184,79,.3);color:var(--pt-gold2);border-color:var(--pt-gold)}
+@media(max-width:760px){.nav-links{display:none}}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <img src="images/logo.png" alt="CmartWise Language Coaching" style="height:52px;width:auto;display:block">
+    <div class="logo-mark">
+      <div class="cw-blob" style="position:absolute;inset:0;background:linear-gradient(135deg,#F0A97D,#D9724C)"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Quicksand';font-weight:700;font-size:13px;color:#FBF3E7">CW</div>
+    </div>
+    <div class="logo-col"><span class="logo-name">Cmartwise</span><span class="logo-sub">Student Portal</span></div>
   </a>
-  <span class="logo-badge">Student Portal</span>
   <div class="nav-spacer"></div>
-  <a href="/portal-dashboard.html" class="nav-back">← Dashboard</a>
+  <div class="nav-links">
+    <a href="/portal-dashboard.html">Dashboard</a>
+    <a href="/portal-notes.html">Coaching Notes</a>
+    <a href="/portal-resources.html" class="active">Documents &amp; Links</a>
+    <a href="/portal-tests.html">Practice Tests</a>
+  </div>
   <button class="nav-logout" onclick="logout()">Sign out</button>
 </nav>
 
 <div id="loading" style="display:flex;align-items:center;justify-content:center;min-height:60vh;color:var(--muted)">Loading resources…</div>
 
 <div class="container" id="main-content" style="display:none">
-  <div class="page-header">
-    <p class="page-label">Resources</p>
-    <h1 class="page-title">Documents & Links</h1>
-    <p class="page-sub">Guides, exercises, vocabulary lists — and the Language Tools for when you need it.</p>
-  </div>
+  <h1 class="page-title">Documents &amp; Links</h1>
+  <p class="page-sub">Guides, exercises, vocabulary lists — and the Language Tools for when you need it.</p>
 
   <div class="tabs">
-    <button class="tab active" onclick="showTab('resources')">📂 Documents & Links</button>
-    <button class="tab" onclick="showTab('translator')">🌍 Language Tools</button>
+    <button class="tab active" onclick="showTab('resources')">📂 Documents &amp; Links</button>
+    <button class="tab" onclick="showTab('translator')">🌐 Language Tools</button>
   </div>
 
-  <!-- RESOURCES TAB -->
   <div id="resources-tab">
     <button class="add-resource-btn" id="add-resource-btn" style="display:none" onclick="openAddResource()">+ Add resource (admin)</button>
     <div class="resource-grid" id="resource-grid">
@@ -238,7 +184,6 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
     </div>
   </div>
 
-  <!-- TRANSLATOR TAB -->
   <div id="translator-tab" style="display:none">
     <div class="pttr-header">
       <div>
@@ -282,11 +227,11 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 
 <!-- ADD RESOURCE MODAL -->
 <div id="resource-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:1000;align-items:center;justify-content:center;padding:1rem">
-  <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:480px">
-    <h2 style="color:var(--ocean);margin-bottom:1.25rem">Add resource</h2>
+  <div style="background:#fff;border-radius:16px;padding:2rem;width:100%;max-width:480px">
+    <h2 style="font-family:'Quicksand';font-weight:700;color:var(--ink);margin-bottom:1.25rem">Add resource</h2>
     <div style="margin-bottom:1rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Type</label>
-      <select id="res-type" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif">
+      <label style="font-size:.8rem;color:var(--ink);display:block;margin-bottom:.3rem">Type</label>
+      <select id="res-type" style="width:100%;padding:.6rem;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif">
         <option value="document">📄 Document</option>
         <option value="link">🔗 Link</option>
         <option value="video">🎬 Video</option>
@@ -294,26 +239,26 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       </select>
     </div>
     <div style="margin-bottom:1rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Title</label>
-      <input type="text" id="res-title" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="e.g. Pronunciation Guide — Algarvian Portuguese">
+      <label style="font-size:.8rem;color:var(--ink);display:block;margin-bottom:.3rem">Title</label>
+      <input type="text" id="res-title" style="width:100%;padding:.6rem;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="e.g. Pronunciation Guide — Algarvian Portuguese">
     </div>
     <div style="margin-bottom:1rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Description</label>
-      <input type="text" id="res-desc" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="Short description for students">
+      <label style="font-size:.8rem;color:var(--ink);display:block;margin-bottom:.3rem">Description</label>
+      <input type="text" id="res-desc" style="width:100%;padding:.6rem;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="Short description for students">
     </div>
     <div style="margin-bottom:1rem" id="res-url-wrap">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">URL (for links/videos)</label>
-      <input type="url" id="res-url" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="https://…">
+      <label style="font-size:.8rem;color:var(--ink);display:block;margin-bottom:.3rem">URL (for links/videos)</label>
+      <input type="url" id="res-url" style="width:100%;padding:.6rem;border-radius:10px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif" placeholder="https://…">
     </div>
     <div style="margin-bottom:1.25rem">
-      <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.3rem">Content (markdown, for documents)</label>
-      <textarea id="res-content" rows="6" style="width:100%;padding:.6rem;border-radius:6px;border:1px solid var(--border);font-family:monospace;font-size:.82rem;resize:vertical" placeholder="## Title&#10;Content here…"></textarea>
+      <label style="font-size:.8rem;color:var(--ink);display:block;margin-bottom:.3rem">Content (markdown, for documents)</label>
+      <textarea id="res-content" rows="6" style="width:100%;padding:.6rem;border-radius:10px;border:1.5px solid var(--border);font-family:ui-monospace,monospace;font-size:.82rem;resize:vertical" placeholder="## Title&#10;Content here…"></textarea>
     </div>
     <div style="display:flex;gap:.75rem">
-      <button onclick="saveResource()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;cursor:pointer">Save</button>
-      <button onclick="closeResModal()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--muted)">Cancel</button>
+      <button onclick="saveResource()" style="flex:1;padding:.75rem;background:var(--primary);color:#fff;border:none;border-radius:100px;font-family:'Quicksand',sans-serif;font-weight:700;cursor:pointer">Save</button>
+      <button onclick="closeResModal()" style="padding:.75rem 1.25rem;background:none;border:1.5px solid var(--border);border-radius:100px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--muted)">Cancel</button>
     </div>
-    <div id="res-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--terra);display:none"></div>
+    <div id="res-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--primary);display:none"></div>
   </div>
 </div>
 
@@ -361,7 +306,7 @@ async function loadResources() {
       ${r.url
         ? `<a href="${esc(r.url)}" target="_blank" class="resource-link">Open ↗</a>`
         : r.content
-          ? `<button class="resource-link" style="cursor:pointer" onclick="viewResource('${r.id}')">Read →</button>`
+          ? `<button class="resource-link" style="cursor:pointer;border:none;font-family:'DM Sans',sans-serif" onclick="viewResource('${r.id}')">Read →</button>`
           : ''}
       ${isAdmin ? `<button onclick="deleteResource('${r.id}')" style="margin-left:.5rem;font-size:.75rem;color:var(--muted);background:none;border:none;cursor:pointer">✕</button>` : ''}
     </div>
@@ -377,7 +322,7 @@ function showTab(tab) {
   document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='resources'&&i===0)||(tab==='translator'&&i===1)))
 }
 
-// ── TRANSLATOR — ported from cmartwise.github.io/pt-translator ─
+// ── TRANSLATOR ─
 const TR_STORAGE_KEY = 'pt_translator_v3'
 const TR_LANG_NAMES = { en:'English', pt:'Portuguese', fr:'French', es:'Spanish' }
 const TR_LANG_BCP47 = { en:'en-GB', pt:'pt-PT', fr:'fr-FR', es:'es-ES' }
@@ -592,13 +537,11 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 init()
 loadTranslatorSettings()
 
-// Auto-open tab from URL hash (#translator)
 if (window.location.hash === '#translator') {
   showTab('translator')
 } else {
   showTab('resources')
 }
-
 </script>
 </body>
 </html>

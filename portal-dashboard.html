@@ -4,136 +4,106 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard — CmartWise Portal</title>
+<title>Dashboard — Cmartwise Portal</title>
 <style>
-:root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
-  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
-  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
-}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:#FBF3E7;min-height:100vh;color:#3A332C}
+a{color:#C15B37;text-decoration:none}
+a:hover{color:#9C4527}
+.cw-blob{border-radius:58% 42% 61% 39% / 47% 45% 55% 53%}
+.cw-card{background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(58,51,44,.08)}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
-  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border)}
-.logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
-.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;color:#fff;
-  font-style:italic;font-size:.95rem;font-family:'DM Sans',sans-serif;font-weight:700}
-.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
-.logo-badge{font-size:.7rem;background:var(--ocean);color:#fff;border-radius:4px;
-  padding:.15rem .45rem;margin-left:.25rem;letter-spacing:.05em}
+nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:20px;padding:18px 40px;background:rgba(251,243,231,.94);backdrop-filter:blur(10px);flex-wrap:wrap}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-mark{position:relative;width:36px;height:31px}
+.logo-col{display:flex;flex-direction:column}
+.logo-name{font-family:'Quicksand';font-weight:700;font-size:15px;color:#3A332C;line-height:1.2}
+.logo-sub{font:600 9px 'DM Sans';letter-spacing:.1em;text-transform:uppercase;color:#2F8FA6}
 .nav-spacer{flex:1}
-.nav-user{font-size:.82rem;color:var(--muted)}
-.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
-.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
-.nav-admin{font-size:.78rem;background:var(--terra);color:#fff;border-radius:4px;
-  padding:.2rem .55rem;text-decoration:none;margin-right:.5rem}
+.nav-links{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.nav-links a{font:600 13px 'DM Sans';color:#3A332C}
+.nav-links a.active{font-weight:700;color:#D9724C}
+.nav-user{font:500 13px 'DM Sans';color:#5A5147;margin-right:6px}
+.nav-admin{font:600 12px 'DM Sans';color:#fff;background:#D9724C;padding:6px 14px;border-radius:100px;margin-right:6px}
+.nav-logout{font:600 13px 'DM Sans';color:#5A5147;background:#F5E3CB;padding:9px 16px;border-radius:100px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.nav-logout:hover{background:#F0E4CE}
 
-/* LOADING */
-#loading{display:flex;align-items:center;justify-content:center;min-height:60vh;
-  color:var(--muted);font-size:.95rem}
+#loading{display:flex;align-items:center;justify-content:center;min-height:60vh;color:#5A5147;font-size:.95rem}
+.container{max-width:1100px;margin:0 auto;padding:16px 40px 60px;display:none}
 
-/* CONTENT */
-.container{max-width:960px;margin:0 auto;padding:2.5rem 1.5rem;display:none}
+/* GREETING */
+.greeting-name{font-family:'Quicksand';font-weight:700;font-size:28px;color:#3A332C;margin-bottom:4px}
+.greeting-sub{font:400 14px 'DM Sans';color:#5A5147}
 
-.greeting{margin-bottom:2.5rem}
-.greeting-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-family:monospace;margin-bottom:.4rem}
-.greeting-name{font-size:2rem;color:var(--ocean);margin-bottom:.3rem}
-.greeting-sub{font-size:.95rem;color:var(--muted);line-height:1.5}
+/* SESSION PROGRESS */
+.session-progress{margin-top:18px;padding:22px 26px;display:flex;flex-direction:column;gap:10px}
+.sp-top{display:flex;justify-content:space-between;align-items:baseline}
+.sp-label{font:700 13px 'DM Sans';color:#3A332C}
+.sp-count{font:600 12px 'DM Sans';color:#5A5147}
+.sp-bar-wrap{width:100%;height:10px;border-radius:100px;background:#F0E4CE;overflow:hidden}
+.sp-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,#F0A97D,#D9724C);transition:width .5s}
+.sp-footer{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-size:.85rem;color:#5A5147}
+.sp-next strong{color:#3A332C}
+.sp-next a{color:#D9724C;font-weight:600}
 
-/* GRID */
-.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;
-  margin-bottom:2.5rem}
+/* GROUPS */
+.group{margin-top:28px}
+.group-label{font:700 11px 'DM Sans';letter-spacing:.12em;text-transform:uppercase;color:#2F8FA6;margin-bottom:12px;display:block}
+.dash-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.dash-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.dash-card{padding:24px;display:flex;flex-direction:column;gap:8px;position:relative;transition:.15s}
+.dash-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(58,51,44,.12)}
+.dash-card-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px}
+.dash-card-title{font-family:'Quicksand';font-weight:700;font-size:17px;color:#3A332C}
+.dash-card-desc{font:400 13px/1.5 'DM Sans';color:#5A5147}
+.dash-card-link{font:600 12px 'DM Sans';color:#D9724C;margin-top:4px}
+.dash-card-badge{position:absolute;top:16px;right:16px;font:600 11px 'DM Sans';background:#F5E3CB;color:#3A332C;border-radius:100px;padding:3px 10px}
 
-.dash-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
-  padding:1.5rem;box-shadow:var(--shadow);text-decoration:none;display:block;
-  transition:.2s;position:relative;overflow:hidden}
-.dash-card:hover{border-color:var(--ocean);box-shadow:0 4px 24px rgba(26,58,74,.14);
-  transform:translateY(-2px)}
-.dash-card-icon{font-size:1.75rem;margin-bottom:.75rem}
-.dash-card-title{font-size:1rem;color:var(--ocean);font-weight:600;margin-bottom:.3rem}
-.dash-card-desc{font-size:.85rem;color:var(--muted);line-height:1.5}
-.dash-card-badge{position:absolute;top:1rem;right:1rem;font-size:.7rem;
-  background:var(--terra);color:#fff;border-radius:20px;padding:.2rem .6rem;
-  font-family:monospace}
+.tools-card{padding:22px;display:flex;flex-direction:column;gap:8px}
+.tools-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.tools-title{font-family:'Quicksand';font-weight:700;font-size:15px;color:#3A332C}
+.tools-desc{font:400 12px/1.5 'DM Sans';color:#5A5147}
 
-/* RECENT NOTES PREVIEW */
-.section-title{font-size:1rem;color:var(--ocean);margin-bottom:1rem;
-  display:flex;align-items:center;gap:.5rem}
-.section-title a{font-size:.8rem;color:var(--muted);text-decoration:none;margin-left:auto}
-.section-title a:hover{color:var(--ocean)}
+/* RECENT PREVIEWS */
+.recent-grid{margin-top:28px;display:grid;grid-template-columns:1.2fr 1fr;gap:18px}
+.recent-card{padding:22px 26px;display:flex;flex-direction:column;gap:14px}
+.recent-title{font:700 12px 'DM Sans';color:#3A332C}
+.note-preview{display:flex;justify-content:space-between;align-items:center;cursor:pointer;gap:10px}
+.note-date{font:400 12px 'DM Sans';color:#5A5147}
+.note-title{font:600 13px 'DM Sans';color:#3A332C}
+.note-tag{font:600 11px 'DM Sans';color:#2F8FA6;background:#E4F0F2;padding:4px 10px;border-radius:100px;white-space:nowrap}
+.recent-link{font:600 12px 'DM Sans';color:#D9724C}
+.test-row{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.test-score{font-family:'Quicksand';font-weight:700;font-size:14px;color:#2F8FA6}
+.empty{text-align:center;padding:1.5rem;color:#5A5147;font-size:.85rem;background:#FBF3E7;border-radius:12px;border:1px dashed #F0E4CE}
 
-.note-preview{background:#fff;border-radius:8px;border:1px solid var(--border);
-  padding:1rem 1.25rem;margin-bottom:.75rem;cursor:pointer;transition:.15s}
-.note-preview:hover{border-color:var(--ocean)}
-.note-date{font-size:.72rem;color:var(--muted);font-family:monospace;margin-bottom:.25rem}
-.note-title{font-size:.95rem;color:var(--ocean)}
-.note-tags{display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap}
-.note-tag{font-size:.7rem;background:var(--ivory);color:var(--muted);
-  border-radius:20px;padding:.15rem .55rem}
-
-.empty{text-align:center;padding:2rem;color:var(--muted);font-size:.9rem;
-  background:var(--ivory);border-radius:var(--radius);border:1px dashed var(--border)}
-
-/* PROGRESS BAR */
-.progress-section{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
-  padding:1.5rem;box-shadow:var(--shadow);margin-bottom:2rem}
-.progress-label{font-size:.8rem;color:var(--muted);margin-bottom:.5rem}
-.progress-bar-wrap{background:var(--cream);border-radius:20px;height:8px;overflow:hidden}
-.progress-bar{background:var(--ocean);border-radius:20px;height:100%;transition:width .5s}
-.progress-stats{display:flex;gap:1.5rem;margin-top:1rem}
-.stat{text-align:center}
-.stat-num{font-size:1.5rem;color:var(--ocean);font-weight:600}
-.stat-lbl{font-size:.75rem;color:var(--muted)}
-.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
-/* == Brand font alignment == */
-body{font-family:'DM Sans',sans-serif}
-h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
-.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
-.logo-name em{font-style:normal;color:#C4683A}
-.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
-
-/* ── CARD GROUPS ── */
-.card-group{margin-bottom:2.25rem}
-.group-header{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem}
-.group-label{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--muted);font-family:monospace;white-space:nowrap}
-.group-line{flex:1;height:1px;background:var(--border)}
-
-/* ── SESSION PROGRESS ── */
-.session-progress{background:#fff;border-radius:var(--radius);border:1px solid var(--border);
-  padding:1.5rem;box-shadow:var(--shadow);margin-bottom:2.25rem}
-.sp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.8rem}
-.sp-label{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:monospace}
-.sp-count{font-size:1.55rem;color:var(--ocean);font-weight:600}
-.sp-count span{font-size:.9rem;color:var(--muted);font-weight:400}
-.sp-bar-wrap{background:var(--cream);border-radius:20px;height:7px;overflow:hidden;margin-bottom:.9rem}
-.sp-bar{background:linear-gradient(to right,var(--ocean),#2A5570);border-radius:20px;height:100%;transition:width .6s ease}
-.sp-footer{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.sp-next{font-size:.85rem;color:var(--muted)}
-.sp-next strong{color:var(--ocean)}
-.sp-next a{color:var(--terra);text-decoration:none;font-weight:500}
-.sp-next a:hover{text-decoration:underline}
-.sp-prog{font-size:.73rem;color:var(--muted);font-family:monospace;opacity:.75}
-
+@media(max-width:760px){
+  .nav-links{display:none}
+  .dash-grid-2,.dash-grid-3,.recent-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <img src="images/logo.png" alt="CmartWise Language Coaching" style="height:52px;width:auto;display:block">
+    <div class="logo-mark">
+      <div class="cw-blob" style="position:absolute;inset:0;background:linear-gradient(135deg,#F0A97D,#D9724C)"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Quicksand';font-weight:700;font-size:13px;color:#FBF3E7">CW</div>
+    </div>
+    <div class="logo-col"><span class="logo-name">Cmartwise</span><span class="logo-sub">Student Portal</span></div>
   </a>
-  <span class="logo-badge">Student Portal</span>
   <div class="nav-spacer"></div>
+  <div class="nav-links">
+    <a href="/portal-dashboard.html" class="active">Dashboard</a>
+    <a href="/portal-notes.html">Coaching Notes</a>
+    <a href="/portal-resources.html">Documents &amp; Links</a>
+    <a href="/portal-tests.html">Practice Tests</a>
+  </div>
   <span class="nav-user" id="nav-user-name"></span>
   <a href="/portal-admin.html" class="nav-admin" id="admin-link" style="display:none">Admin ▾</a>
   <button class="nav-logout" onclick="logout()">Sign out</button>
@@ -144,80 +114,78 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 <div class="container" id="main-content">
 
   <div class="greeting">
-    <p class="greeting-label">Your dashboard</p>
     <h1 class="greeting-name">Olá, <span id="user-first-name">there</span> 👋</h1>
     <p class="greeting-sub" id="greeting-sub">Here's everything you need for your Portuguese journey.</p>
   </div>
 
-  <!-- SESSION PROGRESS -->
-  <div class="session-progress" id="session-progress" style="display:none">
+  <div class="cw-card session-progress" id="session-progress" style="display:none">
     <div class="sp-top">
       <span class="sp-label">Session Progress</span>
-      <span class="sp-count"><span id="sp-done">0</span> <span>sessions completed</span></span>
+      <span class="sp-count"><span id="sp-done">0</span> sessions completed</span>
     </div>
     <div class="sp-bar-wrap"><div class="sp-bar" id="sp-bar" style="width:0%"></div></div>
     <div class="sp-footer">
       <span class="sp-next" id="sp-next"></span>
-      <span class="sp-prog" id="sp-prog"></span>
+      <span id="sp-prog" style="font-family:ui-monospace,monospace;font-size:.72rem;opacity:.75"></span>
     </div>
   </div>
 
   <!-- RESOURCES -->
-  <div class="card-group">
-    <div class="group-header"><span class="group-label">Resources</span><div class="group-line"></div></div>
-    <div class="dash-grid">
-      <a href="/portal-notes.html" class="dash-card">
-        <div class="dash-card-icon">📋</div>
+  <div class="group">
+    <span class="group-label">Resources</span>
+    <div class="dash-grid-2">
+      <a href="/portal-notes.html" class="cw-card dash-card">
+        <div class="dash-card-icon" style="background:#F5E3CB">📋</div>
         <div class="dash-card-title">Coaching Notes</div>
         <div class="dash-card-desc">Your private session notes — what we covered, what to practise, what's clicking.</div>
         <span class="dash-card-badge" id="notes-count">—</span>
       </a>
-      <a href="/portal-resources.html" class="dash-card">
-        <div class="dash-card-icon">📂</div>
-        <div class="dash-card-title">Documents & Links</div>
+      <a href="/portal-resources.html" class="cw-card dash-card">
+        <div class="dash-card-icon" style="background:#E4F0F2">📂</div>
+        <div class="dash-card-title">Documents &amp; Links</div>
         <div class="dash-card-desc">Guides, vocab lists, worksheets and reference materials shared by Cédric.</div>
       </a>
     </div>
   </div>
 
   <!-- TOOLS -->
-  <div class="card-group">
-    <div class="group-header"><span class="group-label">Tools</span><div class="group-line"></div></div>
-    <div class="dash-grid">
-      <a href="/portal-tests.html" class="dash-card">
-        <div class="dash-card-icon">🎯</div>
-        <div class="dash-card-title">Practice Tests</div>
-        <div class="dash-card-desc">Generate timed CIPLE, DIPLE, IELTS or GRE practice tests with AI feedback.</div>
+  <div class="group">
+    <span class="group-label">Tools</span>
+    <div class="dash-grid-3">
+      <a href="/portal-tests.html" class="cw-card tools-card">
+        <div class="tools-icon" style="background:#F5E3CB">🎯</div>
+        <div class="tools-title">Practice Tests</div>
+        <div class="tools-desc">Generate timed CIPLE, DIPLE, IELTS or GRE practice tests with AI feedback.</div>
       </a>
-      <a href="/portal-resources.html#translator" class="dash-card">
-        <div class="dash-card-icon">🌍</div>
-        <div class="dash-card-title">Language Tools</div>
-        <div class="dash-card-desc">Translate between English, Portuguese, French, Spanish and more instantly.</div>
+      <a href="/portal-resources.html#translator" class="cw-card tools-card">
+        <div class="tools-icon" style="background:#E4F0F2">🌐</div>
+        <div class="tools-title">Language Tools</div>
+        <div class="tools-desc">Translate between English, Portuguese, French, Spanish and more instantly.</div>
       </a>
-      <a href="https://tidycal.com/cmartwise/student-session" target="_blank" class="dash-card">
-        <div class="dash-card-icon">📅</div>
-        <div class="dash-card-title">Book a Session</div>
-        <div class="dash-card-desc">Schedule your next coaching session with Cédric directly.</div>
+      <a href="https://tidycal.com/cmartwise/student-session" target="_blank" class="cw-card tools-card">
+        <div class="tools-icon" style="background:#FCE9DC">📅</div>
+        <div class="tools-title">Book a Session</div>
+        <div class="tools-desc">Schedule your next coaching session with Cédric directly.</div>
       </a>
     </div>
   </div>
 
-  <!-- RECENT NOTES -->
-  <div class="section-title">
-    📋 Recent coaching notes
-    <a href="/portal-notes.html">See all →</a>
-  </div>
-  <div id="recent-notes">
-    <div class="empty">No notes yet — Cédric will add session notes after your sessions.</div>
-  </div>
-
-  <!-- TEST HISTORY -->
-  <div class="section-title" style="margin-top:2rem">
-    🎯 Recent practice tests
-    <a href="/portal-tests.html">Take a test →</a>
-  </div>
-  <div id="recent-tests">
-    <div class="empty">No tests yet — try your first practice test!</div>
+  <!-- RECENT PREVIEWS -->
+  <div class="recent-grid">
+    <div class="cw-card recent-card">
+      <span class="recent-title">📋 Recent coaching notes</span>
+      <div id="recent-notes">
+        <div class="empty">No notes yet — Cédric will add session notes after your sessions.</div>
+      </div>
+      <a href="/portal-notes.html" class="recent-link">See all notes →</a>
+    </div>
+    <div class="cw-card recent-card">
+      <span class="recent-title">🎯 Recent practice tests</span>
+      <div id="recent-tests">
+        <div class="empty">No tests yet — try your first practice test!</div>
+      </div>
+      <a href="/portal-tests.html" class="recent-link">Take a test →</a>
+    </div>
   </div>
 
 </div>
@@ -277,7 +245,7 @@ async function init() {
   } else {
     document.getElementById('sp-next').innerHTML = '<a href="https://tidycal.com/cmartwise/student-session" target="_blank">Book your next session →</a>'
   }
-  document.getElementById('session-progress').style.display = 'block'
+  document.getElementById('session-progress').style.display = 'flex'
 
   // Show 3 most recent notes (numbered)
   if (allNotes && allNotes.length) {
@@ -285,11 +253,10 @@ async function init() {
     document.getElementById('recent-notes').innerHTML = recent.map(function(n, i) {
       const sessionNum = totalSessions - i
       const tags = n.tags && n.tags.length ? n.tags.map(function(t){ return '<span class="note-tag">' + esc(t) + '</span>' }).join('') : ''
-      const tagsHtml = tags ? '<div class="note-tags">' + tags + '</div>' : ''
-      return '<div class="note-preview" data-href="/portal-notes.html" style="cursor:pointer">' +
-        '<div class="note-date">Session ' + sessionNum + ' · ' + formatDate(n.session_date) + '</div>' +
-        '<div class="note-title">' + esc(n.title) + '</div>' +
-        tagsHtml + '</div>'
+      return '<div class="note-preview" data-href="/portal-notes.html">' +
+        '<div><div class="note-date">Session ' + sessionNum + ' · ' + formatDate(n.session_date) + '</div>' +
+        '<div class="note-title">' + esc(n.title) + '</div></div>' +
+        tags + '</div>'
     }).join('')
     document.getElementById('recent-notes').addEventListener('click', function(e) {
       const card = e.target.closest('[data-href]')
@@ -306,10 +273,9 @@ async function init() {
 
   if (tests?.length) {
     document.getElementById('recent-tests').innerHTML = tests.map(t => `
-      <div class="note-preview" onclick="window.location='/portal-tests.html'">
-        <div class="note-date">${formatDate(t.completed_at)} · ${t.test_type} — ${t.section}</div>
-        <div class="note-title">Score: ${t.score !== null ? Math.round(t.score) + '/100' : 'Unscored'}</div>
-        ${t.feedback ? `<div style="font-size:.82rem;color:var(--muted);margin-top:.3rem">${esc(t.feedback.substring(0,100))}…</div>` : ''}
+      <div class="test-row" onclick="window.location='/portal-tests.html'">
+        <div><div class="note-date">${formatDate(t.completed_at)} · ${t.test_type} — ${t.section}</div></div>
+        <span class="test-score">${t.score !== null ? Math.round(t.score) + '/100' : 'Unscored'}</span>
       </div>
     `).join('')
   }

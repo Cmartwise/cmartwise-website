@@ -4,98 +4,76 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Student Portal — CmartWise</title>
+<title>Student Portal — Cmartwise</title>
 <style>
-:root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
-  --ivory:#F5F0E8;--cream:#EDE8DF;--border:rgba(26,58,74,.12);
-  --shadow:0 4px 24px rgba(26,58,74,.10);--radius:12px;
-}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:2rem 1rem}
+body{font-family:'DM Sans',sans-serif;background:#FBF3E7;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+a{color:#C15B37;text-decoration:none}
+a:hover{color:#9C4527}
+.cw-blob{border-radius:58% 42% 61% 39% / 47% 45% 55% 53%}
 
-.logo-link{display:flex;align-items:center;gap:.6rem;text-decoration:none;margin-bottom:2.5rem}
-.logo-mark{width:36px;height:36px;background:var(--ocean);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;color:#fff;font-style:italic;
-  font-size:1.1rem;font-family:'DM Sans',sans-serif;font-weight:700}
-.logo-text{font-size:1.1rem;color:var(--ocean);font-weight:600;letter-spacing:-.02em}
+.logo-link{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;margin-bottom:28px}
+.logo-mark{position:relative;width:56px;height:48px}
+.logo-name{font-family:'Quicksand';font-weight:700;font-size:22px;color:#3A332C}
+.portal-badge{font:600 11px 'DM Sans';letter-spacing:.12em;text-transform:uppercase;color:#2F8FA6;background:#E4F0F2;padding:5px 12px;border-radius:100px}
 
-.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-  border:1px solid var(--border);padding:2.5rem 2rem;width:100%;max-width:420px}
+.card{width:100%;max-width:400px;background:#fff;border-radius:20px;padding:36px;box-shadow:0 6px 24px rgba(58,51,44,.08);display:flex;flex-direction:column;gap:18px;box-sizing:border-box}
+.card-title{font-family:'Quicksand';font-weight:700;font-size:22px;color:#3A332C;margin-bottom:2px}
+.card-sub{font:400 14px/1.5 'DM Sans';color:#5A5147}
 
-.card-label{font-size:.72rem;letter-spacing:2px;text-transform:uppercase;
-  color:var(--muted);font-family:monospace;margin-bottom:.5rem}
-.card-title{font-size:1.5rem;color:var(--ocean);margin-bottom:.4rem}
-.card-sub{font-size:.9rem;color:var(--muted);margin-bottom:2rem;line-height:1.5}
+.form-group{display:flex;flex-direction:column;gap:6px}
+label{font:600 12px 'DM Sans';color:#3A332C}
+input{padding:12px 14px;border-radius:10px;border:1.5px solid #F0E4CE;font-size:14px;font-family:'DM Sans',sans-serif;color:#3A332C;background:#FBF3E7;outline:none;transition:.15s}
+input:focus{outline:2px solid #2F8FA6;outline-offset:1px;background:#fff}
+input::placeholder{color:#8A7A5E;opacity:.7}
 
-.form-group{margin-bottom:1.25rem}
-label{display:block;font-size:.8rem;color:var(--ocean);margin-bottom:.4rem;letter-spacing:.02em}
-input{width:100%;padding:.75rem 1rem;border:1.5px solid var(--border);
-  border-radius:8px;font-size:.95rem;font-family:'DM Sans',sans-serif;
-  background:var(--sand);color:var(--ocean);outline:none;transition:.15s}
-input:focus{border-color:var(--ocean);background:#fff}
-input::placeholder{color:var(--muted);opacity:.6}
+.btn{border:none;cursor:pointer;font:700 15px 'Quicksand';color:#FBF3E7;background:#D9724C;padding:13px;border-radius:12px;transition:.2s}
+.btn:hover{background:#C15B37}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 
-.btn{width:100%;padding:.85rem;border:none;border-radius:8px;font-size:.95rem;
-  font-family:'DM Sans',sans-serif;cursor:pointer;transition:.2s;margin-top:.5rem}
-.btn-primary{background:var(--ocean);color:#fff}
-.btn-primary:hover{background:#152d3c}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-
-.msg{margin-top:1rem;padding:.75rem 1rem;border-radius:8px;font-size:.85rem;
-  display:none;line-height:1.5}
-.msg.error{background:#fdf0ee;color:#b03020;border:1px solid #f0c0b8}
-.msg.success{background:#f0f8f0;color:#2a6a2a;border:1px solid #a8d8a8}
+.msg{font:500 13px 'DM Sans';display:none;line-height:1.5}
+.msg.error{color:#C0392B}
+.msg.success{color:#2F8FA6}
 .msg.show{display:block}
 
-.forgot{text-align:center;margin-top:1rem;font-size:.82rem;color:var(--muted)}
-.forgot a{color:var(--ocean);text-decoration:none}
-.forgot a:hover{text-decoration:underline}
+.forgot{text-align:center;font:600 13px 'DM Sans';color:#5A5147;cursor:pointer}
+.invite-note{margin-top:6px;padding:14px 16px;background:#FBF3E7;border-radius:12px;font:400 13px/1.5 'DM Sans';color:#5A5147;text-align:center}
 
-.invite-note{margin-top:1.5rem;padding:.85rem 1rem;background:var(--ivory);
-  border-radius:8px;font-size:.82rem;color:var(--muted);line-height:1.5;
-  border:1px solid var(--border);text-align:center}
-
-footer{margin-top:2rem;font-size:.78rem;color:var(--muted);text-align:center}
-footer a{color:var(--muted);text-decoration:none}
-footer a:hover{color:var(--ocean)}
-.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
-/* == Brand font alignment == */
-body{font-family:'DM Sans',sans-serif}
-h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
-.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
-.logo-name em{font-style:normal;color:#C4683A}
-.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
+footer{margin-top:28px;font:600 13px 'DM Sans';color:#5A5147;text-align:center}
 </style>
 </head>
 <body>
 
 <a href="/" class="logo-link">
-  <span class="logo-name">Cmart<em>Wise</em></span><span class="logo-sub">Language Coaching</span>
+  <div class="logo-mark">
+    <div class="cw-blob" style="position:absolute;inset:0;background:linear-gradient(135deg,#F0A97D,#D9724C)"></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Quicksand';font-weight:700;font-size:20px;color:#FBF3E7">CW</div>
+  </div>
+  <span class="logo-name">Cmartwise</span>
+  <span class="portal-badge">Student Portal</span>
 </a>
 
 <div class="card">
-  <p class="card-label">Student Portal</p>
-  <h1 class="card-title">Welcome back</h1>
-  <p class="card-sub">Sign in to access your coaching notes, resources, and practice tests.</p>
+  <div>
+    <h1 class="card-title">Welcome back</h1>
+    <p class="card-sub">Sign in to access your coaching notes, resources, and practice tests.</p>
+  </div>
 
   <form id="login-form" onsubmit="handleLogin(event)">
-    <div class="form-group">
+    <div class="form-group" style="margin-bottom:14px">
       <label for="login-email">Email</label>
-      <input type="email" id="login-email" placeholder="your@email.com" required autocomplete="email">
+      <input type="email" id="login-email" placeholder="you@email.com" required autocomplete="email">
     </div>
-    <div class="form-group">
+    <div class="form-group" style="margin-bottom:14px">
       <label for="login-password">Password</label>
       <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
     </div>
-    <button type="submit" class="btn btn-primary" id="login-btn">Sign in</button>
-    <div id="login-msg" class="msg"></div>
-    <p class="forgot"><a href="#" onclick="handleForgot(event)">Forgot your password?</a></p>
+    <button type="submit" class="btn" id="login-btn" style="width:100%">Sign in</button>
+    <div id="login-msg" class="msg" style="margin-top:12px"></div>
+    <p class="forgot" style="margin-top:14px"><a href="#" onclick="handleForgot(event)">Forgot your password?</a></p>
   </form>
 
   <div class="invite-note">

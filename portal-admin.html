@@ -4,35 +4,33 @@
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Admin — CmartWise Portal</title>
+<title>Admin — Cmartwise Portal</title>
 <style>
 :root{
-  --ocean:#1A3A4A;--sand:#FAF7F3;--terra:#C4683A;--muted:#7A6E64;
-  --ivory:#F5F0E8;--cream:#EDE8DF;--leaf:#3D7A5A;
-  --border:rgba(26,58,74,.10);--shadow:0 2px 16px rgba(26,58,74,.08);--radius:12px;
+  --ocean:#3A332C;--sand:#FBF3E7;--terra:#D9724C;--terra-dark:#C15B37;--muted:#5A5147;
+  --ivory:#F5E3CB;--cream:#F0E4CE;--leaf:#1F6B57;--blue:#2F8FA6;
+  --border:#F0E4CE;--shadow:0 4px 16px rgba(58,51,44,.08);--radius:16px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh}
+body{font-family:'DM Sans',sans-serif;background:var(--sand);min-height:100vh;color:var(--ocean)}
+.cw-blob{border-radius:58% 42% 61% 39% / 47% 45% 55% 53%}
 
 nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem;
-  padding:.9rem 2.5rem;background:rgba(250,247,243,.96);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border)}
+  padding:.9rem 2.5rem;background:rgba(251,243,231,.96);backdrop-filter:blur(12px)}
 .logo-wrap{display:flex;align-items:center;gap:.6rem;text-decoration:none}
-.logo-mark{width:30px;height:30px;background:var(--ocean);border-radius:7px;
-  display:flex;align-items:center;justify-content:center;color:#fff;
-  font-style:italic;font-size:.95rem;font-family:'DM Sans',sans-serif;font-weight:700}
-.logo-text{font-size:.95rem;color:var(--ocean);font-weight:600}
-.logo-badge{font-size:.7rem;background:var(--terra);color:#fff;border-radius:4px;
-  padding:.15rem .45rem;margin-left:.25rem;letter-spacing:.05em}
+.logo-mark{position:relative;width:36px;height:31px}
+.logo-text{font-family:'Quicksand';font-size:.95rem;color:var(--ocean);font-weight:700}
+.logo-badge{font-size:.7rem;background:var(--terra);color:#fff;border-radius:100px;
+  padding:.2rem .6rem;margin-left:.25rem;letter-spacing:.05em;font-weight:600}
 .nav-spacer{flex:1}
 .nav-back{font-size:.82rem;color:var(--muted);text-decoration:none;margin-right:.5rem}
-.nav-back:hover{color:var(--ocean)}
-.nav-logout{font-size:.82rem;color:var(--muted);background:none;border:1px solid var(--border);
-  border-radius:6px;padding:.3rem .75rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
-.nav-logout:hover{border-color:var(--ocean);color:var(--ocean)}
+.nav-back:hover{color:var(--terra)}
+.nav-logout{font-size:.82rem;color:var(--muted);background:var(--ivory);border:none;
+  border-radius:100px;padding:.45rem .9rem;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s}
+.nav-logout:hover{background:var(--cream)}
 
 #auth-check{display:flex;align-items:center;justify-content:center;min-height:60vh;
   color:var(--muted);font-size:.95rem}
@@ -40,11 +38,10 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .container{max-width:1040px;margin:0 auto;padding:2.5rem 1.5rem;display:none}
 
 /* TABS */
-.tabs{display:flex;gap:.5rem;margin-bottom:2rem;border-bottom:2px solid var(--cream);padding-bottom:0}
-.tab-btn{padding:.6rem 1.25rem;border:none;background:none;font-family:'DM Sans',sans-serif;
-  font-size:.9rem;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;
-  margin-bottom:-2px;transition:.15s}
-.tab-btn.active{color:var(--ocean);border-bottom-color:var(--ocean);font-weight:600}
+.tabs{display:flex;gap:.5rem;margin-bottom:2rem;flex-wrap:wrap}
+.tab-btn{padding:.6rem 1.25rem;border:none;background:var(--ivory);font-family:'Quicksand',sans-serif;
+  font-weight:700;font-size:.85rem;color:var(--ocean);cursor:pointer;border-radius:100px;transition:.15s}
+.tab-btn.active{color:#fff;background:var(--terra)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
@@ -72,11 +69,11 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .student-email{font-size:.8rem;color:var(--muted)}
 .student-meta{font-size:.75rem;color:var(--muted);margin-top:.25rem;font-family:monospace}
 .student-actions{display:flex;gap:.5rem}
-.btn-sm{padding:.35rem .85rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.8rem;
+.btn-sm{padding:.4rem .9rem;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:.8rem;
   cursor:pointer;border:1.5px solid var(--border);background:none;color:var(--ocean);transition:.15s}
-.btn-sm:hover{border-color:var(--ocean)}
-.btn-sm.primary{background:var(--ocean);color:#fff;border-color:var(--ocean)}
-.btn-sm.primary:hover{background:#152d3c}
+.btn-sm:hover{border-color:var(--terra);color:var(--terra)}
+.btn-sm.primary{background:var(--terra);color:#fff;border-color:var(--terra)}
+.btn-sm.primary:hover{background:var(--terra-dark)}
 .btn-sm.danger{border-color:rgba(180,40,40,.3);color:#b02020}
 .btn-sm.danger:hover{background:#fdf0ee;border-color:#b02020}
 
@@ -85,24 +82,24 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
   display:flex;align-items:center;justify-content:center;padding:1rem;display:none}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:var(--radius);padding:2rem;width:100%;max-width:560px;
-  max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(0,0,0,.2)}
-.modal-title{font-size:1.25rem;color:var(--ocean);margin-bottom:1.5rem}
+  max-height:90vh;overflow-y:auto;box-shadow:0 8px 48px rgba(58,51,44,.25)}
+.modal-title{font-family:'Quicksand';font-weight:700;font-size:1.25rem;color:var(--ocean);margin-bottom:1.5rem}
 .form-group{margin-bottom:1.1rem}
 .form-group label{display:block;font-size:.8rem;color:var(--ocean);margin-bottom:.35rem;letter-spacing:.02em}
 .form-group input,.form-group select,.form-group textarea{
-  width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:8px;
+  width:100%;padding:.7rem .9rem;border:1.5px solid var(--border);border-radius:10px;
   font-size:.9rem;font-family:'DM Sans',sans-serif;background:var(--sand);color:var(--ocean);
   outline:none;transition:.15s}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
-  border-color:var(--ocean);background:#fff}
+  border-color:var(--terra);background:#fff}
 .form-group textarea{resize:vertical;min-height:100px;line-height:1.6}
 .modal-actions{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1.5rem}
-.btn{padding:.75rem 1.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;
+.btn{padding:.75rem 1.5rem;border-radius:100px;font-family:'Quicksand',sans-serif;font-weight:700;font-size:.9rem;
   cursor:pointer;border:1.5px solid var(--border);transition:.2s}
-.btn.primary{background:var(--ocean);color:#fff;border-color:var(--ocean)}
-.btn.primary:hover{background:#152d3c}
-.btn.secondary{background:none;color:var(--muted)}
-.btn.secondary:hover{border-color:var(--ocean);color:var(--ocean)}
+.btn.primary{background:var(--terra);color:#fff;border-color:var(--terra)}
+.btn.primary:hover{background:var(--terra-dark)}
+.btn.secondary{background:none;color:var(--muted);font-weight:600;font-family:'DM Sans',sans-serif}
+.btn.secondary:hover{border-color:var(--terra);color:var(--terra)}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 
 /* NOTES LIST */
@@ -131,13 +128,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 
 /* ADD BUTTON */
 .add-btn{display:flex;align-items:center;gap:.5rem;padding:.7rem 1.25rem;
-  background:var(--ocean);color:#fff;border:none;border-radius:8px;
-  font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;transition:.2s;margin-bottom:1.25rem}
-.add-btn:hover{background:#152d3c}
+  background:var(--terra);color:#fff;border:none;border-radius:100px;
+  font-family:'Quicksand',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;transition:.2s;margin-bottom:1.25rem}
+.add-btn:hover{background:var(--terra-dark)}
 
 /* MSG */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--ocean);color:#fff;
-  padding:.75rem 1.25rem;border-radius:8px;font-size:.88rem;z-index:300;
+  padding:.75rem 1.25rem;border-radius:12px;font-size:.88rem;z-index:300;
   transform:translateY(10px);opacity:0;transition:.3s;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.err{background:#b03020}
@@ -175,20 +172,23 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:.75rem
 .review-answer-row.correct-row{color:var(--leaf)}
 .review-explanation{margin-top:.5rem;padding:.55rem .8rem;background:var(--ivory);
   border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.5;border-left:3px solid var(--ocean)}
-.tile-mosaic{height:8px;background:repeating-linear-gradient(90deg,#1A3A4A 0,#1A3A4A 20px,#C4683A 20px,#C4683A 40px,#B8C9D4 40px,#B8C9D4 60px,#2A5570 60px,#2A5570 80px,#E8A882 80px,#E8A882 100px,#4A8FA8 100px,#4A8FA8 120px)}
 /* == Brand font alignment == */
 body{font-family:'DM Sans',sans-serif}
-h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.tab-btn,.modal-title{font-family:'Playfair Display',serif}
-.logo-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#1A3A4A;letter-spacing:-.01em}
-.logo-name em{font-style:normal;color:#C4683A}
-.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#7A6E64;font-weight:500;display:block}
+h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.result-score,.logo-text,.stat-num,.modal-title{font-family:'Quicksand',sans-serif;font-weight:700}
+.logo-name{font-family:'Quicksand',sans-serif;font-size:16px;font-weight:700;color:#3A332C;letter-spacing:-.01em}
+.logo-name em{font-style:normal;color:#D9724C}
+.logo-sub{font-size:8.5px;letter-spacing:.13em;text-transform:uppercase;color:#5A5147;font-weight:500;display:block}
 </style>
 </head>
 <body>
 
 <nav>
   <a href="/" class="logo-wrap">
-    <img src="images/logo.png" alt="CmartWise Language Coaching" style="height:52px;width:auto;display:block">
+    <div class="logo-mark">
+      <div class="cw-blob" style="position:absolute;inset:0;background:linear-gradient(135deg,#F0A97D,#D9724C)"></div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Quicksand';font-weight:700;font-size:13px;color:#FBF3E7">CW</div>
+    </div>
+    <span class="logo-text">Cmartwise</span>
   </a>
   <span class="logo-badge">Admin</span>
   <div class="nav-spacer"></div>
@@ -233,10 +233,10 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
   <div class="tab-panel" id="tab-process">
     <p class="page-sub" style="margin-bottom:1.25rem">Lessons recorded with the desktop recorder show up below automatically, already processed and waiting on your review. You can also paste a transcript or upload a Canva export by hand — useful for backfilling older sessions.</p>
 
-    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Playfair Display',serif">📥 Pending review (<span id="proc-pending-count">0</span>)</h3>
+    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Quicksand',sans-serif;font-weight:700">📥 Pending review (<span id="proc-pending-count">0</span>)</h3>
     <div id="proc-pending-list" style="margin-bottom:2rem"><div class="empty">Loading…</div></div>
 
-    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Playfair Display',serif">➕ Process something new</h3>
+    <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Quicksand',sans-serif;font-weight:700">➕ Process something new</h3>
 
     <div class="form-group">
       <label>Source</label>
@@ -271,14 +271,14 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
     <div id="proc-error" style="margin-top:.75rem;font-size:.85rem;color:#b02020;display:none"></div>
 
     <div id="proc-preview" style="display:none;margin-top:2rem">
-      <div class="tile-mosaic" style="margin-bottom:1.5rem;border-radius:4px"></div>
+      <div class="tile-mosaic" style="height:6px;margin-bottom:1.5rem;border-radius:4px;background:linear-gradient(90deg,#F0A97D,#D9724C,#E6B84F,#2F8FA6)"></div>
 
       <div class="form-group">
         <label>Session title</label>
         <input type="text" id="proc-title">
       </div>
 
-      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">🔒 Admin brief — only you see this</h3>
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">🔒 Admin brief — only you see this</h3>
       <div class="form-group"><label>Comprehension level</label><input type="text" id="proc-level-comp"></div>
       <div class="form-group"><label>Speaking level</label><input type="text" id="proc-level-speak"></div>
       <div class="form-group"><label>What was covered (one per line)</label><textarea id="proc-covered" style="min-height:90px"></textarea></div>
@@ -286,13 +286,13 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <div class="form-group"><label>Corrections flagged (one per line)</label><textarea id="proc-corrections" style="min-height:90px"></textarea></div>
       <div class="form-group"><label>Other context (business/personal, feedback about the portal, etc.)</label><textarea id="proc-meta" style="min-height:70px"></textarea></div>
 
-      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">✉️ Note to the student — this is what they'll see</h3>
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">✉️ Note to the student — this is what they'll see</h3>
       <div class="form-group"><textarea id="proc-student-notes" style="min-height:280px;line-height:1.6"></textarea></div>
 
-      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">📚 New vocabulary — uncheck any to exclude</h3>
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">📚 New vocabulary — uncheck any to exclude</h3>
       <div id="proc-vocab-list"></div>
 
-      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Playfair Display',serif">🎯 Practice exercises — uncheck any to exclude</h3>
+      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">🎯 Practice exercises — uncheck any to exclude</h3>
       <div id="proc-exercises-list"></div>
 
       <div class="modal-actions" style="justify-content:flex-start;margin-top:2rem">
@@ -1165,7 +1165,7 @@ init()
 <!-- EDIT STUDENT MODAL -->
 <div id="student-edit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center;padding:1rem">
   <div style="background:#fff;border-radius:12px;padding:2rem;width:100%;max-width:460px">
-    <h2 style="color:var(--ocean);margin-bottom:1.5rem;font-family:'Playfair Display',serif">Edit student — <span id="edit-student-name"></span></h2>
+    <h2 style="color:var(--ocean);margin-bottom:1.5rem;font-family:'Quicksand',sans-serif;font-weight:700">Edit student — <span id="edit-student-name"></span></h2>
     <input type="hidden" id="edit-student-id">
     <div style="margin-bottom:1rem">
       <label style="font-size:.8rem;color:var(--ocean);display:block;margin-bottom:.35rem">Programme</label>
@@ -1187,7 +1187,7 @@ init()
       <div style="font-size:.75rem;color:var(--muted);margin-top:.3rem">Leave blank to clear</div>
     </div>
     <div style="display:flex;gap:.75rem">
-      <button onclick="saveStudentEdit()" style="flex:1;padding:.75rem;background:var(--ocean);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;cursor:pointer">Save</button>
+      <button onclick="saveStudentEdit()" style="flex:1;padding:.75rem;background:var(--terra);color:#fff;border:none;border-radius:100px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer">Save</button>
       <button onclick="closeStudentEdit()" style="padding:.75rem 1.25rem;background:none;border:1px solid var(--border);border-radius:6px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--muted)">Cancel</button>
     </div>
     <div id="edit-msg" style="margin-top:.75rem;font-size:.85rem;color:var(--terra);display:none"></div>
@@ -1227,12 +1227,4 @@ async function saveStudentEdit() {
     programme, sessions_total: sessionsTotal, next_session: nextSession
   }).eq('id', id)
 
-  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
-  closeStudentEdit()
-  showToast('Student updated')
-  loadStudents()
-}
-</script>
-
-</body>
-</html>
+  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.displ
