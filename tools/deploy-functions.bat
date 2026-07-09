@@ -37,7 +37,11 @@ echo  Step 7: Deploying enrich-vocab function...
 call npx supabase functions deploy enrich-vocab --project-ref zsgnggtwfxyqzvrnlaqg
 
 echo.
-echo  Done! All five functions deployed.
+echo  Step 8: Deploying process-direct-notes function...
+call npx supabase functions deploy process-direct-notes --project-ref zsgnggtwfxyqzvrnlaqg --no-verify-jwt
+
+echo.
+echo  Done! All six functions deployed.
 echo.
 echo  IMPORTANT: Set your Anthropic API key in Supabase:
 echo  Dashboard ^> Edge Functions ^> Manage secrets ^> Add ANTHROPIC_API_KEY

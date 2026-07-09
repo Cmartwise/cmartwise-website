@@ -125,13 +125,13 @@ nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:20px;p
 details.vocab-cat[open]>.vocab-cat-header .vocab-cat-arrow{transform:rotate(90deg)}
 details.vocab-cat .vocab-grid{margin-top:.75rem}
 .vocab-grid{display:flex;flex-direction:column;gap:.6rem}
-.vocab-card{background:var(--green-bg);border-radius:14px;padding:1rem 1.1rem;border-left:3px solid var(--green)}
-.vocab-card.cat-grammar{border-left-color:#E6B84F}
-.vocab-card.cat-verb{border-left-color:var(--blue)}
-.vocab-card.cat-verb-reference{border-left-color:var(--blue)}
-.vocab-card.cat-finance{border-left-color:#7A6E64}
-.vocab-card.cat-home{border-left-color:#9C6BB5}
-.vocab-card.cat-general{border-left-color:#B7A98F}
+.vocab-card{background:var(--green-bg);border-radius:14px;padding:1rem 1.1rem;--vocab-accent:var(--green);border-left:3px solid var(--vocab-accent);border-bottom:3px solid var(--vocab-accent)}
+.vocab-card.cat-grammar{--vocab-accent:#E6B84F}
+.vocab-card.cat-verb{--vocab-accent:var(--blue)}
+.vocab-card.cat-verb-reference{--vocab-accent:var(--blue)}
+.vocab-card.cat-finance{--vocab-accent:#7A6E64}
+.vocab-card.cat-home{--vocab-accent:#9C6BB5}
+.vocab-card.cat-general{--vocab-accent:#B7A98F}
 .vocab-term-row{display:flex;align-items:baseline;gap:.65rem;flex-wrap:wrap;margin-bottom:.2rem}
 .vocab-term{font-family:'Quicksand';font-size:1.05rem;font-weight:700;font-style:italic;color:var(--green)}
 .vocab-phonetic{font-size:11px;font-family:ui-monospace,monospace;color:#B5851A;background:#FDF3DD;padding:2px 7px;border-radius:4px}

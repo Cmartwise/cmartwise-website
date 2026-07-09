@@ -231,7 +231,7 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
 
   <!-- ── PROCESS LESSON (AI note processing) ── -->
   <div class="tab-panel" id="tab-process">
-    <p class="page-sub" style="margin-bottom:1.25rem">Lessons recorded with the desktop recorder show up below automatically, already processed and waiting on your review. You can also paste a transcript or upload a Canva export by hand — useful for backfilling older sessions.</p>
+    <p class="page-sub" style="margin-bottom:1.25rem">Lessons recorded with the desktop recorder show up below automatically, already processed and waiting on your review — and so do notes you type straight into the Notes tab (checked once a day, extracted the same way). You can also paste a transcript or upload a Canva export by hand — useful for backfilling older sessions.</p>
 
     <h3 style="color:var(--ocean);margin-bottom:.75rem;font-family:'Quicksand',sans-serif;font-weight:700">📥 Pending review (<span id="proc-pending-count">0</span>)</h3>
     <div id="proc-pending-list" style="margin-bottom:2rem"><div class="empty">Loading…</div></div>
@@ -286,8 +286,13 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <div class="form-group"><label>Corrections flagged (one per line)</label><textarea id="proc-corrections" style="min-height:90px"></textarea></div>
       <div class="form-group"><label>Other context (business/personal, feedback about the portal, etc.)</label><textarea id="proc-meta" style="min-height:70px"></textarea></div>
 
-      <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">✉️ Note to the student — this is what they'll see</h3>
-      <div class="form-group"><textarea id="proc-student-notes" style="min-height:280px;line-height:1.6"></textarea></div>
+      <div id="proc-direct-note-banner" style="display:none;background:var(--ivory);border-radius:10px;padding:1rem 1.25rem;margin:1.5rem 0;font-size:.85rem;color:var(--ocean)">
+        📝 This note was typed straight into the portal and the student already has it — publishing here only adds the admin brief, vocabulary and exercises below. The note itself won't change.
+      </div>
+      <div id="proc-student-note-section">
+        <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">✉️ Note to the student — this is what they'll see</h3>
+        <div class="form-group"><textarea id="proc-student-notes" style="min-height:280px;line-height:1.6"></textarea></div>
+      </div>
 
       <h3 style="color:var(--ocean);margin:1.5rem 0 .75rem;font-family:'Quicksand',sans-serif;font-weight:700">📚 New vocabulary — uncheck any to exclude</h3>
       <div id="proc-vocab-list"></div>
@@ -354,6 +359,14 @@ h1,h2,h3,.greeting-name,.card-title,.page-title,.dash-card-title,.setup-title,.r
       <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem">Run "Enrich vocabulary grammar" above first — this only picks up terms already identified as verbs. Slower and pricier per term (heavier output), so it runs in smaller batches.</p>
       <button class="btn primary" id="verb-detail-enrich-btn" onclick="runEnrichVerbDetail()">Enrich verb details</button>
       <div id="verb-detail-enrich-progress" style="margin-top:.75rem;font-size:.85rem;color:var(--muted);display:none"></div>
+    </div>
+    <div style="background:var(--ivory);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1.25rem">
+      <div style="font-size:.85rem;color:var(--ocean);margin-bottom:.75rem">
+        <span id="accents-remaining-count">—</span> term(s) still need an accent check.
+      </div>
+      <p style="font-size:.78rem;color:var(--muted);margin-bottom:.75rem">Some older terms lost their Portuguese accents in an earlier data migration (e.g. "alcancar" instead of "alcançar"). This checks term + infinitive for every entry — old and new — and fixes any that are wrong. Safe to re-run any time; already-correct terms are left untouched.</p>
+      <button class="btn primary" id="accents-fix-btn" onclick="runFixAccents()">Fix Portuguese accents</button>
+      <div id="accents-fix-progress" style="margin-top:.75rem;font-size:.85rem;color:var(--muted);display:none"></div>
     </div>
   </div>
 
@@ -566,7 +579,7 @@ async function loadNotes() {
     return `
     <div class="note-item">
       <div class="note-meta">
-        <span>${n.profiles?.full_name || n.profiles?.email || 'Unknown student'} · ${formatDate(n.session_date)}</span>
+        <span>${n.profiles?.full_name || n.profiles?.email || 'Unknown student'} · ${formatDate(n.session_date)}${brief ? ' · <span style="color:var(--terra)">✅ Processed</span>' : ''}</span>
         <span style="display:flex;gap:.5rem">
           <span style="cursor:pointer;color:var(--terra)" onclick="deleteNote('${n.id}')">Delete</span>
         </span>
@@ -692,6 +705,8 @@ async function deleteResource(id) {
 // ── PROCESS LESSON (AI note processing) ─────────────────────────
 let lastProcessed = null
 let currentDraftId = null
+let currentDraftSourceType = null
+let currentSourceNoteId = null
 let pendingDrafts = []
 
 async function loadPendingDrafts() {
@@ -713,7 +728,7 @@ async function loadPendingDrafts() {
   el.innerHTML = pendingDrafts.map(d => `
     <div class="note-item">
       <div class="note-meta">
-        <span>${esc(d.profiles?.full_name || d.profiles?.email || 'Unknown student')} · ${formatDate(d.session_date)} · ${d.source_type === 'canva' ? 'Canva backfill' : 'Recorded lesson'}</span>
+        <span>${esc(d.profiles?.full_name || d.profiles?.email || 'Unknown student')} · ${formatDate(d.session_date)} · ${d.source_type === 'canva' ? 'Canva backfill' : d.source_type === 'direct_note' ? 'Portal note (auto-detected)' : 'Recorded lesson'}</span>
         <span style="cursor:pointer;color:var(--terra)" onclick="discardDraft('${d.id}')">Discard</span>
       </div>
       <div class="note-title">${esc(d.ai_output?.session_title || 'Untitled session')}</div>
@@ -726,11 +741,26 @@ function reviewDraft(id) {
   const d = pendingDrafts.find(x => x.id === id)
   if (!d) return
   currentDraftId = id
+  currentDraftSourceType = d.source_type || 'transcript'
+  currentSourceNoteId = d.source_note_id || null
   lastProcessed = d.ai_output
   document.getElementById('proc-student-id').value = d.student_id
   document.getElementById('proc-date').value = d.session_date
-  document.querySelector(`input[name=proc-source][value="${d.source_type || 'transcript'}"]`).checked = true
-  onSourceTypeChange()
+
+  if (currentDraftSourceType === 'direct_note') {
+    document.getElementById('proc-transcript-label').textContent = 'Original note (already sent — read-only reference)'
+    document.getElementById('proc-transcript').value = d.transcript_text || ''
+    document.getElementById('proc-date-hint').style.display = 'none'
+    document.getElementById('proc-student-note-section').style.display = 'none'
+    document.getElementById('proc-direct-note-banner').style.display = 'block'
+  } else {
+    const radio = document.querySelector(`input[name=proc-source][value="${currentDraftSourceType}"]`)
+    if (radio) radio.checked = true
+    onSourceTypeChange()
+    document.getElementById('proc-student-note-section').style.display = 'block'
+    document.getElementById('proc-direct-note-banner').style.display = 'none'
+  }
+
   renderProcessPreview(d.ai_output)
   document.getElementById('proc-preview').scrollIntoView({ behavior: 'smooth' })
 }
@@ -811,6 +841,10 @@ async function runProcessLesson() {
     if (data?.error) throw new Error(data.error)
 
     currentDraftId = null  // fresh generation, not tied to a queued draft
+    currentDraftSourceType = null
+    currentSourceNoteId = null
+    document.getElementById('proc-student-note-section').style.display = 'block'
+    document.getElementById('proc-direct-note-banner').style.display = 'none'
     lastProcessed = data
     renderProcessPreview(data)
   } catch (e) {
@@ -851,25 +885,40 @@ function renderProcessPreview(data) {
 async function publishProcessedLesson() {
   if (!lastProcessed) return
   const studentId = document.getElementById('proc-student-id').value
+  const isDirectNote = currentDraftSourceType === 'direct_note'
   const btn = document.getElementById('proc-publish-btn')
   btn.disabled = true; btn.textContent = 'Publishing…'
 
   try {
     const tags = [...new Set((lastProcessed.vocab_additions||[]).map(v => v.category).filter(Boolean))]
 
-    // 1) student-facing note
-    const { data: note, error: noteErr } = await sb.from('coaching_notes').insert({
-      student_id: studentId,
-      session_date: document.getElementById('proc-date').value,
-      title: document.getElementById('proc-title').value.trim(),
-      content: document.getElementById('proc-student-notes').value.trim(),
-      tags
-    }).select().single()
-    if (noteErr) throw noteErr
+    let noteId
+    if (isDirectNote) {
+      // The student-facing note already exists (Ika typed it straight into the
+      // portal) — never create a second one. Just fold in any new vocab tags.
+      if (!currentSourceNoteId) throw new Error('This draft is missing its source note reference — cannot publish safely.')
+      noteId = currentSourceNoteId
+      if (tags.length) {
+        const { data: existing } = await sb.from('coaching_notes').select('tags').eq('id', noteId).single()
+        const mergedTags = [...new Set([...(existing?.tags || []), ...tags])]
+        await sb.from('coaching_notes').update({ tags: mergedTags }).eq('id', noteId)
+      }
+    } else {
+      // 1) student-facing note
+      const { data: note, error: noteErr } = await sb.from('coaching_notes').insert({
+        student_id: studentId,
+        session_date: document.getElementById('proc-date').value,
+        title: document.getElementById('proc-title').value.trim(),
+        content: document.getElementById('proc-student-notes').value.trim(),
+        tags
+      }).select().single()
+      if (noteErr) throw noteErr
+      noteId = note.id
+    }
 
     // 2) admin-only brief
     const { error: briefErr } = await sb.from('lesson_admin_notes').insert({
-      coaching_note_id: note.id,
+      coaching_note_id: noteId,
       student_id: studentId,
       session_date: document.getElementById('proc-date').value,
       level_assessment: {
@@ -892,7 +941,7 @@ async function publishProcessedLesson() {
       const v = lastProcessed.vocab_additions[+cb.dataset.vocabIdx]
       await sb.rpc('upsert_vocab', {
         p_student_id: studentId, p_term: v.term, p_translation: v.translation,
-        p_category: v.category, p_tags: v.tags || [], p_note_id: note.id
+        p_category: v.category, p_tags: v.tags || [], p_note_id: noteId
       })
     }
 
@@ -902,7 +951,7 @@ async function publishProcessedLesson() {
     for (const cb of exChecks) {
       if (!cb.checked) continue
       const ex = lastProcessed.exercises[+cb.dataset.exerciseIdx]
-      exRows.push({ student_id: studentId, coaching_note_id: note.id, type: ex.type, prompt: ex.prompt, answer: ex.answer, explanation: ex.explanation })
+      exRows.push({ student_id: studentId, coaching_note_id: noteId, type: ex.type, prompt: ex.prompt, answer: ex.answer, explanation: ex.explanation })
     }
     if (exRows.length) {
       const { error: exErr } = await sb.from('exercises').insert(exRows)
@@ -913,7 +962,7 @@ async function publishProcessedLesson() {
       await sb.from('lesson_drafts').update({ status: 'published' }).eq('id', currentDraftId)
     }
 
-    showToast('Published — student note, admin brief, vocab and exercises all saved')
+    showToast(isDirectNote ? 'Published — admin brief, vocab and exercises attached to the existing note' : 'Published — student note, admin brief, vocab and exercises all saved')
     discardProcessed()
     loadNotes(); loadStats(); loadPendingDrafts()
   } catch (e) {
@@ -927,10 +976,14 @@ async function publishProcessedLesson() {
 function discardProcessed() {
   lastProcessed = null
   currentDraftId = null
+  currentDraftSourceType = null
+  currentSourceNoteId = null
   document.getElementById('proc-preview').style.display = 'none'
   document.getElementById('proc-transcript').value = ''
   document.getElementById('proc-file').value = ''
   document.getElementById('proc-file-status').textContent = ''
+  document.getElementById('proc-student-note-section').style.display = 'block'
+  document.getElementById('proc-direct-note-banner').style.display = 'none'
 }
 
 // ── TESTS ──────────────────────────────────────────────────────
@@ -1045,6 +1098,14 @@ async function loadVocabAdminTab() {
   if (studentId) vq = vq.eq('student_id', studentId)
   const { count: vCount } = await vq
   vEl.textContent = vCount ?? '—'
+
+  const aEl = document.getElementById('accents-remaining-count')
+  if (aEl) {
+    let aq = sb.from('vocab_master').select('id', { count: 'exact', head: true }).eq('accents_checked', false)
+    if (studentId) aq = aq.eq('student_id', studentId)
+    const { count: aCount, error: aErr } = await aq
+    aEl.textContent = aErr ? '—' : (aCount ?? '—')
+  }
 }
 
 async function runEnrichVocab() {
@@ -1130,6 +1191,46 @@ async function runEnrichVerbDetail() {
   } catch (e) {
     progress.textContent = 'Error: ' + e.message
     showToast('Verb-detail enrichment failed: ' + e.message, true)
+  } finally {
+    btn.disabled = false
+    loadVocabAdminTab()
+  }
+}
+
+async function runFixAccents() {
+  const btn = document.getElementById('accents-fix-btn')
+  const progress = document.getElementById('accents-fix-progress')
+  const studentId = document.getElementById('vocab-student-filter')?.value || ''
+  const { data: { session } } = await sb.auth.getSession()
+
+  btn.disabled = true
+  progress.style.display = 'block'
+  let totalProcessed = 0
+  let totalCorrected = 0
+
+  try {
+    while (true) {
+      progress.textContent = `Checking accents… ${totalProcessed} checked so far, ${totalCorrected} fixed.`
+      const res = await fetch(SUPABASE_URL + '/functions/v1/enrich-vocab', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + session?.access_token
+        },
+        body: JSON.stringify({ studentId: studentId || undefined, mode: 'accents', batchSize: 20 })
+      })
+      const d = await res.json()
+      if (d.error) throw new Error(d.error)
+      totalProcessed += d.processed || 0
+      totalCorrected += d.corrected || 0
+      document.getElementById('accents-remaining-count').textContent = d.remaining ?? '—'
+      if (d.done || !d.processed) break
+    }
+    progress.textContent = `Done — checked ${totalProcessed} term(s), fixed ${totalCorrected}.`
+    showToast(`Checked ${totalProcessed} term(s), fixed ${totalCorrected} accent issue(s)`)
+  } catch (e) {
+    progress.textContent = 'Error: ' + e.message + '. Has schema-vocab-accents-checked.sql been run?'
+    showToast('Accent check failed: ' + e.message, true)
   } finally {
     btn.disabled = false
     loadVocabAdminTab()
@@ -1227,4 +1328,12 @@ async function saveStudentEdit() {
     programme, sessions_total: sessionsTotal, next_session: nextSession
   }).eq('id', id)
 
-  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.displ
+  if (error) { msg.textContent = 'Error: ' + error.message; msg.style.display = 'block'; return }
+  closeStudentEdit()
+  showToast('Student updated')
+  loadStudents()
+}
+</script>
+
+</body>
+</html>
